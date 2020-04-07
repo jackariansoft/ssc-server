@@ -6,6 +6,8 @@
     <class>it.ariannamondo.mag.entity.Groups</class>
     <class>it.ariannamondo.mag.entity.UserLog</class>
     <class>it.ariannamondo.mag.entity.User</class>
+    <class>it.ariannamondo.mag.entity.Installazione</class>
+    <class>it.ariannamondo.mag.entity.Location</class>
     <shared-cache-mode>NONE</shared-cache-mode>
   </persistence-unit>
 </persistence>
