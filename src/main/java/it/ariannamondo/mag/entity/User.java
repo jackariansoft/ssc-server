@@ -27,7 +27,6 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,6 +41,33 @@ import org.springframework.security.core.userdetails.UserDetails;
     @UniqueConstraint(columnNames = {"login"})})
 public class User implements Serializable,UserDetails {
 
+    @Size(max = 10)
+    @Column(name = "username")
+    private String username;
+    @Size(max = 20)
+    @Column(name = "first_name")
+    private String firstName;
+    @Size(max = 20)
+    @Column(name = "middle_name")
+    private String middleName;
+    @Size(max = 20)
+    @Column(name = "last_name")
+    private String lastName;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 32)
+    @Column(name = "password")
+    private String password;
+    @Size(max = 150)
+    @Column(name = "login")
+    private String login;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "lastupdateBy")
+    private Collection<Installazione> installazioneCollection;
+    @JsonIgnore    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tecnico")
+    private Collection<Installazione> installazioneCollection1;
+
     @Column(name = "access_type")
     private Short accessType;
    
@@ -52,26 +78,6 @@ public class User implements Serializable,UserDetails {
     @Basic(optional = false)
     @Column(name = "user_id", nullable = false)
     private Integer userId;
-    @Size(max = 10)
-    @Column(name = "username", length = 10)
-    private String username;
-    @Size(max = 20)
-    @Column(name = "first_name", length = 20)
-    private String firstName;
-    @Size(max = 20)
-    @Column(name = "middle_name", length = 20)
-    private String middleName;
-    @Size(max = 20)
-    @Column(name = "last_name", length = 20)
-    private String lastName;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 32)
-    @Column(name = "password", nullable = false, length = 32)
-    private String password;
-    @Size(max = 150)
-    @Column(name = "login", length = 150)
-    private String login;
     @Column(name = "lastlog")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastlog;
@@ -113,14 +119,6 @@ public class User implements Serializable,UserDetails {
         this.userId = userId;
     }
 
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -146,22 +144,6 @@ public class User implements Serializable,UserDetails {
         this.lastName = lastName;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
 
     public Date getLastlog() {
         return lastlog;
@@ -255,6 +237,52 @@ public class User implements Serializable,UserDetails {
     @Override
     public boolean isEnabled() {
         return active;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+  
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    @XmlTransient
+    public Collection<Installazione> getInstallazioneCollection() {
+        return installazioneCollection;
+    }
+
+    public void setInstallazioneCollection(Collection<Installazione> installazioneCollection) {
+        this.installazioneCollection = installazioneCollection;
+    }
+
+    @XmlTransient
+    public Collection<Installazione> getInstallazioneCollection1() {
+        return installazioneCollection1;
+    }
+
+    public void setInstallazioneCollection1(Collection<Installazione> installazioneCollection1) {
+        this.installazioneCollection1 = installazioneCollection1;
     }
 
    
