@@ -3,15 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.ariannamondo.mag.services.user.services;
+package it.ariannamondo.mag.services.user;
 
 import it.ariannamondo.mag.MagServiceInitializer;
 import it.ariannamondo.mag.entity.UserLog;
 import it.ariannamondo.mag.entity.User;
 import it.ariannamondo.mag.entity.utils.Response;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -112,7 +110,7 @@ public class UserServiceImpl implements UserService,UserDetailsService {
         TypedQuery<User> q =(TypedQuery<User>) em.createQuery("SELECT u FROM User u WHERE u.username = :login",User.class);
         q.setParameter("login", username);
         u = q.getSingleResult();
-        Logger.getAnonymousLogger().log(Level.INFO, " User: {0}", u.getFirstName());
+        //Logger.getAnonymousLogger().log(Level.INFO, " User: {0}", u.getFirstName());
        }catch(NoResultException | NonUniqueResultException ex){
            throw new UsernameNotFoundException(username, ex);
        }

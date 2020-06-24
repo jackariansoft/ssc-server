@@ -24,9 +24,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import it.ariannamondo.mag.config.commons.SessionConstants;
-import it.ariannamondo.mag.services.user.services.UserService;
+import it.ariannamondo.mag.services.user.UserService;
 import javax.servlet.http.HttpSession;
-
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -35,7 +34,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private UserService jwtUserDetailsService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
-   
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -52,7 +50,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             } catch (IllegalArgumentException e) {
                 System.out.println("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
+              
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
@@ -62,16 +60,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
 
             if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
-                
+
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                HttpSession session = request.getSession(true);
-                session.setAttribute(SessionConstants.USER.getValue(), userDetails);
-                
+                if (request.getSession(false) == null) {
+                    HttpSession session = request.getSession(true);
+                    session.setAttribute(SessionConstants.USER.getValue(), userDetails);
+                }
+
             }
         }
         chain.doFilter(request, response);

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package it.ariannamondo.mag.services.user.services;
+package it.ariannamondo.mag.services.user;
 
 import it.ariannamondo.mag.entity.UserLog;
 import it.ariannamondo.mag.entity.User;

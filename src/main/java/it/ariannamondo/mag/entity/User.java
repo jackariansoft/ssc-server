@@ -55,6 +55,7 @@ public class User implements Serializable,UserDetails {
     private String lastName;
     @Basic(optional = false)
     @NotNull
+    @JsonIgnore
     @Size(min = 1, max = 32)
     @Column(name = "password")
     private String password;

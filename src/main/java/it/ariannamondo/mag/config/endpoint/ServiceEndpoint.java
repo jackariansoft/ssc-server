@@ -26,7 +26,16 @@ public class ServiceEndpoint {
      */
     public static final String USER        = ROOT_END_POINT + "/user";
     public static final String USER_GROUPS = USER + "/{user}/groups";
-    
+    /**
+     * 
+     * Risorsa installazione
+     * 
+     */
+    public static final String INSTALLAZIONE  = ROOT_END_POINT+"/installazione";//GET
+    public static final String INSTALLAZIONE_LIST  = INSTALLAZIONE+"/{page_size}/{offset}";//GET
+    public static final String INSTALLAZIONE_DETAILS  = INSTALLAZIONE+"/{id}/details";//GET
+    public static final String INSTALLAZIONE_CREATE  = INSTALLAZIONE;//POST
+    public static final String INSTALLAZIONE_UPDATE  = INSTALLAZIONE+"/{id}";//PUT
     
 
 }

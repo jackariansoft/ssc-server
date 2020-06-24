@@ -24,7 +24,7 @@ import it.ariannamondo.mag.entity.utils.Response;
 
 import it.ariannamondo.mag.rest.security.model.JwtRequest;
 import it.ariannamondo.mag.rest.security.model.JwtResponse;
-import it.ariannamondo.mag.services.user.services.UserService;
+import it.ariannamondo.mag.services.user.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController

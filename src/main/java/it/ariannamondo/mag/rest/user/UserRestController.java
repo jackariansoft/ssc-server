@@ -10,7 +10,7 @@ import it.ariannamondo.mag.config.commons.SessionConstants;
 import it.ariannamondo.mag.config.endpoint.ServiceEndpoint;
 import it.ariannamondo.mag.entity.Groups;
 import it.ariannamondo.mag.entity.User;
-import it.ariannamondo.mag.services.user.services.UserService;
+import it.ariannamondo.mag.services.user.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;

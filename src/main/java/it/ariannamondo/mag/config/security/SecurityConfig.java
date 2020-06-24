@@ -8,7 +8,7 @@ package it.ariannamondo.mag.config.security;
 import it.ariannamondo.mag.config.JwtAuthenticationEntryPoint;
 import it.ariannamondo.mag.config.JwtRequestFilter;
 import it.ariannamondo.mag.config.endpoint.ServiceEndpoint;
-import it.ariannamondo.mag.services.user.services.UserService;
+import it.ariannamondo.mag.services.user.UserService;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -54,9 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Acce
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-// configure AuthenticationManager so that it knows from where to load
-// user for matching credentials
-// Use BCryptPasswordEncoder
+        // configure AuthenticationManager so that it knows from where to load
+        // user for matching credentials
+        // Use BCryptPasswordEncoder
         auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
@@ -65,12 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Acce
         return new AbstractPasswordEncoder() {
             @Override
             protected byte[] encode(CharSequence cs, byte[] bytes) {
-                Logger.getLogger(SecurityConfig.class.getName()).
-                        log(Level.INFO, "Encode 1");
-                Logger.getLogger(SecurityConfig.class.getName()).
-                        log(Level.INFO, "CS {0}", cs.toString());
-                Logger.getLogger(SecurityConfig.class.getName()).
-                        log(Level.INFO, "Bytes: {0}", new String(bytes, Charset.forName("UTF-8")));
+                
                 String encrypt = null;
                 encrypt = encode(cs);
 
@@ -85,11 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Acce
 //                                new Object[]{rawPassword,encodedPassword});
 
                     String encodeRaw = encode(rawPassword);
-//boolean match = encodeRaw.equals(encodedPassword);
-//                if(match){
-//                    Logger.getLogger(SecurityConfig.class.getName()).
-//                        log(Level.INFO, "They match");
-//                }
+
                     return MessageDigest.isEqual(encodeRaw.getBytes("UTF-8"), encodedPassword.getBytes("UTF-8"));
                 } catch (UnsupportedEncodingException ex) {
                     Logger.getLogger(SecurityConfig.class.getName()).log(Level.SEVERE, null, ex);
@@ -99,10 +89,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Acce
 
             @Override
             public String encode(CharSequence password) {
-//                Logger.getLogger(SecurityConfig.class.getName()).
-//                        log(Level.INFO, "Encode 2");
-//                Logger.getLogger(SecurityConfig.class.getName()).
-//                        log(Level.INFO, "Password: {0}", password);
 
                 StringBuilder hexString = new StringBuilder();
                 String encodedResult = null;

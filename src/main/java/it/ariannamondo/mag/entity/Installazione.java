@@ -5,6 +5,7 @@
  */
 package it.ariannamondo.mag.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -18,12 +19,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,25 +36,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "installazione")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Installazione.findAll", query = "SELECT i FROM Installazione i"),
-    @NamedQuery(name = "Installazione.findByDescrizione", query = "SELECT i FROM Installazione i WHERE i.descrizione = :descrizione"),
-    @NamedQuery(name = "Installazione.findByDescrizioneEstesa", query = "SELECT i FROM Installazione i WHERE i.descrizioneEstesa = :descrizioneEstesa"),
-    @NamedQuery(name = "Installazione.findByDataInizioLavori", query = "SELECT i FROM Installazione i WHERE i.dataInizioLavori = :dataInizioLavori"),
-    @NamedQuery(name = "Installazione.findByDataFineLavori", query = "SELECT i FROM Installazione i WHERE i.dataFineLavori = :dataFineLavori"),
-    @NamedQuery(name = "Installazione.findByScaduta", query = "SELECT i FROM Installazione i WHERE i.scaduta = :scaduta"),
-    @NamedQuery(name = "Installazione.findByCreationDate", query = "SELECT i FROM Installazione i WHERE i.creationDate = :creationDate"),
-    @NamedQuery(name = "Installazione.findByLastupdate", query = "SELECT i FROM Installazione i WHERE i.lastupdate = :lastupdate"),
-    @NamedQuery(name = "Installazione.findByNote", query = "SELECT i FROM Installazione i WHERE i.note = :note"),
-    @NamedQuery(name = "Installazione.findById", query = "SELECT i FROM Installazione i WHERE i.id = :id"),
-    @NamedQuery(name = "Installazione.findByIndirizzoIp", query = "SELECT i FROM Installazione i WHERE i.indirizzoIp = :indirizzoIp"),
-    @NamedQuery(name = "Installazione.findByNazione", query = "SELECT i FROM Installazione i WHERE i.nazione = :nazione"),
-    @NamedQuery(name = "Installazione.findByRegione", query = "SELECT i FROM Installazione i WHERE i.regione = :regione"),
-    @NamedQuery(name = "Installazione.findByProv", query = "SELECT i FROM Installazione i WHERE i.prov = :prov"),
-    @NamedQuery(name = "Installazione.findByIndirizzo", query = "SELECT i FROM Installazione i WHERE i.indirizzo = :indirizzo"),
-    @NamedQuery(name = "Installazione.findByCap", query = "SELECT i FROM Installazione i WHERE i.cap = :cap"),
-    @NamedQuery(name = "Installazione.findByLatitudine", query = "SELECT i FROM Installazione i WHERE i.latitudine = :latitudine"),
-    @NamedQuery(name = "Installazione.findByLongitude", query = "SELECT i FROM Installazione i WHERE i.longitude = :longitude")})
 public class Installazione implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -135,9 +116,13 @@ public class Installazione implements Serializable {
     @JoinColumn(name = "tecnico", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
     private User tecnico;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "installazione")
     private Collection<Location> locationCollection;
 
+    @Transient
+    private String text;
+    
     public Installazione() {
     }
 
@@ -165,6 +150,7 @@ public class Installazione implements Serializable {
 
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
+        this.text = descrizione;
     }
 
     public String getDescrizioneEstesa() {
@@ -319,6 +305,19 @@ public class Installazione implements Serializable {
     public void setLocationCollection(Collection<Location> locationCollection) {
         this.locationCollection = locationCollection;
     }
+
+    public String getText() {
+        if(text==null){
+            text = this.descrizione;
+        }
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+    
+    
 
     @Override
     public int hashCode() {
