@@ -10,12 +10,12 @@ import it.ariannamondo.mag.entity.Installazione;
 import it.ariannamondo.mag.entity.utils.Response;
 import it.ariannamondo.mag.rest.installazione.rs.InstallazionePagination;
 import it.ariannamondo.mag.services.installazione.InstallazioneService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,5 +37,26 @@ public class InstallazioneController {
         
         InstallazionePagination installation = installazioneService.getInstallation(page_size, offset);
         return ResponseEntity.ok(installation);
+    }
+    @RequestMapping(value = ServiceEndpoint.INSTALLAZIONE_UPDATE, method = RequestMethod.PUT,produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Response> updateInstallazione(@PathVariable Long id,@RequestBody Installazione installazione) {
+
+        
+        Response<Boolean> resp = installazioneService.update(installazione);
+        return ResponseEntity.ok(resp);
+    }
+    @RequestMapping(value = ServiceEndpoint.INSTALLAZIONE_CREATE, method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Response> crea(@RequestBody Installazione installazione) {
+
+        
+        Response<Installazione> resp = installazioneService.crea(installazione);
+        return ResponseEntity.ok(resp);
+    }
+    @RequestMapping(value = ServiceEndpoint.INSTALLAZIONE_REMOVE, method = RequestMethod.PUT,produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Response> elimina(@PathVariable Long id) {
+
+        
+        Response<Boolean> resp = installazioneService.remove(id);
+        return ResponseEntity.ok(resp);
     }
 }

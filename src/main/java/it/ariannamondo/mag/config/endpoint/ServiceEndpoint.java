@@ -32,10 +32,11 @@ public class ServiceEndpoint {
      * 
      */
     public static final String INSTALLAZIONE  = ROOT_END_POINT+"/installazione";//GET
-    public static final String INSTALLAZIONE_LIST  = INSTALLAZIONE+"/{page_size}/{offset}";//GET
+    public static final String INSTALLAZIONE_LIST    = INSTALLAZIONE+"/{page_size}/{offset}";//GET
     public static final String INSTALLAZIONE_DETAILS  = INSTALLAZIONE+"/{id}/details";//GET
-    public static final String INSTALLAZIONE_CREATE  = INSTALLAZIONE;//POST
-    public static final String INSTALLAZIONE_UPDATE  = INSTALLAZIONE+"/{id}";//PUT
+    public static final String INSTALLAZIONE_CREATE   = INSTALLAZIONE;//POST
+    public static final String INSTALLAZIONE_UPDATE   = INSTALLAZIONE+"/update/{id}";//PUT
+    public static final String INSTALLAZIONE_REMOVE   = INSTALLAZIONE+"/remove/{id}";//DELETE
     
 
 }

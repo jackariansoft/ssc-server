@@ -5,6 +5,8 @@
  */
 package it.ariannamondo.mag.services.installazione;
 
+import it.ariannamondo.mag.entity.Installazione;
+import it.ariannamondo.mag.entity.utils.Response;
 import it.ariannamondo.mag.rest.installazione.rs.InstallazionePagination;
 
 /**
@@ -16,4 +18,9 @@ public interface InstallazioneService {
     
     public InstallazionePagination getInstallation(Long page_size,Long off_set);
     
+    public Response<Boolean> update(Installazione installazione);
+
+    public Response<Boolean> remove(Long id);
+
+    public Response<Installazione> crea(Installazione installazione);
 }

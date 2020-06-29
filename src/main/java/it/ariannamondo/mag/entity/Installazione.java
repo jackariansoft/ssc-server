@@ -110,6 +110,8 @@ public class Installazione implements Serializable {
     private BigDecimal latitudine;
     @Column(name = "longitude")
     private BigDecimal longitude;
+    @Column(name = "stato")
+    private Integer stato;
     @JoinColumn(name = "lastupdate_by", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
     private User lastupdateBy;
@@ -120,9 +122,20 @@ public class Installazione implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "installazione")
     private Collection<Location> locationCollection;
 
+    public Integer getStato() {
+        return stato;
+    }
+
+    public void setStato(Integer stato) {
+        this.stato = stato;
+    }
+
+    
+    
+
     @Transient
     private String text;
-    
+
     public Installazione() {
     }
 
@@ -307,7 +320,7 @@ public class Installazione implements Serializable {
     }
 
     public String getText() {
-        if(text==null){
+        if (text == null) {
             text = this.descrizione;
         }
         return text;
@@ -316,8 +329,6 @@ public class Installazione implements Serializable {
     public void setText(String text) {
         this.text = text;
     }
-    
-    
 
     @Override
     public int hashCode() {
@@ -343,5 +354,5 @@ public class Installazione implements Serializable {
     public String toString() {
         return "it.ariannamondo.mag.entity.Installazione[ id=" + id + " ]";
     }
-    
+
 }
