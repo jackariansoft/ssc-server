@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="mag-beckend" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/ssc-backend</jta-data-source>
+    <class>mude.srl.ssc.entity.Resource</class>
+    <class>mude.srl.ssc.entity.Plc</class>
+    <class>mude.srl.ssc.entity.Ssc</class>
+    <class>mude.srl.ssc.entity.UserLog</class>
+    <class>mude.srl.ssc.entity.Users</class>
+    <class>mude.srl.ssc.entity.UserGroups</class>
+    <class>mude.srl.ssc.entity.Groups</class>
+    <class>mude.srl.ssc.entity.ExUserToNotifyFault</class>
+    <class>mude.srl.ssc.entity.Channel</class>
+    <class>mude.srl.ssc.entity.Energymesure</class>
+    <class>mude.srl.ssc.entity.Email</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+  </persistence-unit>
+</persistence>

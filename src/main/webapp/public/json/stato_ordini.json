@@ -1,0 +1,36 @@
+[
+    {
+        "inc_id": "Canceled",
+        "inc_type": "Canceled"
+    },
+    {
+        "inc_id": "Pending",
+        "inc_type": "Pending"
+    },
+    {
+        "inc_id": "PendingAvailability",
+        "inc_type": "PendingAvailability"
+    },
+    {
+        "inc_id": "Unshipped",
+        "inc_type": "Unshipped"
+    },
+    {
+        "inc_id": "PartiallyShipped",
+        "inc_type": "PartiallyShipped"
+    },
+    {
+        "inc_id": "Shipped",
+        "inc_type": "Shipped"
+    },    
+    {
+        "inc_id": "Shipped",
+        "inc_type": "Shipped"
+    },
+     {
+        "inc_id": "Unfulfillable",
+        "inc_type": "Unfulfillable"
+    }   
+    
+]
+

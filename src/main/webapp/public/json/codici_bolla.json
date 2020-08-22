@@ -1,0 +1,17 @@
+[{
+        "inc_id": "1",
+        "inc_type": "FRANCO"
+    },
+    {
+        "inc_id": "2",
+        "inc_type": "ASSEGNATO"
+    },
+    {
+        "inc_id": "4",
+        "inc_type": "FRANCO+C/ASSEGNATO"
+    },
+    {
+        "inc_id": "6",
+        "inc_type": "ASSEGNATO+C/ASSEGNATO"
+    }
+]

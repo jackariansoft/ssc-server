@@ -1,0 +1,10 @@
+[
+    {
+        "inc_id": "true",
+        "inc_type": "R"
+    },
+    {
+        "inc_id": "false",
+        "inc_type": "NR"
+    }   
+]

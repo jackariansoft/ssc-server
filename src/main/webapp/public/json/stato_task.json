@@ -1,0 +1,22 @@
+[
+    {
+        "inc_id": 0,
+        "inc_type": "Attesa processamento"
+    },
+    {
+        "inc_id": -1,
+        "inc_type": "Annullato"
+    },
+    {
+        "inc_id": 2,
+        "inc_type": "Sospeso"
+    },
+    {
+        "inc_id": 1,
+        "inc_type": "Eseguito"
+    },
+    {
+        "inc_id": 4,
+        "inc_type": "Spedito"
+    } 
+]
