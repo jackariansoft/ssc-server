@@ -30,7 +30,7 @@ public class PaginationInfo<T> implements Serializable {
         totalRows = 0L;
         from = 0L;
         to = 0L;
-        
+        data = null;
                 
     }
 

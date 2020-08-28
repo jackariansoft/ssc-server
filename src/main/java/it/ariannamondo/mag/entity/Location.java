@@ -5,16 +5,22 @@
  */
 package it.ariannamondo.mag.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -23,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jackarian
  */
 @Entity
-@Table(name = "location")
+@Table(name = "networklocation")
 @XmlRootElement
 public class Location implements Serializable {
 
@@ -36,10 +42,51 @@ public class Location implements Serializable {
     @Size(max = 50)
     @Column(name = "reference")
     private String reference;
-    @JoinColumn(name = "installazione", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Installazione installazione;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "location")
+    private Collection<Installazione> installazioni;
+    
+    @Column(name = "stato")
+    private Integer stato;
+    
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "last_update")
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="Europe/Rome")
+    private Date lastupdate;
 
+    public Date getLastupdate() {
+        return lastupdate;
+    }
+
+    public void setLastupdate(Date lastupdate) {
+        this.lastupdate = lastupdate;
+    }
+    
+    
+
+    public Integer getStato() {
+        return stato;
+    }
+
+    public void setStato(Integer stato) {
+        this.stato = stato;
+    }
+    
+    
+    
+
+    public Collection<Installazione> getInstallazioni() {
+        return installazioni;
+    }
+
+    public void setInstallazioni(Collection<Installazione> installazioni) {
+        this.installazioni = installazioni;
+    }
+    
+    
+   
     public Location() {
     }
 
@@ -63,13 +110,7 @@ public class Location implements Serializable {
         this.reference = reference;
     }
 
-    public Installazione getInstallazione() {
-        return installazione;
-    }
-
-    public void setInstallazione(Installazione installazione) {
-        this.installazione = installazione;
-    }
+    
 
     @Override
     public int hashCode() {

@@ -6,7 +6,6 @@
 package it.ariannamondo.mag.rest.user;
 
 import it.ariannamondo.mag.config.JwtTokenUtil;
-import it.ariannamondo.mag.config.commons.SessionConstants;
 import it.ariannamondo.mag.config.endpoint.ServiceEndpoint;
 import it.ariannamondo.mag.entity.Groups;
 import it.ariannamondo.mag.entity.User;
@@ -46,7 +45,7 @@ public class UserRestController {
    
             User details  = null;
             if(SecurityContextHolder.getContext().getAuthentication()!=null){
-                details = (User) session.getAttribute(SessionConstants.USER.getValue());
+                details = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 details.setPassword(null);
             }
             

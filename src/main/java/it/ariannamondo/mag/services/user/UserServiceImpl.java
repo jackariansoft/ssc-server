@@ -5,16 +5,16 @@
  */
 package it.ariannamondo.mag.services.user;
 
-import it.ariannamondo.mag.MagServiceInitializer;
 import it.ariannamondo.mag.entity.UserLog;
 import it.ariannamondo.mag.entity.User;
 import it.ariannamondo.mag.entity.utils.Response;
+import it.ariannamondo.mag.services.AbstractService;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,18 +22,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserServiceImpl implements UserService,UserDetailsService {
+public class UserServiceImpl extends AbstractService implements UserService,UserDetailsService {
 
-    @PersistenceContext(unitName =MagServiceInitializer.PERSISTENCE_UNIT)
-    private EntityManager em;
+    //@PersistenceContext(unitName =MagServiceInitializer.PERSISTENCE_UNIT)
+    //private EntityManager em;
     /**
 	 * Configure the entity manager to be used.
 	 *
+     * @param users
 	 * @param em the {@link EntityManager} to set.
 	 */
-    public void setEntityManager(EntityManager em) {
-		this.em = em;
-     }
+   
     @Override
     public void create(User users) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -56,11 +55,16 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 
     @Override
     public List<User> findAll() {
-        if(em==null){
-            
-        }
-        Query q = em.createQuery("SELECT u FROM Users u");
-        return q.getResultList();
+//        try {
+//            if(getEm()==null){
+//                
+//            }
+//            Query q = getEm().createQuery("SELECT u FROM Users u");
+//            return q.getResultList();
+//        } catch (Exception ex) {
+//            Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+    return null;
     }
 
     @Override
@@ -106,14 +110,18 @@ public class UserServiceImpl implements UserService,UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username)  throws UsernameNotFoundException{
        User u  = null;
-       try{ 
-        TypedQuery<User> q =(TypedQuery<User>) em.createQuery("SELECT u FROM User u WHERE u.username = :login",User.class);
+      
+       try{
+         
+        TypedQuery<User> q =(TypedQuery<User>) getEm().createQuery("SELECT u FROM User u WHERE u.username = :login",User.class);
         q.setParameter("login", username);
         u = q.getSingleResult();
         //Logger.getAnonymousLogger().log(Level.INFO, " User: {0}", u.getFirstName());
        }catch(NoResultException | NonUniqueResultException ex){
            throw new UsernameNotFoundException(username, ex);
-       }
+       } catch (Exception ex) {
+            Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
        return u;
     }
     

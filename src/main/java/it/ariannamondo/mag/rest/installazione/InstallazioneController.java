@@ -39,7 +39,7 @@ public class InstallazioneController {
         return ResponseEntity.ok(installation);
     }
     @RequestMapping(value = ServiceEndpoint.INSTALLAZIONE_UPDATE, method = RequestMethod.PUT,produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Response> updateInstallazione(@PathVariable Long id,@RequestBody Installazione installazione) {
+    ResponseEntity  updateInstallazione(@PathVariable Long id,@RequestBody Installazione installazione) {
 
         
         Response<Boolean> resp = installazioneService.update(installazione);

@@ -57,6 +57,17 @@ public class Response<T> {
     private String ip;
     private String user_agent;
     private String date;
+    private int status;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+    
+    
 
     public String getUser() {
         return user;

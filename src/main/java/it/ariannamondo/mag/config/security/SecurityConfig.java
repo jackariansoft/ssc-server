@@ -10,7 +10,6 @@ import it.ariannamondo.mag.config.JwtRequestFilter;
 import it.ariannamondo.mag.config.endpoint.ServiceEndpoint;
 import it.ariannamondo.mag.services.user.UserService;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
@@ -79,9 +78,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Acce
 //                                new Object[]{rawPassword,encodedPassword});
 
                     String encodeRaw = encode(rawPassword);
-
+                    if(encodedPassword==null){
+                        Logger.getLogger(SecurityConfig.class.getName()).log(Level.SEVERE,"encodedPassword is null");
+                        return false;
+                    }
                     return MessageDigest.isEqual(encodeRaw.getBytes("UTF-8"), encodedPassword.getBytes("UTF-8"));
-                } catch (UnsupportedEncodingException ex) {
+                } catch (UnsupportedEncodingException|NullPointerException ex) {
                     Logger.getLogger(SecurityConfig.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return false;
