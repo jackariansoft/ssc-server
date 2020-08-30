@@ -42,26 +42,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class User implements Serializable,UserDetails {
 
     @Size(max = 10)
-    @Column(name = "username")
+    @Column(length = 10)
     private String username;
     @Size(max = 20)
-    @Column(name = "first_name")
+    @Column(name = "first_name", length = 20)
     private String firstName;
     @Size(max = 20)
-    @Column(name = "middle_name")
+    @Column(name = "middle_name", length = 20)
     private String middleName;
     @Size(max = 20)
-    @Column(name = "last_name")
+    @Column(name = "last_name", length = 20)
     private String lastName;
     @Basic(optional = false)
     @NotNull
-    @JsonIgnore
     @Size(min = 1, max = 32)
-    @Column(name = "password")
+    @Column(nullable = false, length = 32)
+    @JsonIgnore
     private String password;
     @Size(max = 150)
-    @Column(name = "login")
+    @Column(length = 150)
     private String login;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "lastupdateBy")
+    private Collection<Location> locationCollection;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lastupdateBy")
     private Collection<Installazione> installazioneCollection;
@@ -240,16 +243,32 @@ public class User implements Serializable,UserDetails {
         return active;
     }
 
-    @Override
+
+    @XmlTransient
+    public Collection<Installazione> getInstallazioneCollection() {
+        return installazioneCollection;
+    }
+
+    public void setInstallazioneCollection(Collection<Installazione> installazioneCollection) {
+        this.installazioneCollection = installazioneCollection;
+    }
+
+    @XmlTransient
+    public Collection<Installazione> getInstallazioneCollection1() {
+        return installazioneCollection1;
+    }
+
+    public void setInstallazioneCollection1(Collection<Installazione> installazioneCollection1) {
+        this.installazioneCollection1 = installazioneCollection1;
+    }
+
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-  
+    }    
 
     @Override
     public String getPassword() {
@@ -269,21 +288,12 @@ public class User implements Serializable,UserDetails {
     }
 
     @XmlTransient
-    public Collection<Installazione> getInstallazioneCollection() {
-        return installazioneCollection;
+    public Collection<Location> getLocationCollection() {
+        return locationCollection;
     }
 
-    public void setInstallazioneCollection(Collection<Installazione> installazioneCollection) {
-        this.installazioneCollection = installazioneCollection;
-    }
-
-    @XmlTransient
-    public Collection<Installazione> getInstallazioneCollection1() {
-        return installazioneCollection1;
-    }
-
-    public void setInstallazioneCollection1(Collection<Installazione> installazioneCollection1) {
-        this.installazioneCollection1 = installazioneCollection1;
+    public void setLocationCollection(Collection<Location> locationCollection) {
+        this.locationCollection = locationCollection;
     }
 
    

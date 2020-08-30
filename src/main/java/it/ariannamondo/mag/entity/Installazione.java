@@ -9,8 +9,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +20,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,6 +28,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -35,96 +39,97 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Installazione implements Serializable {
 
-    private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "descrizione")
+    @Column(nullable = false, length = 50)
     private String descrizione;
-    @Column(name = "descrizione_estesa")
-    private String descEstesa;
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "data_inizio_lavori")
-    @Temporal(TemporalType.DATE)
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @NotNull   
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", locale = "it_IT")
+    @Column(name = "data_inizio_lavori", nullable = false)
+    @Temporal(TemporalType.DATE)    
     private Date dataInizioLavori;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "data_fine_lavori")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", locale = "it_IT")
+    @Column(name = "data_fine_lavori", nullable = false)
     @Temporal(TemporalType.DATE)
-    @JsonFormat(pattern="yyyy-MM-dd",timezone="Europe/Rome")
     private Date dataFineLavori;
-    @Column(name = "scaduta")
-    private Boolean scaduta;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "creation_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "it_IT")
+    @Column(name = "creation_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="Europe/Rome")
     private Date creationDate;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "lastupdate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "it_IT")
+    @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="Europe/Rome")
     private Date lastupdate;
     @Size(max = 500)
-    @Column(name = "note")
+    @Column(length = 500)
     private String note;
+    @Size(max = 32)
+    @Column(name = "indirizzo_ip", length = 32)
+    private String indirizzoIp;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 50)
+    @Column(nullable = false, length = 50)
+    private String nazione;
+    @Basic(optional = false)
+    @NotNull()
+    @Size(min = 1, max = 50)
+    @Column(nullable = false, length = 50)
+    private String regione;
+    @Basic(optional = false)
+    @NotNull()
+    @Size(min = 1, max = 50)
+    @Column(nullable = false, length = 50)
+    private String prov;
+    @Basic(optional = false)
+    @NotNull()
+    @Size(min = 1, max = 150)
+    @Column(nullable = false, length = 150)
+    private String indirizzo;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
+    @Column(nullable = false, length = 20)
+    private String cap;
+    @Basic(optional = false)
+    @NotNull
+    @Column(nullable = false)
+    private short stato;
+    @OneToMany(mappedBy = "installazione")
+    private Collection<Location> locationCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "installazione")
+    private Collection<Task> taskCollection;
+    private static final long serialVersionUID = 1L;
+    @Column(name = "descrizione_estesa")
+    private String descEstesa;
+    @Column(name = "scaduta")
+    private Boolean scaduta;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Size(max = 32)
-    @Column(name = "indirizzo_ip")
-    private String indirizzoIp;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "nazione")
-    private String nazione;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "regione")
-    private String regione;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "prov")
-    private String prov;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 150)
-    @Column(name = "indirizzo")
-    private String indirizzo;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "cap")
-    private String cap;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "latitudine")
     private BigDecimal latitudine;
     @Column(name = "longitude")
     private BigDecimal longitude;
-    @Column(name = "stato")
-    private Integer stato;
     @JoinColumn(name = "lastupdate_by", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
-    @JsonIgnore
     private User lastupdateBy;
     @JoinColumn(name = "tecnico", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
-    @JsonIgnore
     private User tecnico;
     @JsonIgnore
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "installazione")
-//    private Collection<Location> locationCollection;
-    @JoinColumn(name = "location", referencedColumnName = "id")    
+    @JoinColumn(name = "location", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Location location;
 
@@ -135,21 +140,6 @@ public class Installazione implements Serializable {
     public void setLocation(Location location) {
         this.location = location;
     }
-    
-    
-    
-            
-    public Integer getStato() {
-        return stato;
-    }
-
-    public void setStato(Integer stato) {
-        this.stato = stato;
-    }
-    
-
-    
-    
 
     @Transient
     private String text;
@@ -175,15 +165,6 @@ public class Installazione implements Serializable {
         this.cap = cap;
     }
 
-    public String getDescrizione() {
-        return descrizione;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-        this.text = descrizione;
-    }
-
     public String getDescEstesa() {
         return descEstesa;
     }
@@ -191,8 +172,6 @@ public class Installazione implements Serializable {
     public void setDescEstesa(String descEstesa) {
         this.descEstesa = descEstesa;
     }
-
-    
 
     public Date getDataInizioLavori() {
         return dataInizioLavori;
@@ -210,8 +189,6 @@ public class Installazione implements Serializable {
         this.dataFineLavori = dataFineLavori;
     }
 
-    
-
     public Boolean getScaduta() {
         return scaduta;
     }
@@ -228,22 +205,6 @@ public class Installazione implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Date getLastupdate() {
-        return lastupdate;
-    }
-
-    public void setLastupdate(Date lastupdate) {
-        this.lastupdate = lastupdate;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
     public Long getId() {
         return id;
     }
@@ -258,46 +219,6 @@ public class Installazione implements Serializable {
 
     public void setIndirizzoIp(String indirizzoIp) {
         this.indirizzoIp = indirizzoIp;
-    }
-
-    public String getNazione() {
-        return nazione;
-    }
-
-    public void setNazione(String nazione) {
-        this.nazione = nazione;
-    }
-
-    public String getRegione() {
-        return regione;
-    }
-
-    public void setRegione(String regione) {
-        this.regione = regione;
-    }
-
-    public String getProv() {
-        return prov;
-    }
-
-    public void setProv(String prov) {
-        this.prov = prov;
-    }
-
-    public String getIndirizzo() {
-        return indirizzo;
-    }
-
-    public void setIndirizzo(String indirizzo) {
-        this.indirizzo = indirizzo;
-    }
-
-    public String getCap() {
-        return cap;
-    }
-
-    public void setCap(String cap) {
-        this.cap = cap;
     }
 
     public BigDecimal getLatitudine() {
@@ -340,7 +261,6 @@ public class Installazione implements Serializable {
 //    public void setLocationCollection(Collection<Location> locationCollection) {
 //        this.locationCollection = locationCollection;
 //    }
-
     public String getText() {
         if (text == null) {
             text = this.descrizione;
@@ -375,6 +295,96 @@ public class Installazione implements Serializable {
     @Override
     public String toString() {
         return "it.ariannamondo.mag.entity.Installazione[ id=" + id + " ]";
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
+
+    public Date getLastupdate() {
+        return lastupdate;
+    }
+
+    public void setLastupdate(Date lastupdate) {
+        this.lastupdate = lastupdate;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getNazione() {
+        return nazione;
+    }
+
+    public void setNazione(String nazione) {
+        this.nazione = nazione;
+    }
+
+    public String getRegione() {
+        return regione;
+    }
+
+    public void setRegione(String regione) {
+        this.regione = regione;
+    }
+
+    public String getProv() {
+        return prov;
+    }
+
+    public void setProv(String prov) {
+        this.prov = prov;
+    }
+
+    public String getIndirizzo() {
+        return indirizzo;
+    }
+
+    public void setIndirizzo(String indirizzo) {
+        this.indirizzo = indirizzo;
+    }
+
+    public String getCap() {
+        return cap;
+    }
+
+    public void setCap(String cap) {
+        this.cap = cap;
+    }
+
+    public short getStato() {
+        return stato;
+    }
+
+    public void setStato(short stato) {
+        this.stato = stato;
+    }
+
+    @XmlTransient
+    public Collection<Location> getLocationCollection() {
+        return locationCollection;
+    }
+
+    public void setLocationCollection(Collection<Location> locationCollection) {
+        this.locationCollection = locationCollection;
+    }
+
+    @XmlTransient
+    public Collection<Task> getTaskCollection() {
+        return taskCollection;
+    }
+
+    public void setTaskCollection(Collection<Task> taskCollection) {
+        this.taskCollection = taskCollection;
     }
 
 }

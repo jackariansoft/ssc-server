@@ -8,6 +8,9 @@
     <class>it.ariannamondo.mag.entity.User</class>
     <class>it.ariannamondo.mag.entity.Installazione</class>
     <class>it.ariannamondo.mag.entity.Location</class>
+    <class>it.ariannamondo.mag.entity.Task</class>
+    <class>it.ariannamondo.mag.entity.SscServer</class>
+    <class>it.ariannamondo.mag.entity.Resource</class>
     <shared-cache-mode>NONE</shared-cache-mode>
   </persistence-unit>
 </persistence>
