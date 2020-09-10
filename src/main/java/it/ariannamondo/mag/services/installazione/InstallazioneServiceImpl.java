@@ -96,6 +96,9 @@ public class InstallazioneServiceImpl extends AbstractService<Installazione> imp
             resp.setResult(Boolean.FALSE);
             resp.setFault(true);
             resp.setException(ex);
+            if(tx!=null){
+                tx.setRollbackOnly();
+            }
         } finally {
             if (tm != null) {
                 tm.close();

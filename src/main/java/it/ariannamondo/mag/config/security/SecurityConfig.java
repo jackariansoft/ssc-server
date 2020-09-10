@@ -23,6 +23,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -63,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Acce
         return new AbstractPasswordEncoder() {
             @Override
             protected byte[] encode(CharSequence cs, byte[] bytes) {
-                
+
                 String encrypt = null;
                 encrypt = encode(cs);
 
@@ -76,14 +77,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Acce
                     //                Logger.getLogger(SecurityConfig.class.getName())
 //                        .log(Level.INFO, "Try matching {0} and {1}",
 //                                new Object[]{rawPassword,encodedPassword});
-
-                    String encodeRaw = encode(rawPassword);
-                    if(encodedPassword==null){
-                        Logger.getLogger(SecurityConfig.class.getName()).log(Level.SEVERE,"encodedPassword is null");
+                    if (encodedPassword == null) {
+                        Logger.getLogger(SecurityConfig.class.getName()).log(Level.SEVERE, "encodedPassword is null");
                         return false;
                     }
+
+                    String encodeRaw = encode(rawPassword);
+
                     return MessageDigest.isEqual(encodeRaw.getBytes("UTF-8"), encodedPassword.getBytes("UTF-8"));
-                } catch (UnsupportedEncodingException|NullPointerException ex) {
+                } catch (UnsupportedEncodingException | NullPointerException ex) {
                     Logger.getLogger(SecurityConfig.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return false;
@@ -134,31 +136,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Acce
                 antMatchers(ServiceEndpoint.LOGIN).permitAll().
                 antMatchers(ServiceEndpoint.REGISTER).permitAll().
                 antMatchers("/swagger-ui.html/**").permitAll()
-               .antMatchers("/v2/**").permitAll()
-               .antMatchers("/csrf/**").permitAll()
-               .antMatchers("/webjars/**").permitAll()
-               .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/v2/**").permitAll()
+                .antMatchers("/csrf/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
                 // all other requests need to be authenticated
                 .anyRequest().authenticated().accessDecisionManager(this).and().
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
                 exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
-    public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
-         if(authentication!=null){
-             
-         }
+    public void decide(Authentication auth, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
+        if (auth != null) {
+            new UsernamePasswordAuthenticationToken(auth.getName(),
+                    auth.getCredentials(),null);
+        }
     }
 
     @Override
     public boolean supports(ConfigAttribute attribute) {
-        if(attribute!=null){
-            
+        if (attribute != null) {
+
         }
         return true;
     }

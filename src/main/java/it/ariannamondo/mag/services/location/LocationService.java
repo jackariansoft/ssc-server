@@ -17,7 +17,7 @@ public interface LocationService {
     
     public LocationPagination getLocations(Long page_size, Long current);
     
-    public Response<Boolean>  crea(Location location);
+    public Response<Boolean>  crea(Location location) throws Exception;
     public Response<Boolean>  aggiorna(Location location);
     public Response<Boolean>  elimina(Long id);
 }

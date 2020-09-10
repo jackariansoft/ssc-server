@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author jackarian
  */
 @Entity
-@Table(name = "installazione")
+@Table(name = "installazione", catalog = "mag", schema = "public")
 @XmlRootElement
 public class Installazione implements Serializable {
 
@@ -103,8 +103,6 @@ public class Installazione implements Serializable {
     @NotNull
     @Column(nullable = false)
     private short stato;
-    @OneToMany(mappedBy = "installazione")
-    private Collection<Location> locationCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "installazione")
     private Collection<Task> taskCollection;
     private static final long serialVersionUID = 1L;
@@ -124,9 +122,11 @@ public class Installazione implements Serializable {
     private BigDecimal longitude;
     @JoinColumn(name = "lastupdate_by", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
+    @JsonIgnore
     private User lastupdateBy;
     @JoinColumn(name = "tecnico", referencedColumnName = "user_id")
     @ManyToOne(optional = false)
+    @JsonIgnore
     private User tecnico;
     @JsonIgnore
     @JoinColumn(name = "location", referencedColumnName = "id")
@@ -367,15 +367,6 @@ public class Installazione implements Serializable {
 
     public void setStato(short stato) {
         this.stato = stato;
-    }
-
-    @XmlTransient
-    public Collection<Location> getLocationCollection() {
-        return locationCollection;
-    }
-
-    public void setLocationCollection(Collection<Location> locationCollection) {
-        this.locationCollection = locationCollection;
     }
 
     @XmlTransient

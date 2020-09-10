@@ -166,7 +166,19 @@
             <artifactId>spring-web</artifactId>
             <version>5.2.5.RELEASE</version>
             <type>jar</type>
+        </dependency> 
+        
+        <dependency>
+            <groupId>javax.security.enterprise</groupId>
+            <artifactId>javax.security.enterprise-api</artifactId>
+            <version>1.0</version>
         </dependency>
+        <dependency>
+        <groupId>org.glassfish.soteria</groupId>
+        <artifactId>javax.security.enterprise</artifactId>
+        <version>1.0</version>
+    </dependency>
+     
     </dependencies>
     <repositories>
         <repository>
@@ -180,29 +192,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>cz.habarta.typescript-generator</groupId>
-                <artifactId>typescript-generator-maven-plugin</artifactId>
-                <version>1.25.322</version>
-                <executions>
-                    <execution>
-                        <id>generate</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <phase>process-classes</phase>
-                        <configuration>
-                            <jsonLibrary>jackson2</jsonLibrary>
-                            <classes>
-                                <class>it.ariannamondo.mag.entity.Location</class>
-                            </classes>
-                            <outputFile>target/rest.d.ts</outputFile>
-                            <outputKind>module</outputKind>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            </plugin>            
         </plugins>
                
     </build>

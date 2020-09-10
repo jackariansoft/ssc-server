@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jackarian
  */
 @Entity
-@Table(catalog = "mag", schema = "public")
+@Table(name = "resource",catalog = "mag", schema = "public")
 @XmlRootElement
 public class Resource implements Serializable {
 

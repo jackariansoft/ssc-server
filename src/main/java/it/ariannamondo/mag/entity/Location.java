@@ -5,6 +5,8 @@
  */
 package it.ariannamondo.mag.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -21,8 +23,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -31,62 +31,74 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author jackarian
  */
 @Entity
-@Table(name = "networklocation")
+@Table(name = "networklocation", catalog = "mag", schema = "public")
 @XmlRootElement
 public class Location implements Serializable {
 
-    @Size(max = 50)
-    @Column(length = 50)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)    
+    @Column(name = "id")
+    private Long id;
+    
+    @Basic
+    @Column(name = "reference",length = 50)
     private String reference;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "ip_address", nullable = false, length = 50)
+    @Basic
+    @Column(name = "ip_address", nullable = false)
     private String ipAddress;
-    @Basic(optional = false)
-    @NotNull
+    
+    
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "it_IT")
     @Column(name = "creation_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    @Basic(optional = false)
-    @NotNull
+   
+   
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "it_IT")    
     @Column(name = "last_update", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
+    
+    @Basic
     @Column(name = "ip_port_service")
     private Integer ipPortService;
-    @Basic(optional = false)
-    @NotNull
-    @Column(nullable = false)
+    
+    
+    @Basic
+    @Column(name = "stato",nullable = false)
     private short stato;
-    @Size(max = 100)
-    @Column(length = 100)
+    
+    @Basic
+    @Column(name = "title",length = 100)
     private String title;
+    
+    @Basic
+    @Column(name = "active",length = 100)
     private Boolean active;
-    @Size(max = 100)
-    @Column(length = 100)
+    
+    @Basic
+    @Column(name = "login",length = 100)   
     private String login;
-    @Size(max = 100)
-    @Column(length = 100)
+    
+    @Basic
+    @Column(name = "password",length = 100)
     private String password;
-    @Size(max = 30)
+    
+    @Basic
     @Column(name = "hotspot_tag", length = 30)
-    private String hotspotTag;
-    @JoinColumn(name = "installazione", referencedColumnName = "id")
-    @ManyToOne
-    private Installazione installazione;
+    private String hotspotTag;    
+    
+    @JsonIgnore
     @JoinColumn(name = "lastupdate_by", referencedColumnName = "user_id", nullable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false)      
     private User lastupdateBy;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "location")
     private Collection<SscServer> sscServerCollection;
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Long id;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "location")
     private Collection<Installazione> installazioni;
  
@@ -229,14 +241,6 @@ public class Location implements Serializable {
 
     public void setHotspotTag(String hotspotTag) {
         this.hotspotTag = hotspotTag;
-    }
-
-    public Installazione getInstallazione() {
-        return installazione;
-    }
-
-    public void setInstallazione(Installazione installazione) {
-        this.installazione = installazione;
     }
 
     public User getLastupdateBy() {

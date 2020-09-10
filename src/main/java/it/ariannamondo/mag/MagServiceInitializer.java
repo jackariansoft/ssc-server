@@ -12,7 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = " it.ariannamondo.mag")
 public class MagServiceInitializer extends SpringBootServletInitializer {
 
-    public static final String DATA_SOURCE  = "java:/PostgresDS";
+    public static final String DATA_SOURCE_GLASSFISH  = "java/PostgresDS";
+    public static final String DATA_SOURCE_JBOSS  = "java:/PostgresDS";
     public static final String PERSISTENCE_UNIT="mag-beckend";
     public static final String PACKAGE_MODEL  = "it.ariannamondo.mag.entity";
     

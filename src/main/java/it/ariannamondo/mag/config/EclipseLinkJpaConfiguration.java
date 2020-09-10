@@ -6,7 +6,6 @@
 package it.ariannamondo.mag.config;
 
 import it.ariannamondo.mag.MagServiceInitializer;
-import static it.ariannamondo.mag.MagServiceInitializer.DATA_SOURCE;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -54,6 +53,7 @@ public class EclipseLinkJpaConfiguration  {
             etm.setDataSource(magDataSource());
             etm.setPackagesToScan(new String[]{MagServiceInitializer.PACKAGE_MODEL});
             //etm.setPersistenceUnitName(MagServiceInitializer.PERSISTENCE_UNIT);
+            etm.setJpaVendorAdapter(createJpaVendorAdapter());
             etm.setJpaPropertyMap(initJpaProperties());
             
 //              ret = builder
@@ -84,7 +84,7 @@ public class EclipseLinkJpaConfiguration  {
          DataSource dataSource = null;
         JndiTemplate jndi = new JndiTemplate();
         try {
-            dataSource = jndi.lookup(DATA_SOURCE, DataSource.class);
+            dataSource = jndi.lookup(MagServiceInitializer.DATA_SOURCE_GLASSFISH, DataSource.class);
         } catch (NamingException e) {
           throw e;
         }

@@ -23,6 +23,8 @@ import it.ariannamondo.mag.entity.utils.Response;
 import it.ariannamondo.mag.rest.security.model.JwtRequest;
 import it.ariannamondo.mag.rest.security.model.JwtResponse;
 import it.ariannamondo.mag.services.user.UserService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
@@ -36,6 +38,9 @@ public class JwtAuthenticationController {
     @Autowired
     private UserService userDetailsService;
 
+    @Autowired
+    HttpServletRequest httpRequest;
+    
     @RequestMapping(value =ServiceEndpoint.LOGIN, method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
@@ -49,7 +54,12 @@ public class JwtAuthenticationController {
      @RequestMapping(value =ServiceEndpoint.LOGOUT, method = {RequestMethod.GET,RequestMethod.POST})
      public ResponseEntity<Response<Boolean>> logout(){
          
+        HttpSession session = httpRequest.getSession();
+        if(session!=null){
+            session.invalidate();
+        }
          SecurityContextHolder.getContext().setAuthentication(null);
+         
          Response<Boolean> resp = new Response<>();
          resp.setFault(false);
          return ResponseEntity.ok(resp);

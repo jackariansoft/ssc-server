@@ -11,13 +11,13 @@ import it.ariannamondo.mag.rest.installazione.StatiInstallazione;
 import it.ariannamondo.mag.rest.location.rs.LocationPagination;
 import it.ariannamondo.mag.services.AbstractService;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
  * @author jackarian
  */
 @Component
-public class LocationServiceImpl extends AbstractService<Location>  implements LocationService{
+public class LocationServiceImpl extends AbstractService<Location> implements LocationService {
 
     @Override
     public LocationPagination getLocations(Long page_size, Long current) {
@@ -49,7 +49,7 @@ public class LocationServiceImpl extends AbstractService<Location>  implements L
                 List<Location> resultList = q.getResultList();
                 result.setData(resultList);
 
-            }else{
+            } else {
                 List<Location> emptyList = new ArrayList<>();
                 result.setData(emptyList);
             }
@@ -61,8 +61,9 @@ public class LocationServiceImpl extends AbstractService<Location>  implements L
     }
 
     @Override
-    public Response<Boolean> crea(Location location) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public Response<Boolean> crea(Location location) throws Exception {
+        //Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
         Response<Boolean> resp = new Response<>();
         EntityTransaction tx = null;
         EntityManager tm = null;
@@ -70,25 +71,31 @@ public class LocationServiceImpl extends AbstractService<Location>  implements L
             tm = getEmForTransaction();
             tx = tm.getTransaction();
             tx.begin();
+            location.setCreationDate(new Date(System.currentTimeMillis()));
+            location.setLastUpdate(new Date(System.currentTimeMillis()));
+            //location.setLastupdateBy((User) principal);
             tm.persist(location);
             tx.commit();
-        }catch(Exception ex){
-            resp.setResult(Boolean.FALSE);
-            resp.setFault(true);
-            resp.setException(ex);
-        }finally{
+        } catch (Exception ex) {
+            //resp.setResult(Boolean.FALSE);
+            //resp.setFault(true);
+            //resp.setException(ex);
+            Logger.getLogger(LocationService.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
+            
+        } finally {
             if (tm != null) {
                 tm.close();
             }
             closeTransaction(tx);
         }
-        
+
         return resp;
     }
 
     @Override
     public Response<Boolean> aggiorna(Location location) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       // Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Response<Boolean> resp = new Response<>();
         EntityTransaction tx = null;
         EntityManager tm = null;
@@ -96,25 +103,60 @@ public class LocationServiceImpl extends AbstractService<Location>  implements L
             tm = getEmForTransaction();
             tx = tm.getTransaction();
             tx.begin();
-            tm.merge(location);
+            Query q = tm.createQuery(
+                    "UPDATE Location i "
+                    + "SET i.ipAddress = :ipAddress,\n"
+                    + "i.ipPortService = :ipPortService,\n"
+                    + "i.lastUpdate = :lastupdate,\n"
+                    + "i.reference = :reference,\n"
+                    + "i.lastupdateBy = :lastupdateBy,\n"
+                    + "i.stato = :stato,\n"
+                    + "i.title = :title,\n"
+                    + "i.active = :active,\n"
+                    + "i.login = :login,\n"
+                    + "i.password = :password,\n"
+                    + "i.hotspotTag = :hotspotTag \n"
+                    + " WHERE i.id = :id");
+
+            q.setParameter("ipAddress", location.getIpAddress());
+            q.setParameter("ipPortService", location.getIpPortService());
+            q.setParameter("lastupdate", new Date(System.currentTimeMillis()));
+            q.setParameter("reference", location.getReference());
+            q.setParameter("lastupdateBy", location.getLastupdateBy());
+            q.setParameter("stato", location.getStato());
+            q.setParameter("title", location.getTitle());
+            q.setParameter("active", location.getActive());
+            q.setParameter("login", location.getLogin());
+
+            
+            q.setParameter("password", location.getPassword());
+            q.setParameter("hotspotTag", location.getHotspotTag());
+
+            q.setParameter("id", location.getId());
+            q.executeUpdate();
             tx.commit();
-        }catch(Exception ex){
+            //getEm().refresh(location);
+            resp.setResult(Boolean.TRUE);
+        } catch (Exception ex) {
             resp.setResult(Boolean.FALSE);
             resp.setFault(true);
             resp.setException(ex);
-        }finally{
+            if (tx != null&&tx.isActive()) {
+                tx.setRollbackOnly();
+            }
+            Logger.getLogger("LocationService").log(Level.SEVERE, "", ex);
+        } finally {
             if (tm != null) {
                 tm.close();
             }
             closeTransaction(tx);
         }
-        
         return resp;
     }
 
     @Override
     public Response<Boolean> elimina(Long id) {
-         Response<Boolean> resp = new Response<>();
+        Response<Boolean> resp = new Response<>();
         try {
             Location find = getEm().find(Location.class, id);
             if (find != null) {
@@ -129,6 +171,5 @@ public class LocationServiceImpl extends AbstractService<Location>  implements L
         }
         return resp;
     }
-    
-    
+
 }
