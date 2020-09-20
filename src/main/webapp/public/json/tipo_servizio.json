@@ -1,0 +1,17 @@
+[{
+        "inc_id": "C",
+        "inc_type": "EXPRESS"
+    },
+    {
+        "inc_id": "D",
+        "inc_type": "DISTRIBUZIONE"
+    },
+    {
+        "inc_id": "E",
+        "inc_type": "PRIORITY"
+    },
+    {
+        "inc_id": "H",
+        "inc_type": "SERVIZIO H 10:30"
+    }
+]

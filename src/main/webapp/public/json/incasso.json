@@ -1,0 +1,25 @@
+[{
+        "inc_id": "BM",
+        "inc_type": "Assegno Bancario Int .Mitt."
+    },
+    {
+        "inc_id": "CM",
+        "inc_type": "Assegno Circolare Int. Mitt"
+    },
+    {
+        "inc_id": "BB",
+        "inc_type": "Assegno Bancario Int. Corriere con Manleva"
+    },
+    {
+        "inc_id": "OM",
+        "inc_type": "Assegno Int. Mitt. Originale"
+    },
+    {
+        "inc_id": "OC",
+        "inc_type": "Assegno Circolare Int. Mitt. Originale"
+    },
+    {
+        "inc_id": "blank",
+        "inc_type": "Contanti"
+    }
+]

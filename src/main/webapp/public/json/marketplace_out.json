@@ -1,0 +1,30 @@
+[
+    {
+        "id": "none",
+        "text": "Nessuno"
+    },
+    {
+        "id": "1",
+        "text": "Amazon"
+    },
+    {
+        "id": "6",
+        "text": "Magento"
+    },
+    {
+        "id": "4",
+        "text": "Ebay"
+    },
+    {
+        "id": "8",
+        "text": "D.G. Web"
+    },
+    {
+        "id": "7",
+        "text": "EPrice"
+    },
+    {
+        "id": "9",
+        "text": "IBS"
+    }   
+]

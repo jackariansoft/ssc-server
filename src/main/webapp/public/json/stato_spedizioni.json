@@ -1,0 +1,23 @@
+[
+    {
+        "inc_id": 3,
+        "inc_type": "Rimandata"
+    },
+    {
+        "inc_id": 4,
+        "inc_type": "Spedita"
+    },
+    {
+        "inc_id": -1,
+        "inc_type": "Attesa Processamento"
+    },
+    {
+        "inc_id": 2,
+        "inc_type": "Annullata"
+    },
+    {
+        "inc_id": 1,
+        "inc_type": "Confermata"
+    }   
+]
+       
