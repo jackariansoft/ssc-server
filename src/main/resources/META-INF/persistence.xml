@@ -13,12 +13,8 @@
     <class>mude.srl.ssc.entity.ExUserToNotifyFault</class>
     <class>mude.srl.ssc.entity.Channel</class>
     <class>mude.srl.ssc.entity.Energymesure</class>
-    <class>mude.srl.ssc.entity.Email</class>
-    <class>mude.srl.ssc.entity.Plc_1</class>
-    <class>mude.srl.ssc.entity.Email_1</class>
+    <class>mude.srl.ssc.entity.Email</class>    
     <class>mude.srl.ssc.entity.ResourceReservation</class>
-    <class>mude.srl.ssc.entity.Ssc_1</class>
-    <class>mude.srl.ssc.entity.Resource_1</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>
   </persistence-unit>
