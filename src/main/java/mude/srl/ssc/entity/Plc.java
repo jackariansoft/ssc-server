@@ -53,7 +53,7 @@ public class Plc implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "porta_gestione_servizi", nullable = false)
-    private long portaGestioneServizi;
+    private Long portaGestioneServizi;
     @Column(name = "uid",nullable = false)
     String uid;
     @OneToMany(mappedBy = "plc")
@@ -73,7 +73,7 @@ public class Plc implements Serializable {
         this.id = id;
     }
 
-    public Plc(Short id, String ipAddress, long portaGestioneServizi) {
+    public Plc(Short id, String ipAddress, Long portaGestioneServizi) {
         this.id = id;
         this.ipAddress = ipAddress;
         this.portaGestioneServizi = portaGestioneServizi;
@@ -95,11 +95,11 @@ public class Plc implements Serializable {
         this.ipAddress = ipAddress;
     }
 
-    public long getPortaGestioneServizi() {
+    public Long getPortaGestioneServizi() {
         return portaGestioneServizi;
     }
 
-    public void setPortaGestioneServizi(long portaGestioneServizi) {
+    public void setPortaGestioneServizi(Long portaGestioneServizi) {
         this.portaGestioneServizi = portaGestioneServizi;
     }
 

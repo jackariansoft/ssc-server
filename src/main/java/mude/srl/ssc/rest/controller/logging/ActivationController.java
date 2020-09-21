@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mude.srl.ssc.config.utils.protocol.StringUtils;
 import mude.srl.ssc.mail.LoggerSSC;
-import mude.srl.ssc.rest.controller.command.handler.ActivationCommmandHandler;
 import mude.srl.ssc.rest.controller.command.model.MessageActivationCommand;
 import mude.srl.ssc.rest.controller.logging.model.RequestTokenMessage;
 import mude.srl.ssc.rest.controller.logging.model.MIDMessage;
@@ -39,8 +38,10 @@ public class ActivationController {
     private final boolean DEBUG = false;
     private final StringUtils su = StringUtils.getInstance();
     private final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ITALIAN);
+    
     @Autowired
     EnergyService energyService;
+    
     @RequestMapping(path = "/activation", produces = {MediaType.ALL_VALUE}, consumes = MediaType.ALL_VALUE)
     public void actiovationNode(HttpServletRequest request, HttpServletResponse resp) throws IOException, JsonProcessingException, InterruptedException {
         //To do register message

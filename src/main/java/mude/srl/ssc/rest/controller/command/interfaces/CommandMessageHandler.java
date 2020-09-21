@@ -5,12 +5,14 @@
  */
 package mude.srl.ssc.rest.controller.command.interfaces;
 
+import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
+
 /**
  *
  * @author Jack
  */
 public interface CommandMessageHandler {
     
-    public void handle(Command command) throws Exception;
+    public void handle(Command command,ResponseCommand responce) throws Exception;
     
 }

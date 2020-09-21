@@ -37,5 +37,11 @@ public class ServiceEndpoint {
     public static final String INSTALLAZIONE_CREATE  = INSTALLAZIONE;//POST
     public static final String INSTALLAZIONE_UPDATE  = INSTALLAZIONE+"/{id}";//PUT
     
+    /**
+     * Risorsa
+     */
+    public static final String ROURCE = ROOT_END_POINT+"/resource";
+    public static final String RESOURCE_COMMAND =ROURCE+"/command";
+    
 
 }
