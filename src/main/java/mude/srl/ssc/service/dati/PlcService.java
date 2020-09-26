@@ -7,6 +7,8 @@ package mude.srl.ssc.service.dati;
 
 import mude.srl.ssc.entity.Plc;
 import mude.srl.ssc.entity.Resource;
+import mude.srl.ssc.entity.ResourceReservation;
+import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
 
 /**
  *
@@ -17,4 +19,6 @@ public interface PlcService {
      public Plc getPlcByUID(String uid) throws Exception;
      
      public Resource getReourceByPlcAndTag(Plc plc,String tag) throws Exception;
+     
+     public ResourceReservation controllaPerAvvio(Resource r,RequestCommandResourceReservation request) throws Exception;
 }

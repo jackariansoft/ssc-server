@@ -5,6 +5,9 @@
  */
 package mude.srl.ssc.rest.controller.command.model;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.function.ServerRequest;
+
 /**
  *
  * @author Jack
@@ -14,6 +17,11 @@ public class ResponseCommand {
     private String errorMessage;
     private String succeccMessage;
 
+    public ResponseCommand() {
+        status = HttpStatus.OK.value();
+    }
+
+    
     public Integer getStatus() {
         return status;
     }

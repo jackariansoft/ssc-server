@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mude.srl.ssc.mail;
+package mude.srl.ssc.service.mail;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

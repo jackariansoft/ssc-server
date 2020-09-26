@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mude.srl.ssc.mail;
+package mude.srl.ssc.service.mail;
 
 import java.io.File;
 

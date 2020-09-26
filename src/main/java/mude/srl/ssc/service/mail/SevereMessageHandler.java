@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mude.srl.ssc.mail;
+package mude.srl.ssc.service.mail;
 
 
 import java.sql.SQLException;
@@ -12,30 +12,38 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import mude.srl.ssc.service.log.LoggerSSC;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
  *
  * @author upload
  */
+
 public class SevereMessageHandler extends Handler {
 
+    
+    
     ArrayList<String> emailRecipient = new ArrayList<>();
     ArrayList<LogRecord> errors = new ArrayList<>();
-    private String applicationTitle;
+    private final String applicationTitle;
     private static final String NEW_LINE = "<br/>";
     private String pattern;
+    //private final EmailSenderService emailService;
+  
+  
+    private EmailSenderService emailSenderService;
 
-    public SevereMessageHandler() {
+    public SevereMessageHandler(EmailSenderService emailSenderService) {
         super();
         init();
-        applicationTitle = " Import";
+        applicationTitle = "";
+        this.emailSenderService = emailSenderService;
+        
     }
 
-    public SevereMessageHandler(String applicationTitle) {
-        this();
-        this.applicationTitle = applicationTitle;
-    }
+   
 
     @Override
     public void publish(LogRecord record) {
@@ -131,14 +139,12 @@ public class SevereMessageHandler extends Handler {
                     }
 
                 }
-                EmailManager.getInstance().sendEmailLog(subject, message, null, emailRecipient);
+                emailSenderService.sendEmailLog(subject, message, subject, emailRecipient);
 
             } catch (Exception ex) {
 
-                Logger logger = LoggerSSC.getInstance().getLogger();
-                if (logger != null) {
-                    logger.log(Level.WARNING, "Sending email in ServereMessageHandler failed");
-                }
+                LoggerSSC.getInstance(this.emailSenderService).getLogger().log(Level.WARNING, ex.getMessage());
+                
             }
             errors.clear();
         }

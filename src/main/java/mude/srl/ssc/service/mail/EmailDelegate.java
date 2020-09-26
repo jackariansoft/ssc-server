@@ -12,14 +12,23 @@ import javax.persistence.Query;
 import mude.srl.ssc.entity.Channel;
 import mude.srl.ssc.entity.Email;
 import mude.srl.ssc.entity.utils.ResponseRequest;
-import mude.srl.ssc.mail.LoggerSSC;
+import mude.srl.ssc.service.log.LoggerSSC;
 import mude.srl.ssc.service.AbstractService;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Jack
  */
+@Repository
 public class EmailDelegate extends AbstractService implements EmailService {
+
+    public EmailDelegate() {
+        System.out.println("Attivazione servizio recupero configurazione email");
+    }
+    
+    
+    
 
     @Override
     public ResponseRequest<Email> getAccountsByChannerl(Channel c) {

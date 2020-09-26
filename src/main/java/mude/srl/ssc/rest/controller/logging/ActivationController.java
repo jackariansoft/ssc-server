@@ -16,11 +16,12 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mude.srl.ssc.config.utils.protocol.StringUtils;
-import mude.srl.ssc.mail.LoggerSSC;
+import mude.srl.ssc.service.log.LoggerSSC;
 import mude.srl.ssc.rest.controller.command.model.MessageActivationCommand;
 import mude.srl.ssc.rest.controller.logging.model.RequestTokenMessage;
 import mude.srl.ssc.rest.controller.logging.model.MIDMessage;
 import mude.srl.ssc.service.dati.EnergyService;
+import mude.srl.ssc.service.log.LoggerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
@@ -41,6 +42,9 @@ public class ActivationController {
     
     @Autowired
     EnergyService energyService;
+    
+    @Autowired
+    LoggerService loggerService;
     
     @RequestMapping(path = "/activation", produces = {MediaType.ALL_VALUE}, consumes = MediaType.ALL_VALUE)
     public void actiovationNode(HttpServletRequest request, HttpServletResponse resp) throws IOException, JsonProcessingException, InterruptedException {
@@ -130,7 +134,7 @@ public class ActivationController {
             String[] valoreConsumo = test.split(":");
             energyService.saveEnergyConsuption(valoreConsumo);
         } catch (Exception ex) {
-            LoggerSSC.getInstance().getLogger().log(Level.SEVERE,"/consumo "+test ,ex);
+            loggerService.logException(Level.SEVERE,"/consumo "+test ,ex);
         }
                     
     }

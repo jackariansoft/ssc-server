@@ -2,9 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mude.srl.ssc.mail;
-
-
+package mude.srl.ssc.service.mail;
 
 import com.sun.mail.smtp.SMTPTransport;
 import com.sun.mail.util.MailSSLSocketFactory;
@@ -20,6 +18,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.URLName;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -27,8 +26,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import mude.srl.ssc.entity.Email;
-
-
 
 /**
  *
@@ -41,7 +38,7 @@ public class EmailSender {
     private String password = "";
     private String login = "";
     String smtpServer;
-    ArrayList<String> to;
+    List<String> to;
     String from;
     String subject;
     String body;
@@ -52,8 +49,7 @@ public class EmailSender {
     private boolean ssl = false;
     private boolean ttl = true;
     ArrayList<String> bcc;
-    
-    
+
     public EmailSender() {
     }
 
@@ -115,20 +111,31 @@ public class EmailSender {
             MailSSLSocketFactory sf = new MailSSLSocketFactory();
             sf.setTrustAllHosts(true);
             props = new Properties();
-             props.put("mail.smtp.ssl.socketFactory", sf);
+
+            props.setProperty("mail.smtp.timeout", "20000");
+            props.setProperty("mail.smtp.connectiontimeout", "20000");
+            
+            props.setProperty("mail.transport.protocol", "smtp");
+            props.setProperty("mail.smtp.host", smtpServer);
+            
+            props.put("mail.smtp.ssl.socketFactory", sf);
+
+            if (port == null) {
+                props.put("mail.smtp.port", port.toString());
+            }
             if (auth) {
                 props.put("mail.smtp.auth", "true");
             }
             if (ttl && port != null) {
                 props.put("mail.smtp.starttls.enable", "true");
-                props.put("mail.smtp.port", port.toString());
+
             }
             if (ssl && port != null) {
-                props.put("mail.smtp.starttls.enable", "true");
-                props.put("mail.smtp.port", port.toString());
+                props.setProperty("mail.smtp.ssl.enable", "true");
+
             }
             props.setProperty("mail.smtp.host", smtpServer);
-           // props.setProperty("mail.debug", "true");
+            props.setProperty("mail.debug", "true");
 
             Session session = Session.getInstance(props, new javax.mail.Authenticator() {
                 @Override
@@ -140,11 +147,11 @@ public class EmailSender {
             javax.mail.Message msg = new MimeMessage(session);
 
             msg.setFrom(new InternetAddress(from));
-            
+
             for (String add : to) {
                 msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(add, false));
             }
-            
+
             msg.setSubject(subject);
 //Building multipart
             MimeMultipart mmp = new MimeMultipart();
@@ -169,8 +176,8 @@ public class EmailSender {
                     mmp.addBodyPart(mimeBodyForAttachmnt);
                 }
             }
-            if(bcc!=null&&!bcc.isEmpty()){
-                for(String e:bcc){
+            if (bcc != null && !bcc.isEmpty()) {
+                for (String e : bcc) {
                     msg.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(e, false));
                 }
             }
@@ -178,19 +185,25 @@ public class EmailSender {
             msg.setContent(mmp);
             msg.saveChanges();
 
-// -- Set some other header information --
-//msg.setHeader("X-Mailer", "mail.webshopping.it");
+             // -- Set some other header information --
+            msg.setHeader("X-Mailer", smtpServer);
             Calendar c = Calendar.getInstance(Locale.ITALIAN);
             msg.setSentDate(c.getTime());
-// -- Send the message --
-            URLName url = new URLName("smtp", smtpServer, port, null, login, password);
-            SMTPTransport t = new SMTPTransport(session, url);
-
-            t.connect();
+            
+            // Connect and send
+            Transport t = session.getTransport();
+            t.connect(login, password);
             t.sendMessage(msg, msg.getAllRecipients());
-//        SMTPTransport.send(msg);
             t.close();
-           
+            // -- Send the message --
+            //            URLName url = new URLName("smtp", smtpServer, port, null, login, password);
+            //            SMTPTransport t = new SMTPTransport(session, url);
+            //
+            //            t.connect();
+            //            t.sendMessage(msg, msg.getAllRecipients());
+            //        SMTPTransport.send(msg);
+            t.close();
+
         } catch (Exception ex) {
             //Exceptions.printStackTrace(ex);
         }
@@ -204,8 +217,6 @@ public class EmailSender {
     public static void setProps(Properties props) {
         EmailSender.props = props;
     }
-
-    
 
     public static SimpleDateFormat getDataFormat() {
         return dataFormat;
@@ -239,11 +250,11 @@ public class EmailSender {
         this.smtpServer = smtpServer;
     }
 
-    public ArrayList<String> getTo() {
+    public List<String> getTo() {
         return to;
     }
 
-    public void setTo(ArrayList<String> to) {
+    public void setTo(List<String> to) {
         this.to = to;
     }
 
@@ -325,13 +336,13 @@ public class EmailSender {
         }
         to.add(email);
     }
-    public void addBcc(String email){
-        if(bcc==null){
-            bcc  = new ArrayList<>();
+
+    public void addBcc(String email) {
+        if (bcc == null) {
+            bcc = new ArrayList<>();
         }
         bcc.add(email);
     }
-       
 
 }
 
@@ -357,8 +368,6 @@ class MyFileDataSource extends FileDataSource {
     public String getContentType() {
         return this.content;
     }
-    
-    
 
 }
 
@@ -377,7 +386,5 @@ class MyAuthenticator extends Authenticator {
     protected java.net.PasswordAuthentication getPasswordAuthentication() {
         return super.getPasswordAuthentication(); //To change body of generated methods, choose Tools | Templates.
     }
-
-   
 
 }

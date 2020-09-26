@@ -18,5 +18,7 @@ public interface EmailService {
     public ResponseRequest<Email> getAccountsByChannerl(Channel c);
 
     public ResponseRequest<Email> getDefault();
+
+    
     
 }

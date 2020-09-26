@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mude.srl.ssc.mail;
+package mude.srl.ssc.service.log;
 
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.logging.FileHandler;
@@ -17,25 +16,28 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import mude.srl.ssc.service.mail.EmailSenderService;
 import mude.srl.ssc.service.mail.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import mude.srl.ssc.service.mail.SevereMessageHandler;
 
 /**
  *
  * @author jackarian
  */
+
 public class LoggerSSC {
 
+    
+    
     private static final Logger LOGGER = Logger.getLogger("LoggerSpedizioni");
 
     public Logger getLogger() {
         return LOGGER;
     }
-    private SevereMessageHandler smh;
+    private final SevereMessageHandler smh;
    
     private static LoggerSSC instance;
-    private boolean error = false;
-    private Exception exception = null;
+   
 
     public static final int NO_QUANTY_AVAILABLE = 0;
     public static final int INSERTED = 1;
@@ -64,25 +66,25 @@ public class LoggerSSC {
     public static final String SHIPPING_FOLDER = "/var/log/spedizioni";
     public static final String SHIPPING_FOLDER_FTP = "/var/log/spedizioni/ftp";
 
-    private LoggerSSC() throws IOException {
+    private  LoggerSSC(EmailSenderService emailSenderService) throws IOException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-        FileHandler fh = new FileHandler(SHIPPING_FOLDER + File.separator + "spedizioni_" + format.format(Calendar.getInstance(Locale.ITALIAN).getTime()) + ".log");
+        FileHandler fh = new FileHandler(System.getProperty("user.dir") + File.separator + "logger_ssc_" + format.format(Calendar.getInstance(Locale.ITALIAN).getTime()) + ".log");
         SimpleFormatter formatter = new SimpleFormatter();
         fh.setFormatter(formatter);
 
-        smh = new SevereMessageHandler("Logger Spedizioni");
+        smh = new SevereMessageHandler(emailSenderService);
         smh.setFormatter(formatter);
         LOGGER.addHandler(fh);
         LOGGER.setUseParentHandlers(true);
         LOGGER.addHandler(smh);
-        LOGGER.info("Initializing LoggerSpedizioni");
+        LOGGER.info("Initializing SSC logger");
     }
 
-    public static LoggerSSC getInstance() {
+    public  static synchronized LoggerSSC getInstance(EmailSenderService emailSenderService) {
         if (instance == null) {
             try {
-                instance = new LoggerSSC();
+                instance = new LoggerSSC(emailSenderService);
             } catch (IOException ex) {
                 Logger.getLogger(LoggerSSC.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -98,5 +100,6 @@ public class LoggerSSC {
             }
         }
     }
+   
 
 }

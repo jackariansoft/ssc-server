@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LoginController extends CommonServelet{
 
     @Autowired
-    UserService delegate;
+    UserService userService;
     
     @RequestMapping(path = "/login", produces = {MediaType.TEXT_HTML_VALUE}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @Override
@@ -61,7 +61,7 @@ public class LoginController extends CommonServelet{
 
                     }
                     //String toString = new BigInteger(1, digest).toString(16);
-                    Response<Users> resp = delegate.getLogin(login, hexString.toString());
+                    Response<Users> resp = userService.getLogin(login, hexString.toString());
                     if (resp.isFault()) {
 
                     } else {
@@ -75,7 +75,7 @@ public class LoginController extends CommonServelet{
 
                         } else {
 
-                            Response<UserLog> log = delegate.createLog(request.getRemoteAddr(), request.getHeader("User-Agent"), user);
+                            Response<UserLog> log = userService.createLog(request.getRemoteAddr(), request.getHeader("User-Agent"), user);
                             
                                 HttpSession newSession = request.getSession(true);
                                 user.setLastLog(log.getResult());

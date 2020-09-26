@@ -33,10 +33,12 @@ public class AbstractService<T> {
 
     @Autowired
     protected JpaTransactionManager userTransactionManager;
+    private static EntityManagerFactory entityManagerFactory;
 
     public EntityManager getEm() throws Exception {
         if (em == null) {
-            EntityManagerFactory entityManagerFactory = userTransactionManager.getEntityManagerFactory();
+            if(entityManagerFactory==null)
+             entityManagerFactory = userTransactionManager.getEntityManagerFactory();
             if (entityManagerFactory != null) {
                 em = entityManagerFactory.createEntityManager();
             }else{
@@ -47,12 +49,12 @@ public class AbstractService<T> {
     }
     public EntityManager getEmForTransaction() throws Exception {
         EntityManager emt = null;
-            EntityManagerFactory entityManagerFactory = userTransactionManager.getEntityManagerFactory();
-            if (entityManagerFactory != null) {
+        if(entityManagerFactory==null)
+            entityManagerFactory = userTransactionManager.getEntityManagerFactory();
+        
+            
                 emt = entityManagerFactory.createEntityManager();
-            }else{
-                throw new Exception("Nessuan risorsa database");
-            }
+            
         
         return emt;
     }
@@ -75,10 +77,11 @@ public class AbstractService<T> {
     }
     
     public void closeTransaction(EntityTransaction tx){
-        if(tx.isActive()){
+        if(tx!=null&&tx.isActive()){
             tx.rollback();
         }
     }
+    
     
     public void setErrorResponse(Response resp, Exception ex) {
         resp.setFault(true);

@@ -53,7 +53,7 @@ public class ActivationCommandHandler extends CommonRestClient implements Comman
                 PrintWriter writer = new PrintWriter(output, true);
                 InputStream input = socket.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                String writeValueAsString = mapper.writeValueAsString(c);
+                //String writeValueAsString = mapper.writeValueAsString(c);
                 writer.println("action:"+((c.getDestination()*10)+c.getAction()));
 
                 //socket.close();

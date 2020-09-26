@@ -20,8 +20,10 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import mude.srl.ssc.entity.UserLog;
 import mude.srl.ssc.entity.Users;
-import mude.srl.ssc.mail.LoggerSSC;
+import mude.srl.ssc.service.log.LoggerSSC;
 import mude.srl.ssc.service.AbstractService;
+import mude.srl.ssc.service.log.LoggerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,15 +32,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserServiceImpl extends AbstractService implements UserService, UserDetailsService {
 
-    /**
-     * Configure the entity manager to be used.
-     *
-     * @param users
-     * @param em the {@link EntityManager} to set.
-     */
-//    public void setEntityManager(EntityManager em) {
-//		this.em = em;
-//     }
+
+    @Autowired
+    LoggerService loggerService;
+    
     @Override
     public void create(Users users) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -140,7 +137,7 @@ public class UserServiceImpl extends AbstractService implements UserService, Use
         } catch (PersistenceException ex) {
             setErrorResponse(resp, ex);
         } catch (Exception ex) {
-            LoggerSSC.getInstance().getLogger().log(Level.SEVERE, null, ex);
+            loggerService.logException(Level.SEVERE, null, ex);
         }
         return resp;
     }
@@ -190,12 +187,12 @@ public class UserServiceImpl extends AbstractService implements UserService, Use
             TypedQuery<Users> q = (TypedQuery<Users>) getEm().createQuery("SELECT u FROM Users u WHERE u.username = :login", Users.class);
             q.setParameter("login", username);
             u = q.getSingleResult();
-            LoggerSSC.getInstance().getLogger().log(Level.INFO, " User: {0}", u.getFirstName());
+            loggerService.logInfo(Level.INFO, " User: {0}", u.getFirstName());
         } catch (NoResultException | NonUniqueResultException ex) {
-            LoggerSSC.getInstance().getLogger().log(Level.SEVERE, " " + username, ex);
+            loggerService.logException(Level.SEVERE, " " + username, ex);
             throw new UsernameNotFoundException(username, ex);
         } catch (Exception ex) {
-            LoggerSSC.getInstance().getLogger().log(Level.SEVERE, " " + username, ex);
+             loggerService.logException(Level.SEVERE, " " + username, ex);
             throw new UsernameNotFoundException(username, ex);
         }
         return u;
