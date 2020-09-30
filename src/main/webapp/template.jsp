@@ -1,8 +1,3 @@
-<%-- 
-    Document   : home
-    Created on : 14-lug-2017, 15.35.48
-    Author     : vnc
---%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -17,7 +12,7 @@
                 
 
                 <footer class="footer">
-                    <p>&copy; dgmarket s.r.l 2019</p>
+                    <p>&copy; mude s.r.l 2019</p>
                 </footer>
 
 

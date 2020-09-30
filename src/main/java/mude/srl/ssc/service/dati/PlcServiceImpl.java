@@ -15,11 +15,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import mude.srl.ssc.entity.Plc;
 import mude.srl.ssc.entity.Resource;
 import mude.srl.ssc.entity.ResourceReservation;
 import mude.srl.ssc.entity.utils.ResourceStatus;
+import mude.srl.ssc.entity.utils.Response;
 import mude.srl.ssc.service.log.LoggerSSC;
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
 import mude.srl.ssc.service.AbstractService;
@@ -61,7 +63,7 @@ public class PlcServiceImpl extends AbstractService implements PlcService {
 
     @Override
     public Resource getReourceByPlcAndTag(Plc plc, String tag) {
-        Plc resp = null;
+       
         Resource resource = null;
         EntityManager em = null;
         try {
@@ -128,6 +130,7 @@ public class PlcServiceImpl extends AbstractService implements PlcService {
                 reservation.setResource(r);
                 reservation.setPayload(request.getPayload());
                 reservation.setStatus(ResourceStatus.ATTESA.getStatus());
+                em.persist(reservation);
                 
                 
             }
@@ -146,5 +149,68 @@ public class PlcServiceImpl extends AbstractService implements PlcService {
 
         return reservation;
     }
+
+    /**
+     * Aggiornamento stato prenotazione
+     */    
+	@Override
+	public Response<ResourceReservation> aggiornaStatoPrenotazione(ResourceReservation r, Short status) throws Exception {
+		Response<ResourceReservation> resp  = new Response<ResourceReservation>();
+		EntityManager em = null;
+        EntityTransaction tx = null;
+
+        em = getEmForTransaction();
+        if (em == null) {
+            throw new SQLException("No database connection");
+        }
+        tx = em.getTransaction();
+        if (tx == null) {
+            throw new SQLException("No database transaction available");
+
+        }
+        try {
+            tx.begin();
+            Query q = em.createQuery("UPDATE ResourceReservation r SET r.status = :status,r.totalMinutes = :totalMinutes ");
+            q.setParameter("status", status);
+            q.setParameter("totalMinutes", r.getTotalMinutes());
+            q.executeUpdate();            
+            tx.commit();
+        }catch (Exception e) {
+        	closeTransaction(tx);
+            loggerService.logException(Level.SEVERE, "Errore aggiornamento prenotazione", e);
+			throw e;
+			
+		}finally {
+			em.clear();
+			em.close();
+			
+		}
+		return resp;
+		
+	}
+
+	@Override
+	public Resource getReourceByPlcAndTag(String plc_uid, String tag) throws Exception {
+		 
+		Resource resource = null;
+        EntityManager em = null;
+        try {
+            em = getEm();
+            TypedQuery<Resource> q = em.createQuery("SELECT r FROM Resource r WHERE r.plc.uid = :plc AND r.tag =:tag ", Resource.class);
+            q.setParameter("plc", plc_uid);
+            q.setParameter("tag", tag);
+            resource = q.getSingleResult();
+
+        } catch (NonUniqueResultException | NoResultException ex) {
+            loggerService.logException(Level.SEVERE, "getPlcByUID", ex);
+
+        } catch (Exception ex) {
+           loggerService.logException(Level.SEVERE, "getPlcByUID", ex);
+        } finally {
+
+        }
+
+        return resource;
+	}
 
 }

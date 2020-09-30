@@ -207,9 +207,15 @@ public class ResourceReservation implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "mude.srl.ssc.entity.ResourceReservation[ id=" + id + " ]";
-    }
+	@Override
+	public String toString() {
+		return "ResourceReservation [id=" + id + ", payload=" + payload + ", requestTime=" + requestTime
+				+ ", startTime=" + startTime + ", endTime=" + endTime + ", status=" + status + ", totalMinutes="
+				+ totalMinutes + ", receivedInterrupt=" + receivedInterrupt + ", recevedInterruptAt="
+				+ recevedInterruptAt + ", interruptMotivation=" + interruptMotivation + ", resource=" + resource + "]";
+	}
+    
+
+    
     
 }

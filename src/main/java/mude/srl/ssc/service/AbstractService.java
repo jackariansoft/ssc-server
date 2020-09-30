@@ -83,7 +83,7 @@ public class AbstractService<T> {
     }
     
     
-    public void setErrorResponse(Response resp, Exception ex) {
+    public void setErrorResponse(Response<?> resp, Exception ex) {
         resp.setFault(true);
         resp.setErrorType(Response.INTERNAL_SERVER_ERROR);
         resp.setErrorDescription(Response.ERROR_MG_INTERNAL_SERVER_ERROR);

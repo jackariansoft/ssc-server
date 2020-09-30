@@ -55,12 +55,8 @@ public class CommandController {
         
         ResponseCommand response = new ResponseCommand();
         try {
-            Plc plc = plcService.getPlcByUID(request.getPlc_uid());
-            if (plc == null) {
-                response.setErrorMessage("Plc not found");
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-            } else {
-                Resource resource = plcService.getReourceByPlcAndTag(plc, request.getResource_tag());
+            
+                Resource resource = plcService.getReourceByPlcAndTag(request.getPlc_uid(), request.getResource_tag());
                 if(resource==null){
                     response.setErrorMessage("Resource not found");
                     response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -69,12 +65,13 @@ public class CommandController {
                     if(controllaPerAvvio!=null){
                         SchedulerManager.getInstance().avviaGestionePrenotazione(controllaPerAvvio,scheduler);
                     }else{
-                        loggerService.logException(Level.SEVERE, "Nessuna prenotazione creata",new Exception("nessuna prenotazione creata"));
+                        
+                    	loggerService.logException(Level.WARNING, "Nessuna prenotazione creata",new Exception("nessuna prenotazione creata"));
                         
                     }
                     
                 }
-            }
+            
 
         } catch (Exception ex) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

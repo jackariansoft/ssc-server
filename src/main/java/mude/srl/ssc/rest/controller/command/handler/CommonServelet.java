@@ -5,7 +5,6 @@
  */
 package mude.srl.ssc.rest.controller.command.handler;
 
-;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;

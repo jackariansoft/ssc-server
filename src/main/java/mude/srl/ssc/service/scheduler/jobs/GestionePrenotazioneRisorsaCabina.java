@@ -6,6 +6,9 @@
 package mude.srl.ssc.service.scheduler.jobs;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import mude.srl.ssc.entity.ResourceReservation;
 import mude.srl.ssc.service.dati.PlcService;
 import mude.srl.ssc.service.scheduler.SchedulerManager;
@@ -40,7 +43,39 @@ public class GestionePrenotazioneRisorsaCabina implements Job {
             ResourceReservation r  = (ResourceReservation) get;
             
             System.out.println("Reservetion check: "+r.getPayload()+" Start: "+time_format.format(r.getStartTime())+" End: "+time_format.format(r.getEndTime()));
+            
+            
+            long adesso = System.currentTimeMillis();
+            long start  = r.getStartTime().getTime();
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(adesso-start);
+            r.setTotalMinutes((int)minutes);
+            short last_status  = r.getStatus();
+			switch (r.getStatus()) {
+				case SchedulerManager.ATTESA: {
+					// TO DO AVVIA CON GESTIONE PLC
+					
+					r.setStatus(SchedulerManager.AVVIATA);
+					
+					break;
+				}
+
+			}
+			try {
+				
+				plcService.aggiornaStatoPrenotazione(r, r.getStatus());
+				
+			} catch (Exception e) {
+				throw new JobExecutionException(e);
+			}
+			
+			System.out.println("Elapsed minutes: "+r.getTotalMinutes());
+            
         }
     }
+    
+    public boolean checkPlcStatus() {
+    	return true;
+    }
+    
 
 }

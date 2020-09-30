@@ -111,12 +111,6 @@ public class ActivationController {
             Logger.getLogger(ActivationController.class.getName()).log(Level.INFO, res.toString());
         }
         mapper.writeValue(resp.getOutputStream(), res);
-
-//         try {
-//                h.handle(res);
-//                } catch (Exception ex) {
-//                    // Logger.getLogger(ActivationController.class.getName()).log(Level.SEVERE, null, ex);
-//            }
     }
     
     /**
