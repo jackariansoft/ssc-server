@@ -14,7 +14,4 @@
     <link href="<%= request.getContextPath()%>/public/js/themes/icon.css?v=201" rel="stylesheet">    
     <link href="<%= request.getContextPath()%>/public/css/modal.css" rel="stylesheet">
     <link href="<%= request.getContextPath()%>/public/css/personal.css?v=221" rel="stylesheet">
-     
-</head>
-<title>Dg Market</title>
 </head>

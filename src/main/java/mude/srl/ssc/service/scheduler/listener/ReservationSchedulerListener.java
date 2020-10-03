@@ -1,4 +1,6 @@
-package mude.srl.ssc.service.scheduler.job.listener;
+package mude.srl.ssc.service.scheduler.listener;
+
+import java.util.logging.Level;
 
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -6,9 +8,25 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerListener;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import mude.srl.ssc.entity.ResourceReservation;
+import mude.srl.ssc.service.dati.PlcService;
+import mude.srl.ssc.service.log.LoggerService;
+import mude.srl.ssc.service.resource.ResourceService;
+import mude.srl.ssc.service.scheduler.SchedulerManager;
 
 public class ReservationSchedulerListener implements SchedulerListener {
 
+	@Autowired
+	private ResourceService resourceService;
+	
+	@Autowired
+	private LoggerService loggerService;
+	
+	@Autowired
+    private PlcService plcService;
+	
 	@Override
 	public void jobScheduled(Trigger trigger) {
 		// TODO Auto-generated method stub
@@ -59,7 +77,18 @@ public class ReservationSchedulerListener implements SchedulerListener {
 
 	@Override
 	public void jobDeleted(JobKey jobKey) {
-		System.out.println(jobKey.getName());
+		
+		
+		try {
+			Long id = Long.parseLong(jobKey.getName());
+			resourceService.disabilitaRisorsaByReservationId(jobKey.getName());
+			plcService.aggiornaStatoPrenotazione(id,SchedulerManager.TERMINATA);
+			loggerService.logInfo(Level.INFO, "Finalizzazione Prenotazione:{0}", id);				
+			   
+		} catch (Exception e) {
+			loggerService.logException(Level.SEVERE,"ERORRE DISABILITAZIONE RISORSA", e);
+		}
+		
 		
 	}
 

@@ -8,12 +8,12 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="<%= request.getContextPath()%>/home.jsp">Home</a>
-                </li>               
-                </li>
+                    <a class="nav-link" href="<%= request.getContextPath()%>/public/home.jsp">Home</a>
+                </li>                                             
                 <li class="nav-item">
                     <a class="nav-link" href="<%= request.getContextPath()%>/logout">Logout</a>
                 </li>
+                
             </ul>
         </div>
     </nav>    

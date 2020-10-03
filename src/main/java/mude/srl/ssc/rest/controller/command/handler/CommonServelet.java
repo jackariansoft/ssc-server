@@ -15,12 +15,18 @@ import java.time.LocalDate;
 import java.util.TreeMap;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
 import mude.srl.ssc.entity.Users;
 import mude.srl.ssc.entity.utils.Pager;
 import mude.srl.ssc.entity.utils.Request;
@@ -35,13 +41,24 @@ import mude.srl.ssc.rest.controller.common.client.DateUtils;
  */
 public class CommonServelet extends HttpServlet {
 
-    protected Users user;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8046466840743552841L;
+	/**
+	 * 
+	 */
+	
+	protected Users user;
     protected SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     protected SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
    
     private DataSource dataSource;
+    
+    private WebApplicationContext springContext;
   
     public static final String REDIRECT_URL_PARAMETER  =  "redirect_url";
+    public static final String PUBLIC_DOC_ROOT="/public/";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -60,7 +77,13 @@ public class CommonServelet extends HttpServlet {
     protected Users getSessionUser() {
         return this.user;
     }
-
+    @Override
+    public void init(final ServletConfig config) throws ServletException {
+        super.init(config);
+        springContext = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
+        final AutowireCapableBeanFactory beanFactory = springContext.getAutowireCapableBeanFactory();
+        beanFactory.autowireBean(this);
+    }
     /**
      *
      * @param request

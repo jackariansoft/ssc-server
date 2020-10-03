@@ -22,10 +22,13 @@ import mude.srl.ssc.entity.Resource;
 import mude.srl.ssc.entity.ResourceReservation;
 import mude.srl.ssc.entity.utils.ResourceStatus;
 import mude.srl.ssc.entity.utils.Response;
+import mude.srl.ssc.exceptions.ReservationIntervalException;
 import mude.srl.ssc.service.log.LoggerSSC;
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
 import mude.srl.ssc.service.AbstractService;
 import mude.srl.ssc.service.log.LoggerService;
+import mude.srl.ssc.service.scheduler.trigger.listener.ReservetionTriggerListener;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -34,7 +37,7 @@ import org.springframework.stereotype.Repository;
  * @author Jack
  */
 @Repository
-public class PlcServiceImpl extends AbstractService implements PlcService {
+public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 
     @Autowired
     LoggerService loggerService;
@@ -105,7 +108,7 @@ public class PlcServiceImpl extends AbstractService implements PlcService {
             TypedQuery<Long> q = em.createQuery(
                      "SELECT COUNT(r) "
                    + "FROM ResourceReservation r  "
-                   + "WHERE r.resource = :resource AND  r.status IN (:status1,:status2) "
+                   + "WHERE r.resource = :resource AND  r.status IN (:status1,:status2,:status3) "
                     + "AND ( ( r.startTime BETWEEN :start AND :end ) "
                     + "OR (r.endTime BETWEEN :start AND :end) "
                     + "OR (r.startTime = :start AND r.endTime = :end)) ", Long.class);
@@ -113,6 +116,7 @@ public class PlcServiceImpl extends AbstractService implements PlcService {
             q.setParameter("resource", r);
             q.setParameter("status1", ResourceStatus.AVVIATA.getStatus());
             q.setParameter("status2", ResourceStatus.ATTESA.getStatus());
+            q.setParameter("status3", ResourceStatus.SOSPESA.getStatus());
             q.setParameter("start", request.getStart());
             q.setParameter("end", request.getEnd());
             
@@ -133,6 +137,8 @@ public class PlcServiceImpl extends AbstractService implements PlcService {
                 em.persist(reservation);
                 
                 
+            }else {
+            	throw new ReservationIntervalException("Intervallo prenotazione : ");
             }
             tx.commit();
                     
@@ -170,9 +176,10 @@ public class PlcServiceImpl extends AbstractService implements PlcService {
         }
         try {
             tx.begin();
-            Query q = em.createQuery("UPDATE ResourceReservation r SET r.status = :status,r.totalMinutes = :totalMinutes ");
+            Query q = em.createQuery("UPDATE ResourceReservation r SET r.status = :status,r.totalMinutes = :totalMinutes WHERE r.id = :id ");
             q.setParameter("status", status);
             q.setParameter("totalMinutes", r.getTotalMinutes());
+            q.setParameter("id", r.getId());
             q.executeUpdate();            
             tx.commit();
         }catch (Exception e) {
@@ -188,6 +195,42 @@ public class PlcServiceImpl extends AbstractService implements PlcService {
 		return resp;
 		
 	}
+	@Override
+	public Response<ResourceReservation> aggiornaStatoPrenotazione(Long id, Short status) throws Exception {
+		Response<ResourceReservation> resp  = new Response<ResourceReservation>();
+		EntityManager em = null;
+        EntityTransaction tx = null;
+
+        em = getEmForTransaction();
+        if (em == null) {
+            throw new SQLException("No database connection");
+        }
+        tx = em.getTransaction();
+        if (tx == null) {
+            throw new SQLException("No database transaction available");
+
+        }
+        try {
+            tx.begin();
+            Query q = em.createQuery("UPDATE ResourceReservation r SET r.status = :status WHERE r.id = :id");
+            q.setParameter("status", status);
+            q.setParameter("id",id);
+            q.executeUpdate();
+            ResourceReservation r = em.find(ResourceReservation.class,id);
+            resp.setResult(r);
+            tx.commit();
+        }catch (Exception e) {
+        	closeTransaction(tx);
+            loggerService.logException(Level.SEVERE, "Errore aggiornamento prenotazione", e);
+			throw e;
+			
+		}finally {
+			em.clear();
+			em.close();
+			
+		}
+		return resp;
+	}
 
 	@Override
 	public Resource getReourceByPlcAndTag(String plc_uid, String tag) throws Exception {
@@ -202,15 +245,91 @@ public class PlcServiceImpl extends AbstractService implements PlcService {
             resource = q.getSingleResult();
 
         } catch (NonUniqueResultException | NoResultException ex) {
-            loggerService.logException(Level.SEVERE, "getPlcByUID", ex);
+            
+        	loggerService.logException(Level.SEVERE, "getPlcByUID", ex);
 
         } catch (Exception ex) {
            loggerService.logException(Level.SEVERE, "getPlcByUID", ex);
         } finally {
-
+        	
         }
 
         return resource;
 	}
+
+	@Override
+	public Plc getPlcById(Long id) throws Exception {
+		Plc  plc  = null;
+		EntityManager em = null;
+		try {
+            em = getEm();
+            TypedQuery<Plc> q = em.createQuery("SELECT p FROM Plc p WHERE plc.id = :id ", Plc.class);
+            q.setParameter("id", id);
+            
+            plc = q.getSingleResult();
+
+        } catch (NonUniqueResultException | NoResultException ex) {
+            
+        	loggerService.logException(Level.SEVERE, "getPlcById", ex);
+
+        } catch (Exception ex) {
+           loggerService.logException(Level.SEVERE, "getPlcById", ex);
+        } finally {
+        	
+        }
+
+		return plc;
+	}
+
+	@Override
+	public Resource getReourceById(Long id) {
+		Resource r  =null;
+		EntityManager em = null;
+		try {
+            em = getEm();
+            
+            TypedQuery<Resource> q = em.createQuery("SELECT r FROM Resource r WHERE r.id = :id ", Resource.class);
+            q.setParameter("id", id);
+            
+            r = q.getSingleResult();
+
+        } catch (NonUniqueResultException | NoResultException ex) {
+            
+        	loggerService.logException(Level.SEVERE, "getPlcById", ex);
+
+        } catch (Exception ex) {
+           loggerService.logException(Level.SEVERE, "getPlcById", ex);
+        } finally {
+        	
+        }
+		return r;
+	}
+
+	@Override
+	public Resource getResourceByReservetionId(Long id) {
+		Resource r  =null;
+		EntityManager em = null;
+		try {
+            em = getEm();
+            
+            TypedQuery<ResourceReservation> q = em.createQuery("SELECT r FROM ResourceReservation r WHERE r.id = :id ", ResourceReservation.class);
+            q.setParameter("id", id);
+            
+            ResourceReservation rr = q.getSingleResult();
+            r = rr.getResource();
+
+        } catch (NonUniqueResultException | NoResultException ex) {
+            
+        	loggerService.logException(Level.SEVERE, "getPlcById", ex);
+
+        } catch (Exception ex) {
+           loggerService.logException(Level.SEVERE, "getPlcById", ex);
+        } finally {
+        	
+        }
+		return r;
+	}
+
+	
 
 }

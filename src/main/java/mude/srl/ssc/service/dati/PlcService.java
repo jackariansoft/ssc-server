@@ -19,6 +19,9 @@ public interface PlcService {
     
      public Plc getPlcByUID(String uid) throws Exception;
      
+     public Plc getPlcById(Long id) throws Exception;
+     
+     
      public Resource getReourceByPlcAndTag(Plc plc,String tag) throws Exception;
      
      public Resource getReourceByPlcAndTag(String plc_uid,String tag) throws Exception;
@@ -26,4 +29,9 @@ public interface PlcService {
      public ResourceReservation controllaPerAvvio(Resource r,RequestCommandResourceReservation request) throws Exception;
      
      public Response<ResourceReservation> aggiornaStatoPrenotazione(ResourceReservation r,Short status) throws Exception;
+     public Response<ResourceReservation> aggiornaStatoPrenotazione(Long id,Short status) throws Exception;
+
+	 public Resource getReourceById(Long id);
+	 
+	 public Resource getResourceByReservetionId(Long id);
 }

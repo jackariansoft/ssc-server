@@ -8,33 +8,52 @@ package mude.srl.ssc.rest.controller.login;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
 import mude.srl.ssc.entity.UserLog;
 import mude.srl.ssc.entity.Users;
 import mude.srl.ssc.entity.utils.Response;
 import mude.srl.ssc.rest.controller.command.handler.CommonServelet;
+import mude.srl.ssc.service.log.LoggerService;
 import mude.srl.ssc.service.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+
+
 
 /**
  *
  * @author Jack
  */
-@Controller
+@WebServlet
 public class LoginController extends CommonServelet{
 
-    @Autowired
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1084294997468132778L;
+	@Autowired
     UserService userService;
+    @Autowired
+    LoggerService loggerService;
     
-    @RequestMapping(path = "/login", produces = {MediaType.TEXT_HTML_VALUE}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    @Override
+  
+
+    
+       
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
          response.setContentType("text/html;charset=UTF-8");
         String login = request.getParameter("j_username");
@@ -70,7 +89,7 @@ public class LoginController extends CommonServelet{
 
                             request.setAttribute("msg", "Login or Password incorrect");
                             request.setAttribute(CommonServelet.REDIRECT_URL_PARAMETER, redirect_url);
-                            RequestDispatcher disp = request.getRequestDispatcher("login.jsp");
+                            RequestDispatcher disp = request.getRequestDispatcher(CommonServelet.PUBLIC_DOC_ROOT+"login.jsp");
                             disp.forward(request, response);
 
                         } else {
@@ -85,7 +104,7 @@ public class LoginController extends CommonServelet{
                                     //RequestDispatcher disp = request.getRequestDispatcher(redirect_url);
                                     //disp.forward(request, response);
                                 }else{
-                                    RequestDispatcher disp = request.getRequestDispatcher("home.jsp");
+                                    RequestDispatcher disp = request.getRequestDispatcher(CommonServelet.PUBLIC_DOC_ROOT+"/home.jsp");
                                     disp.forward(request, response);
                                 }
                             
@@ -96,14 +115,14 @@ public class LoginController extends CommonServelet{
                 }
             } else {
                 request.setAttribute("msg", "Provide Login and Password");
-                RequestDispatcher disp = request.getRequestDispatcher("login.jsp");
+                RequestDispatcher disp = request.getRequestDispatcher(CommonServelet.PUBLIC_DOC_ROOT+"login.jsp");
                 disp.forward(request, response);
             }
         } else {
 
             request.setAttribute("msg", "Provide Login and Password");
             request.setAttribute(CommonServelet.REDIRECT_URL_PARAMETER, redirect_url);
-            RequestDispatcher disp = request.getRequestDispatcher("login.jsp");
+            RequestDispatcher disp = request.getRequestDispatcher(CommonServelet.PUBLIC_DOC_ROOT+"login.jsp");
             disp.forward(request, response);
         }
     }

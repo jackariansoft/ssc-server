@@ -16,8 +16,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import mude.srl.ssc.service.scheduler.job.listener.ReservationJobLinstener;
-import mude.srl.ssc.service.scheduler.job.listener.ReservationSchedulerListener;
 import mude.srl.ssc.service.scheduler.jobs.utils.ReservationJobFactory;
+import mude.srl.ssc.service.scheduler.listener.ReservationSchedulerListener;
 import mude.srl.ssc.service.scheduler.trigger.listener.ReservetionTriggerListener;
 
 @Configuration
@@ -55,7 +55,10 @@ public class SchedulerConfiguration {
         capableBeanFactory.autowireBean(reservationJobListener);
         factory.setGlobalTriggerListeners(reservationListener);
         factory.setGlobalJobListeners(reservationJobListener);
-        factory.setSchedulerListeners(new ReservationSchedulerListener());
+        ReservationSchedulerListener shedulerListener = new ReservationSchedulerListener();
+        capableBeanFactory.autowireBean(shedulerListener);
+        
+        factory.setSchedulerListeners(shedulerListener);
         return factory;
     }
 

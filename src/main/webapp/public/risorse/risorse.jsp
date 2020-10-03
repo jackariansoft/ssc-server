@@ -1,7 +1,6 @@
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.net.URLDecoder"%>
-<%@page import="sezioniaccessi.Accessi"%>
-<%@page import="db.Users"%>
+<%@page import="mude.srl.ssc.entity.Users"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -11,7 +10,7 @@
         <%
 
             Users user = (Users) request.getSession(false).getAttribute("user");
-            if (user.getAccessType() == -1 || (user.getAccessType() & Accessi.GESTIONE_ORDINE) > 0) {
+           
         %>
         <html>
             <%@include file="../header.jsp" %>
@@ -91,12 +90,7 @@
 
 
             </body>
-        </html>
-        <% } else {%>
-        <html>
-            <body>No hai accesso a questa sezione.<a href="<%= request.getContextPath()%>/home.jsp">Home</a></body>
-        </html>
-        <%  }%>
+        </html>      
     </c:when>
     <c:otherwise>
         <%

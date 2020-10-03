@@ -17,11 +17,8 @@ import mude.srl.ssc.service.scheduler.SchedulerManager;
 @Component
 public class ReservetionTriggerListener implements TriggerListener{
 
-	@Autowired
-    private PlcService plcService;
 	
-	@Autowired
-	private LoggerService loggerService;
+	
 	
 	
 	private String name;
@@ -59,16 +56,7 @@ public class ReservetionTriggerListener implements TriggerListener{
 	public void triggerComplete(Trigger trigger, JobExecutionContext context,
 			CompletedExecutionInstruction triggerInstructionCode) {
 		   
-		   Object mappedReservation = context.getJobDetail().getJobDataMap().get(SchedulerManager.RESERVATION_ID_PROP);
-		   if(mappedReservation instanceof ResourceReservation) {
-			   ResourceReservation r = (ResourceReservation) mappedReservation;
-			   try {
-				plcService.aggiornaStatoPrenotazione(r,SchedulerManager.TERMINATA);
-				loggerService.logInfo(Level.INFO, "Finalizzazione Prenotazione:{0}", r);
-			} catch (Exception e) {
-				loggerService.logException(Level.SEVERE,"Errore chiusura prenotazione: "+r, e);
-			}
-		   }
+		   
 		
 	}
 

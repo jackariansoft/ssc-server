@@ -5,20 +5,12 @@
  */
 package mude.srl.ssc.rest.controller.command.handler;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import mude.srl.ssc.rest.controller.command.interfaces.Command;
 import mude.srl.ssc.rest.controller.command.interfaces.CommandMessageHandler;
@@ -26,7 +18,6 @@ import mude.srl.ssc.rest.controller.command.model.CommandMessageType;
 import mude.srl.ssc.rest.controller.command.model.MessageActivationCommand;
 import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
 import mude.srl.ssc.rest.controller.common.client.CommonRestClient;
-import mude.srl.ssc.rest.controller.logging.ActivationController;
 
 /**
  *
@@ -34,90 +25,52 @@ import mude.srl.ssc.rest.controller.logging.ActivationController;
  */
 public class ActivationCommandHandler extends CommonRestClient implements CommandMessageHandler {
 
-    @Override
-    public void handle(Command command, ResponseCommand responce) throws URISyntaxException {
-        if (command.getType().equals(CommandMessageType.ACTIVATION_TYPE.getType())) {
+	@Override
+	public void handle(Command command, ResponseCommand responce) throws Exception {
 
-            MessageActivationCommand c = (MessageActivationCommand) command;
-            ObjectMapper mapper = new ObjectMapper();
-//            CommandActivation com = new CommandActivation();
-//           
-//            com.setDest(c.getDestination());
-//            com.setAction(c.getAction());
-            //com.setMessage(c.getMessage());
-            
-            try {
-                Socket socket = new Socket(url, Integer.valueOf(port));
-                socket.setTcpNoDelay(true);
-                OutputStream output = socket.getOutputStream();
-                PrintWriter writer = new PrintWriter(output, true);
-                InputStream input = socket.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                //String writeValueAsString = mapper.writeValueAsString(c);
-                writer.println("action:"+((c.getDestination()*10)+c.getAction()));
+		if (command.getType().equals(CommandMessageType.ACTIVATION_TYPE.getType())) {
 
-                //socket.close();
-                String line;
+			MessageActivationCommand c = (MessageActivationCommand) command;
 
-                while ((line = reader.readLine()) != null) {
 
-                    Logger.getLogger(ActivationController.class.getName()).log(Level.INFO, line);
-                }
-                socket.close();
-                Logger.getLogger(ActivationController.class.getName()).log(Level.INFO, "Socket Close");
-            } catch (UnknownHostException ex) {
-                System.out.println("Server not found: " + ex.getMessage());
-            } catch (IOException ex) {
-                Logger.getLogger(ActivationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+			try {
+				Socket socket = new Socket(url, Integer.valueOf(port));
+				socket.setTcpNoDelay(true);
+				OutputStream output = socket.getOutputStream();
+				PrintWriter writer = new PrintWriter(output, true);
+				InputStream input = socket.getInputStream();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
-    }
+				String cmd = "action:"+((c.getDestination()*10)+c.getAction());
 
-    public class CommandActivation {
+				writer.println(cmd);
 
-        @JsonIgnore
-        private Integer action;
-        
-        private ArrayList<Integer> message;
-        @JsonIgnore
-        private Integer dest;
+				String resp="";
+				String line;
 
-        public CommandActivation() {
-            message  = new ArrayList<>(2);
-        }
+				while ((line = reader.readLine()) != null) {
+					
+					resp += line;
+					
+				}
+				if(resp==null||!resp.trim().equals(cmd)) {
+					responce.setErrorMessage("No message from plc");
+					responce.setStatus(500);
+					responce.setSucceccMessage(null);
+				}
+				
+				socket.close();
+			}catch (Exception e) {				
+				responce.setErrorMessage(e.getMessage());
+				responce.setStatus(500);
+				responce.setSucceccMessage(null);
+				
+			}finally {
 
-        
-        public int getAction() {
-            return action;
-        }
+			} 
+		}
 
-        public void setAction(int action) {
-            this.action = action;
-            message.add(1, action);
-        }
-       
+	}
 
-        public int getDest() {
-            return dest;
-        }
-
-        public void setDest(int dest) {
-            this.dest = dest;
-            message.add(0, dest);
-        }
-
-        public ArrayList<Integer> getMessage() {
-            return message;
-        }
-
-        public void setMessage(ArrayList<Integer> message) {
-            this.message = message;
-        }
-        
-        
-
-       
-        
-    }
 }
+

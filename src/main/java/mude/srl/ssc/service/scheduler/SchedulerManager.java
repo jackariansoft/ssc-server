@@ -54,8 +54,7 @@ public class SchedulerManager {
 			      .build();
 
 			  // Tell quartz to schedule the job using our trigger
-			  scheduler.scheduleJob(reservetionJob, trigger);
-				
+			  scheduler.scheduleJob(reservetionJob, trigger);	
 	
 		
 	}
