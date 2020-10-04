@@ -21,11 +21,12 @@ body > .container {
     }
 }
 .footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
+    clear: both;
+    position: relative;    
+    margin-bottom: -200px;
     height: 60px;
     line-height: 60px;
+    margin-left: 5px;
     background-color: #f5f5f5;
 }
 .footer > .container {
@@ -66,16 +67,7 @@ body > .container {
     }
 }
 
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-    /* Remove the padding we set earlier */
-    .masthead,
-    .marketing,
-    .footer {
-        padding-right: 0;
-        padding-left: 0;
-    }
-}
+
 .dropdown-item {
     display: block;
     width: 100%;

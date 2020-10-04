@@ -1,50 +1,6 @@
 <div class="row">
 
-    <div class="col-sm-5" style="margin-left:0px;padding: 0">
-
-        <div>
-            <div class="form-group col-sm-3 my-1" id="locationField">              
-                <input id="autocomplete"  placeholder="Inserisci indirizzo"    type="text"/>
-            </div>          
-            <form>
-                <div class="form-group col-sm-10 my-1" id="address">
-                    <div class="row">
-                        <div class="col-sm-7 my-1">
-                            <label class="mr-sm-2 form-control-sm " for="indirizzo">Indirizzo</label>
-                            <input class="form-control form-control-sm" id="indirizzo" disabled="true"/>
-                        </div>
-                        <div class="col-sm-3 my-1">
-                            <label class="mr-sm-2 form-control-sm " for="civico">Civico</label>
-                            <input class="form-control form-control-sm" id="civico" disabled="true"/>
-                        </div>
-                        <div class="col-sm-7 my-1">
-                            <label class="form-control-sm " for="citta">Citt&agrave;</label>
-                            <input class="form-control form-control-sm" id="citta" disabled="true"/>
-                        </div>
-                        <div class="col-sm-3 my-1">
-                            <label class="form-control-sm " for="provincia">Provincia</label>
-                            <input class="form-control form-control-sm" id="provincia" disabled="true"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-5 my-1">
-                            <label class="form-control-sm " for="regione">Regione</label>
-                            <input class="form-control form-control-sm" id="regione" disabled="true"/>
-                        </div>
-                        <div class="col-sm-3 my-1">
-                            <label class="form-control-sm " for="cap">CAP</label>
-                            <input class="form-control form-control-sm" id="cap" disabled="true"/>
-                        </div>
-                        <div class="col-sm-2 my-1">
-                            <label class="form-control-sm" for="country">Nazione</label>
-                            <input class="form-control form-control-sm" id="country" disabled="true"/>
-                        </div> 
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="col-sm-5" style="margin-left:0px;padding: 0">
+  <div class="col-sm-5" style="margin-left:0px;padding: 0">
         <div class="row" id="date-filter">
             <form>
                 <div class="form-row col-12">
@@ -79,105 +35,33 @@
         </div>
         <div class="row" id="order-filter">
             <form>
+            <div class="col-sm-3 my-1">            
+                        <label class="mr-sm-1 form-control-sm" for="channel">Risorce</label>
+                         <input id="channel"  class="form-control-sm" type="text">                      
+                    </div>
                 <div class="form-row col-12">
-
-                    <div class="col-sm-3 my-1">
-                        <label class="mr-sm-1 form-control-sm" for="status">Stato Ordini</label>
-                        <select class="form-control-sm" id="status">
-                            <option value="all">All</option>
-                            <option value="Pending">Pending</option>
-                            <option value="PendingAvailability">Attesa arrivo merce</option>
-                            <option value="Unshipped" selected="true">Non spedito</option>
-                            <option value="PartiallyShipped">Parzialmente Spedito</option>
-                            <option value="Shipped">Spedito</option>
-                            <option value="Shipping">In spedizione</option>
-                            <option value="Canceled">Cancellato</option>
-                            <option value="Unfulfillable">Non spedibile</option>                      
-                        </select> 
-                    </div>
-                    <div class="col-sm-3 my-1">
-                        <label class="mr-sm-2 form-control-sm" for="orderlist">Numero Ordine</label>
-                        <input type="text" class="form-control-sm" id="orderlist" title="Insesci numero ordini separati da virgola" placeholder="Lista numero ordine">
-                    </div>
-                    <div class="col-sm-3 my-1">            
-                        <label class="mr-sm-1 form-control-sm" for="channel">Markeplace</label>
-                         <input id="channel"  class="form-control-sm" type="text">
-                        <!--<select class="form-control-sm" id="channel" style="margin-left: 5px">
-                            <option value="all" code="">Tutti</option>
-                            <option value="1" code="MWS">Amazon</option>
-                            <option value="6" code="MAGE">Magento</option>
-                            <option value="4" code="EBAY">Ebay</option>
-                            <option value="8" code="WS">Webshopping</option>
-                            <option value="7" code="EP">EPrice</option>
-                            <option value="9" code="IBS">IBS</option>
-                        </select>  -->
-                    </div>
-                    <div class="col-sm-3 my-1">            
-                        <label class="mr-sm-1 form-control-sm" for="channel">Escludi Markeplace</label>
-                        <input id="channelExcl"  class="form-control-sm" type="text">
-                         <!--
-                        <select class="form-control-sm" id="channelExcl" style="margin-left: 5px">
-                            <option value="none" code="">Nessuno</option>
-                            <option value="1" code="MWS">Amazon</option>
-                            <option value="6" code="MAGE">Magento</option>
-                            <option value="4" code="EBAY">Ebay</option>
-                            <option value="8" code="WS">Webshopping</option>
-                            <option value="7" code="EP">EPrice</option>
-                            <option value="9" code="IBS">IBS</option>
-                        </select>  -->
-                    </div>
-                    <div class="col-sm-3 my-1">            
-                        <label class="mr-sm-1 form-control-sm" for="logistic-status">Stato Spedizione</label>
+                             
+                    <div class="col-sm-10 my-1">            
+                        <label class="mr-sm-1 form-control-sm" for="logistic-status">Stato Risorse</label>
                         <select class="form-control-sm" id="logistic-status" style="margin-left: 5px">
                             <option value="none">Nessuno</option>
-                            <option value="-1" >Attesa Processamento</option>
-                            <option value="1" >Confermata</option>
-                            <option value="2" >Annullata</option>
-                            <option value="3" >Rimandata</option>
-                            <option value="4" >Spedita</option>
+                            <option value="0" >Attesa</option>
+                            <option value="1" >Avviata</option>
+                            <option value="2" >Terminata</option>
+                            <option value="3" >Interrotta</option>
+                            <option value="4" >Scaduta</option>                            
+                            <option value="6" >Sospesa</option>
                         </select> 
-                    </div>
-                    <div class="col-sm-3 my-1">                     
-                        <label class="form-control-sm mr-sm-2" for="cod_rep" title="Codice Reparto">Cod Rep.</label>
-                        <input type="text" class="form-control-sm" id="cod_rep" title="Codice Reparto" placeholder="Codice Reparto">
-                    </div>
-                    <div class="col-sm-3 my-1">
-                        <label class="form-control-sm mr-sm-2" for="tip_doc" title="Tipo Documento">Tip. Doc.</label>
-                        <input type="text" class="form-control-sm" id="tip_doc" title="Tipo Documento" placeholder="Tipo Documento">
-                    </div>
-                    <div class="col-sm-3 my-1">
-                        <label class="form-control-sm mr-sm-2" for="num_doc" title="Numero Documento">Num. Doc.</label>
-                        <input type="text" class="form-control-sm" id="num_doc" title="Inserisci lista numero documenti serparati da virgola" placeholder="Lista Numero Documento">
-                    </div>
-                    <div class="col-sm-3 my-1">
-                        <label class="form-control-sm mr-sm-2" for="skus" title="Numero Documento">Skus</label>
-                        <input type="text" class="form-control-sm" id="skus" title="Inserisci lista sku serparati da virgola" placeholder="Lista Sku">
-                    </div>
+                    </div>                    
                 </div>
-                <div class="form-row col-12">
-                    <div class="col-auto my-1">                       
-                        <label class="mr-sm-2 form-control-sm" for="deferred">Deferred</label>
-                        <input type="checkbox" id="deferred" name="deferred">                       
-                    </div>
-                    <div class="col-auto my-1">
-                        <label class="mr-sm-2 form-control-sm " for="skiperror">Prosegui in caso di errore</label>                    
-                        <input type="checkbox" name="skiperror" id="skiperror"  title="Prosegui in caso di errore">                      
-                    </div>
-                    <div class="col-auto my-1">
-                        <label class="mr-sm-2 form-control-sm " for="skipalert">Disabilita Notifiche</label>                    
-                        <input type="checkbox" name="skipalert" id="skipalert"  title="Skip Row Errors">                      
-                    </div>
-                    <div class="col-auto my-1">
-                        <button type="button" id="import-order" class="btn btn-primary btn-sm">Importazione Info Ordini</button>
-                    </div>
-                    <div class="col-auto my-1">
+                <div class="form-row col-12">                                     
+                    <div class="col-auto my-3">
                         <button type="button" id="serach-order" class="btn btn-primary btn-sm">Cerca</button>
                     </div>
-                    <div class="col-auto my-1">
+                    <div class="col-auto my-3">
                         <button type="button" id="reset" class="btn btn-primary btn-sm">Reset</button>
                     </div>
                 </div>
-
 
             </form>
         </div>             

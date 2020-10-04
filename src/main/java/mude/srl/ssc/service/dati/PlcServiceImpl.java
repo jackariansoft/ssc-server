@@ -7,7 +7,9 @@ package mude.srl.ssc.service.dati;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +22,8 @@ import javax.persistence.TypedQuery;
 import mude.srl.ssc.entity.Plc;
 import mude.srl.ssc.entity.Resource;
 import mude.srl.ssc.entity.ResourceReservation;
+import mude.srl.ssc.entity.beans.Prenotazione;
+import mude.srl.ssc.entity.utils.Request;
 import mude.srl.ssc.entity.utils.ResourceStatus;
 import mude.srl.ssc.entity.utils.Response;
 import mude.srl.ssc.exceptions.ReservationIntervalException;
@@ -89,7 +93,10 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
     }
 
     @Override
-    public ResourceReservation controllaPerAvvio(Resource r, RequestCommandResourceReservation request) throws Exception {
+    public Response<ResourceReservation> controllaPerAvvio(Resource r, RequestCommandResourceReservation request) throws Exception {
+    	
+    	Response<ResourceReservation> resp  = new Response<ResourceReservation>();
+    	
         ResourceReservation reservation = null;
         EntityManager em = null;
         EntityTransaction tx = null;
@@ -138,7 +145,9 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
                 
                 
             }else {
-            	throw new ReservationIntervalException("Intervallo prenotazione : ");
+            	resp.setErrorDescription("Intervallo prenotazione non valido");
+            	resp.setFault(true);
+            	resp.setException(new ReservationIntervalException("Intervallo prenotazione : "));
             }
             tx.commit();
                     
@@ -153,7 +162,7 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
             
         }
 
-        return reservation;
+        return resp;
     }
 
     /**
@@ -330,6 +339,87 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 		return r;
 	}
 
+	@Override
+	public List<ResourceReservation> getReservation(Request req) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Resource> getResource(Request req) throws Exception{
+		List<Resource> resp  = new ArrayList<Resource>();
+		try {
+			TypedQuery<Resource> q = getEm().createQuery("SELECT r FROM Resource r",Resource.class);
+			
+		    List<Resource> rl = q.getResultList();
+		    
+		    if(rl!=null&&!rl.isEmpty()) {
+		    	resp.addAll(rl);
+		    }
+		    
+			      
+		}catch (Exception e) {
+			loggerService.logException(Level.SEVERE, "getResource", e);
+        	throw e;
+		}
+		
+		return resp ;
+	}
+
+	@Override
+	public List<Prenotazione> getReservationBeans(Request req) throws Exception {
+	    List<Prenotazione> res = new ArrayList<Prenotazione>();
+	    String sql_init  = "select\r\n"
+	    		+ "	rr.id,\r\n"
+	    		+ "	payload,\r\n"
+	    		+ "	request_time,\r\n"
+	    		+ "	resource,\r\n"
+	    		+ "	start_time,\r\n"
+	    		+ "	end_time,\r\n"
+	    		+ "	status,\r\n"
+	    		+ "	total_minutes,\r\n"
+	    		+ "	received_interrupt,\r\n"
+	    		+ "	receved_interrupt_at,\r\n"
+	    		+ "	interrupt_motivation,\r\n"
+	    		+ "	lastupdate,\r\n"
+	    		+ "	schedule_id,\r\n"
+	    		+ "	r.reference,\r\n"
+	    		+ "	r.tag,\r\n"
+	    		+ "	p2.id as plc_ref,\r\n"
+	    		+ "	p2.ip_address \r\n"
+	    		+ "from\r\n"
+	    		+ "	resource_reservation rr\r\n"
+	    		+ "join resource r on\r\n"
+	    		+ "	rr.resource = r.id\r\n"
+	    		+ "join plc p2 on\r\n"
+	    		+ "	r.plc = p2.id\r\n"
+	    		+ "	order by start_time desc";
+	    try {
+           
+           
+            Query q = getEm().createNativeQuery(sql_init, "PrenotazioniXML");
+           
+            List<Prenotazione> rl = q.getResultList();
+            if(!rl.isEmpty()) {
+            	res.addAll(rl);
+            }
+            
+          
+
+        } catch (NonUniqueResultException | NoResultException ex) {
+            
+        	loggerService.logException(Level.SEVERE, "getPlcById", ex);
+        	throw ex;
+        } catch (Exception ex) {
+           loggerService.logException(Level.SEVERE, "getPlcById", ex);
+           throw ex;
+        } finally {
+        	
+        }
+		return res;
+	}
+
+	
 	
 
 }

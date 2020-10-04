@@ -1,0 +1,24 @@
+<entity-mappings version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+    http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd">
+    <sql-result-set-mapping name="PrenotazioniXML">
+        <constructor-result target-class="mude.srl.ssc.entity.beans.Prenotazione">
+            <column name="id" class="java.lang.Long"/>
+            <column name="payload"/>
+            <column name="request_time" class="java.sql.Timestamp"/>
+            <column name="resource" class="java.lang.Long"/>           
+            <column name="start_time" class="java.sql.Timestamp"/>                        
+            <column name="end_time"  class="java.sql.Timestamp" />
+            <column name="status"  class="java.lang.Short" />
+            <column name="total_minutes"  class="java.lang.Integer" />
+            <column name="receved_interrupt_at"  class="java.sql.Timestamp" />
+            <column name="interrupt_motivation"/>
+            <column name="schedule_id" class="java.lang.Integer"/>
+            <column name="reference"/>
+            <column name="tag"/>
+            <column name="plc_ref" class="java.lang.Long"/>
+            <column name="ip_address"/>            
+        </constructor-result>
+    </sql-result-set-mapping>     
+</entity-mappings>

@@ -195,4 +195,39 @@ function aggiornaInfoOrdini() {
     
     $('#upload').window('open');
 }
+var stompClient = null;
+
+function setConnected(connected) {
+   console.log("Connesso");
+}
+
+function connectToService() {
+    var socket = new SockJS('http://localhost:8080/ssc/prenostazione-risorse');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        setConnected(true);
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/aggiornamento', function (update) {
+            console.log(update);
+        });
+    });
+}
+
+function disconnect() {
+    if (stompClient !== null) {
+        stompClient.disconnect();
+    }
+    setConnected(false);
+    console.log("Disconnected");
+}
+
+function sendName() {
+   
+}
+
+
+
+$(function () {
+   
+});
 

@@ -19,7 +19,7 @@
                 <main role="main" class="container-fluid">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="<%= request.getContextPath()%>/home.jsp">Home</a></li>
+                            <li class="breadcrumb-item"><a href="<%= request.getContextPath()%>/public/home.jsp">Home</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Ordini</li>
                         </ol>
                     </nav>

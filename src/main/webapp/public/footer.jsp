@@ -6,7 +6,7 @@
 
         String dates = formatter.format(new Date(System.currentTimeMillis()));
     %>
-    <div class="container" id="myfooter">
+    <div class="footer">
         <span class="text-center">&copy; mude s.r.l <%=dates %></span>
     </div>
 </footer>

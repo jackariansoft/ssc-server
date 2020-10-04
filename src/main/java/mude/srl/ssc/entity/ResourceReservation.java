@@ -7,22 +7,26 @@ package mude.srl.ssc.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import mude.srl.ssc.entity.beans.Prenotazione;
 
 /**
  *
@@ -31,18 +35,30 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "resource_reservation", catalog = "ssc", schema = "public")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "ResourceReservation.findAll", query = "SELECT r FROM ResourceReservation r"),
-    @NamedQuery(name = "ResourceReservation.findById", query = "SELECT r FROM ResourceReservation r WHERE r.id = :id"),
-    @NamedQuery(name = "ResourceReservation.findByPayload", query = "SELECT r FROM ResourceReservation r WHERE r.payload = :payload"),
-    @NamedQuery(name = "ResourceReservation.findByRequestTime", query = "SELECT r FROM ResourceReservation r WHERE r.requestTime = :requestTime"),
-    @NamedQuery(name = "ResourceReservation.findByStartTime", query = "SELECT r FROM ResourceReservation r WHERE r.startTime = :startTime"),
-    @NamedQuery(name = "ResourceReservation.findByEndTime", query = "SELECT r FROM ResourceReservation r WHERE r.endTime = :endTime"),
-    @NamedQuery(name = "ResourceReservation.findByStatus", query = "SELECT r FROM ResourceReservation r WHERE r.status = :status"),
-    @NamedQuery(name = "ResourceReservation.findByTotalMinutes", query = "SELECT r FROM ResourceReservation r WHERE r.totalMinutes = :totalMinutes"),
-    @NamedQuery(name = "ResourceReservation.findByReceivedInterrupt", query = "SELECT r FROM ResourceReservation r WHERE r.receivedInterrupt = :receivedInterrupt"),
-    @NamedQuery(name = "ResourceReservation.findByRecevedInterruptAt", query = "SELECT r FROM ResourceReservation r WHERE r.recevedInterruptAt = :recevedInterruptAt"),
-    @NamedQuery(name = "ResourceReservation.findByInterruptMotivation", query = "SELECT r FROM ResourceReservation r WHERE r.interruptMotivation = :interruptMotivation")})
+@SqlResultSetMapping(
+        name = "PrenotazioniXML",
+        classes = @ConstructorResult(
+                targetClass = Prenotazione.class,
+                columns = {
+                    @ColumnResult(name = "id", type = java.lang.Long.class),
+                    @ColumnResult(name = "payload", type = java.lang.String.class),
+                    @ColumnResult(name = "request_time", type = java.sql.Timestamp.class),
+                    @ColumnResult(name = "resource", type = java.lang.Long.class),
+                    @ColumnResult(name = "start_time", type = java.sql.Timestamp.class),
+                    @ColumnResult(name = "end_time", type = java.sql.Timestamp.class),
+                    @ColumnResult(name = "status", type = java.lang.Short.class),
+                    @ColumnResult(name = "total_minutes", type = java.lang.Integer.class),
+                    @ColumnResult(name = "receved_interrupt_at",type = java.sql.Timestamp.class),                    
+                    @ColumnResult(name = "interrupt_motivation", type = java.lang.String.class),
+                    @ColumnResult(name = "schedule_id", type = java.lang.Integer.class),
+                    @ColumnResult(name = "reference", type = java.lang.String.class),
+                    @ColumnResult(name = "tag", type = java.lang.String.class),
+                    @ColumnResult(name = "plc_ref", type = java.lang.Long.class),
+                    @ColumnResult(name = "ip_address", type = java.lang.String.class),
+              
+                }
+        )
+)
 public class ResourceReservation implements Serializable {
 
     private static final long serialVersionUID = 1L;

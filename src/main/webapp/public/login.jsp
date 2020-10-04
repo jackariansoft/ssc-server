@@ -6,7 +6,7 @@
 <html lang="en-IN">
     <head>
         <meta charset="utf-8">
-        <title>DG Market Login</title>
+        <title>SSC Login</title>
         <meta name="description" content="HTML5 CSS3 Login Signup Form Design Or Template">
         <link href='https://fonts.googleapis.com/css?family=Ropa+Sans' rel='stylesheet'>
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel='stylesheet'>

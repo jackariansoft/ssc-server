@@ -37,9 +37,7 @@ public class Response<T> {
     public static final String ERROR_MSG_DATABASE_ERROR = "DATABASE_ERROR";
     public static final String ERROR_MSG_ORDEDER_DATA_ERROR="ORDER DATA ERROR";
     public static final String ERROR_MSG_BATCH_IN_PROGRESS="BATCH_IN_PROGRESS";
-    public static final String ERROR_MSG_ORDER_SHIPPING_CREATION_ERROR ="ORDER_SHIPPING_CREATION_ERROR";
-    public static final String ERROR_MSG_FILE_SHIPPING_CREATION_ERROR ="FILE_SHIPPING_CREATION_ERROR";
-    public static final String ERROR_MSG_SHIPPING_ADDRESS_NOT_FOUND_ERROR ="SHIPPING_ADDRESS_NOT_FOUND";
+      
     public static final String ERROR_MSG_WEBSERICES_ERROR ="WEBSERICES_ERROR";
     
     
@@ -57,8 +55,19 @@ public class Response<T> {
     private String ip;
     private String user_agent;
     private String date;
+    private Long totalResult;
+    
+    
 
-    public String getUser() {
+    public Long getTotalResult() {
+		return totalResult;
+	}
+
+	public void setTotalResult(Long totalResult) {
+		this.totalResult = totalResult;
+	}
+
+	public String getUser() {
         return user;
     }
 

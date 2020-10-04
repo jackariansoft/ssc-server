@@ -11,6 +11,7 @@ import mude.srl.ssc.config.endpoint.ServiceEndpoint;
 import mude.srl.ssc.entity.Plc;
 import mude.srl.ssc.entity.Resource;
 import mude.srl.ssc.entity.ResourceReservation;
+import mude.srl.ssc.entity.utils.Response;
 import mude.srl.ssc.service.log.LoggerSSC;
 import mude.srl.ssc.rest.controller.command.handler.ActivationCommandHandler;
 import mude.srl.ssc.rest.controller.command.model.MessageActivationCommand;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +47,9 @@ public class CommandController {
 
      @Autowired
     private Scheduler scheduler;
+     
+     @Autowired
+     private SimpMessagingTemplate simpMessagingTemplate;
     /**
      * 
      * @param request
@@ -61,9 +66,11 @@ public class CommandController {
                     response.setErrorMessage("Resource not found");
                     response.setStatus(HttpStatus.BAD_REQUEST.value());
                 }else{
-                    ResourceReservation controllaPerAvvio = plcService.controllaPerAvvio(resource, request);
-                    if(controllaPerAvvio!=null){
-                        SchedulerManager.getInstance().avviaGestionePrenotazione(controllaPerAvvio,scheduler);
+                    Response<ResourceReservation> controllaPerAvvio = plcService.controllaPerAvvio(resource, request);
+                    
+                    if(!controllaPerAvvio.isFault()){
+                    	simpMessagingTemplate.convertAndSend("/aggiornamento", controllaPerAvvio);
+                        SchedulerManager.getInstance().avviaGestionePrenotazione(controllaPerAvvio.getResult(),scheduler);
                     }else{
                         
                     	loggerService.logException(Level.WARNING, "Nessuna prenotazione creata",new Exception("nessuna prenotazione creata"));

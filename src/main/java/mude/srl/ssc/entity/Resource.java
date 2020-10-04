@@ -24,6 +24,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  *
  * @author Jack
@@ -68,10 +70,13 @@ public class Resource implements Serializable {
     private Short busId;
     @JoinColumn(name = "plc", referencedColumnName = "id")
     @ManyToOne
+    @JsonIgnore
     private Plc plc;
+    @JsonIgnore
     @JoinColumn(name = "ssc", referencedColumnName = "id")
     @ManyToOne
     private Ssc ssc;
+    @JsonIgnore
     @OneToMany(mappedBy = "resource",cascade = {CascadeType.ALL })
     private Collection<ResourceReservation> reservation;
     

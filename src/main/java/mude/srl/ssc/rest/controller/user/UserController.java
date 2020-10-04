@@ -30,10 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     
     @Autowired
-    private UserService userService;
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-    @Autowired
     HttpServletRequest request;
     @Autowired
     HttpSession session;
