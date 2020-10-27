@@ -47,11 +47,13 @@ public class GestionePrenotazioneRisorsaCabina implements Job,InterruptableJob {
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
 
-		JobKey key = jec.getJobDetail().getKey();
+		//JobKey key = jec.getJobDetail().getKey();
 
 		JobDataMap dataMap = jec.getMergedJobDataMap();  // Note the difference from the previous example
 		Object get = dataMap.get(SchedulerManager.RESERVATION_ID_PROP);
+		
 		if(get instanceof ResourceReservation){
+			
 			ResourceReservation r  = (ResourceReservation) get;
 
 			System.out.println("Reservetion check: "+r.getPayload()+" Start: "+time_format.format(r.getStartTime())+" End: "+time_format.format(r.getEndTime()));
@@ -66,7 +68,7 @@ public class GestionePrenotazioneRisorsaCabina implements Job,InterruptableJob {
 				switch (r.getStatus()) {
 
 				case SchedulerManager.ATTESA: {
-					// TO DO AVVIA CON GESTIONE PLC
+					
 					try {
 						
 						resourceService.abilitaRisorsa(r.getResource());

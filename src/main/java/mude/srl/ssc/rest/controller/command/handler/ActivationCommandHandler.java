@@ -18,6 +18,7 @@ import mude.srl.ssc.rest.controller.command.model.CommandMessageType;
 import mude.srl.ssc.rest.controller.command.model.MessageActivationCommand;
 import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
 import mude.srl.ssc.rest.controller.common.client.CommonRestClient;
+import mude.srl.ssc.service.log.LoggerSSC;
 
 /**
  *
@@ -57,6 +58,7 @@ public class ActivationCommandHandler extends CommonRestClient implements Comman
 					responce.setErrorMessage("No message from plc");
 					responce.setStatus(500);
 					responce.setSucceccMessage(null);
+					
 				}
 				
 				socket.close();

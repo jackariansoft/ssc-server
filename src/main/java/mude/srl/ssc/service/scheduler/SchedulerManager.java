@@ -1,5 +1,21 @@
 package mude.srl.ssc.service.scheduler;
 
+import static org.quartz.CronScheduleBuilder.cronSchedule;
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
+import static org.quartz.SimpleScheduleBuilder.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
+import org.quartz.CronExpression;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -7,12 +23,6 @@ import org.quartz.Trigger;
 
 import mude.srl.ssc.entity.ResourceReservation;
 import mude.srl.ssc.service.scheduler.jobs.GestionePrenotazioneRisorsaCabina;
-import static org.quartz.JobBuilder.*;
-import static org.quartz.TriggerBuilder.*;
-import static org.quartz.SimpleScheduleBuilder.*;
-
-
-import org.quartz.JobDataMap;
 public class SchedulerManager {
 
 	
@@ -36,25 +46,52 @@ public class SchedulerManager {
 		return instance;
 	}
 
+	public CronExpression get(Date star,Date end) {
+		  
+	      return null;   
+	}
 	public void avviaGestionePrenotazione(ResourceReservation r, Scheduler scheduler) throws Exception {
 		
 		JobDataMap data  = new JobDataMap();
 		data.put(SchedulerManager.RESERVATION_ID_PROP, r);
 		
+		
+		 Calendar start  = Calendar.getInstance(Locale.ITALIAN);
+		 start.setTime(r.getStartTime());
+		 start.add(Calendar.MINUTE, 10);
+		 
+		 Calendar end  = Calendar.getInstance(Locale.ITALIAN);
+		 end.setTime(r.getEndTime());
+		 end.add(Calendar.MINUTE,1);
+		
+		
 		JobDetail reservetionJob = newJob(GestionePrenotazioneRisorsaCabina.class)
 				 .withIdentity(new JobKey(r.getId().toString(),RESERVATION_ID_GROUP))
 				 .setJobData(data).build();
-		Trigger trigger = newTrigger()
-			      .withIdentity(r.getId().toString(), RESERVATION_ID_GROUP)
+		
+		  Trigger triggerStart = newTrigger()
+			      .withIdentity(r.getStartTime().toString(), RESERVATION_ID_GROUP)
 			      .startAt(r.getStartTime())
-			      .withSchedule(simpleSchedule()
-			          .withIntervalInSeconds(30)
-			          .repeatForever())
-			      .endAt(r.getEndTime())
+			      //.withSchedule(simpleSchedule()
+			      //.withRepeatCount(1))
+			      //.withSchedule(cronSchedule(get(r.getStartTime(),r.getEndTime())))
+			      //.endAt(Date.from(start.toInstant()))
 			      .build();
-
+		  Trigger triggerEnd= newTrigger()
+			      .withIdentity(r.getEndTime().toString(), RESERVATION_ID_GROUP)
+			      .startAt(r.getEndTime())
+			      //.withSchedule(simpleSchedule()
+			     // .withRepeatCount(1))
+			      //.withSchedule(cronSchedule(get(r.getStartTime(),r.getEndTime())))
+			      //.endAt(Date.from(end.toInstant()))
+			      .build();
 			  // Tell quartz to schedule the job using our trigger
-			  scheduler.scheduleJob(reservetionJob, trigger);	
+		      Set<Trigger> triggers  = new HashSet<Trigger>();
+		      triggers.add(triggerStart);
+		      triggers.add(triggerEnd);
+		      
+			  scheduler.scheduleJob(reservetionJob, triggers,false);
+			  
 	
 		
 	}

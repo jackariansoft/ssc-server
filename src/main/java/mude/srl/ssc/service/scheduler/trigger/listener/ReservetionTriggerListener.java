@@ -1,18 +1,10 @@
 package mude.srl.ssc.service.scheduler.trigger.listener;
 
-import java.util.logging.Level;
-
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.quartz.Trigger.CompletedExecutionInstruction;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.quartz.TriggerListener;
-
-import mude.srl.ssc.entity.ResourceReservation;
-import mude.srl.ssc.service.dati.PlcService;
-import mude.srl.ssc.service.log.LoggerService;
-import mude.srl.ssc.service.scheduler.SchedulerManager;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ReservetionTriggerListener implements TriggerListener{

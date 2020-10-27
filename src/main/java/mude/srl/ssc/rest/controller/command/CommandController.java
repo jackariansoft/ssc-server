@@ -69,7 +69,7 @@ public class CommandController {
                     Response<ResourceReservation> controllaPerAvvio = plcService.controllaPerAvvio(resource, request);
                     
                     if(!controllaPerAvvio.isFault()){
-                    	simpMessagingTemplate.convertAndSend("/aggiornamento", controllaPerAvvio);
+                    	simpMessagingTemplate.convertAndSend("/aggiornamento", controllaPerAvvio.getResult());
                         SchedulerManager.getInstance().avviaGestionePrenotazione(controllaPerAvvio.getResult(),scheduler);
                     }else{
                         
@@ -122,5 +122,10 @@ public class CommandController {
             loggerService.logException(Level.SEVERE, null, ex);
         }
         return ResponseEntity.ok(response);
+    }
+    @RequestMapping(value = "/arduino", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> gestioneQrcode(@RequestBody QrCodeInfo request){
+    	System.out.println(request);
+    	return ResponseEntity.ok(request);
     }
 }

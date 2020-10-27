@@ -5,29 +5,31 @@
  */
 package mude.srl.ssc.rest.controller.logging;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mude.srl.ssc.config.utils.protocol.StringUtils;
-import mude.srl.ssc.service.log.LoggerSSC;
-import mude.srl.ssc.rest.controller.command.model.MessageActivationCommand;
-import mude.srl.ssc.rest.controller.logging.model.RequestTokenMessage;
-import mude.srl.ssc.rest.controller.logging.model.MIDMessage;
-import mude.srl.ssc.service.dati.EnergyService;
-import mude.srl.ssc.service.log.LoggerService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import mude.srl.ssc.config.utils.protocol.StringUtils;
+import mude.srl.ssc.rest.controller.command.model.MessageActivationCommand;
+import mude.srl.ssc.rest.controller.logging.model.MIDMessage;
+import mude.srl.ssc.rest.controller.logging.model.RequestTokenMessage;
+import mude.srl.ssc.service.dati.EnergyService;
+import mude.srl.ssc.service.log.LoggerService;
 
 /**
  *
@@ -36,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class ActivationController {
 
-    private final boolean DEBUG = false;
+    private final boolean DEBUG = true;
     private final StringUtils su = StringUtils.getInstance();
     private final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ITALIAN);
     
@@ -49,7 +51,7 @@ public class ActivationController {
     @RequestMapping(path = "/activation", produces = {MediaType.ALL_VALUE}, consumes = MediaType.ALL_VALUE)
     public void actiovationNode(HttpServletRequest request, HttpServletResponse resp) throws IOException, JsonProcessingException, InterruptedException {
         //To do register message
-        String test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        String  test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         test = su.clearString(test);
         if (DEBUG) {
             Logger.getLogger(ActivationController.class.getName()).log(Level.INFO, test);
@@ -104,13 +106,16 @@ public class ActivationController {
 
         MessageActivationCommand res = new MessageActivationCommand();
         res.setMID(readValue.getMID());
-        res.setAction(mid % 2 == 0 ? 1 : 2);
+        //res.setAction(mid % 2 == 0 ? 1 : 2);
+        res.setAction(3);
         res.setMessage(mid % 2 == 0 ? "VALID" : "NO_VALID");
-        res.setDestination((int) (mid%2));
+        res.setDestination(10);
         if (DEBUG) {
             Logger.getLogger(ActivationController.class.getName()).log(Level.INFO, res.toString());
         }
         mapper.writeValue(resp.getOutputStream(), res);
+        
+        
     }
     
     /**

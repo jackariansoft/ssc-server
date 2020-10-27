@@ -33,7 +33,9 @@ public class ResourceServiceImpl implements ResourceService{
 
 		ResponseCommand resp = new ResponseCommand();
 		h.handle(cmd, resp);
-
+		if(resp.getStatus()!=200) {
+			throw new Exception("Comando abilitazione risorsa fallito");
+		}
 
 
 	}

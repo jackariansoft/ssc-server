@@ -141,6 +141,7 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
                 reservation.setResource(r);
                 reservation.setPayload(request.getPayload());
                 reservation.setStatus(ResourceStatus.ATTESA.getStatus());
+                resp.setResult(reservation);
                 em.persist(reservation);
                 
                 
