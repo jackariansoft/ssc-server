@@ -45,6 +45,7 @@ public class ActivationCommandHandler extends CommonRestClient implements Comman
 				String cmd = "action:"+((c.getDestination()*10)+c.getAction());
 
 				writer.println(cmd);
+				writer.println();
 
 				String resp="";
 				String line;

@@ -20,6 +20,7 @@ import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservat
 import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
 import mude.srl.ssc.service.dati.PlcService;
 import mude.srl.ssc.service.log.LoggerService;
+import mude.srl.ssc.service.resource.ResourceService;
 import mude.srl.ssc.service.scheduler.SchedulerManager;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +46,11 @@ public class CommandController {
     @Autowired
     private LoggerService loggerService;
 
-     @Autowired
-    private Scheduler scheduler;
+    @Autowired
+    private ResourceService resourceService;
      
-     @Autowired
-     private SimpMessagingTemplate simpMessagingTemplate;
+//     @Autowired
+//     private SimpMessagingTemplate simpMessagingTemplate;
     /**
      * 
      * @param request
@@ -58,42 +59,19 @@ public class CommandController {
     @RequestMapping(value = ServiceEndpoint.RESOURCE_ATTIVA, method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCommand> gestionePrenotazioneRisorsa(@RequestBody RequestCommandResourceReservation request){
         
-        ResponseCommand response = new ResponseCommand();
-        try {
-            
-                Resource resource = plcService.getReourceByPlcAndTag(request.getPlc_uid(), request.getResource_tag());
-                if(resource==null){
-                    response.setErrorMessage("Resource not found");
-                    response.setStatus(HttpStatus.BAD_REQUEST.value());
-                }else{
-                    Response<ResourceReservation> controllaPerAvvio = plcService.controllaPerAvvio(resource, request);
-                    
-                    if(!controllaPerAvvio.isFault()){
-                    	simpMessagingTemplate.convertAndSend("/aggiornamento", controllaPerAvvio.getResult());
-                        SchedulerManager.getInstance().avviaGestionePrenotazione(controllaPerAvvio.getResult(),scheduler);
-                    }else{
-                        
-                    	loggerService.logException(Level.WARNING, "Nessuna prenotazione creata",new Exception("nessuna prenotazione creata"));
-                        
-                    }
-                    
-                }
-            
-
-        } catch (Exception ex) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-           loggerService.logException(Level.SEVERE, null, ex);
-            
-        }
-        return ResponseEntity.ok(response);
+    	 ResponseCommand response = resourceService.gestionePrenotazioneRisorsa(request);
+         return ResponseEntity.ok(response);
                 
     }
+    
+    
+    
     /**
      * Gestione comendi attivazione/disattivazione cabina
      * @param request
      * @return 
      */
-    @RequestMapping(value = ServiceEndpoint.RESOURCE_COMMAND, method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = ServiceEndpoint.RESOURCE_COMMAND, method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCommand> gestioneAttivazioneRisorse(@RequestBody RequestCommand request) {
         ResponseCommand response = new ResponseCommand();
         try {
@@ -123,9 +101,6 @@ public class CommandController {
         }
         return ResponseEntity.ok(response);
     }
-    @RequestMapping(value = "/arduino", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> gestioneQrcode(@RequestBody QrCodeInfo request){
-    	System.out.println(request);
-    	return ResponseEntity.ok(request);
-    }
+    
+    
 }

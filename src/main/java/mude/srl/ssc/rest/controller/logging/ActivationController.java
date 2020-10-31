@@ -26,10 +26,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mude.srl.ssc.config.utils.protocol.StringUtils;
 import mude.srl.ssc.rest.controller.command.model.MessageActivationCommand;
+import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
+import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
 import mude.srl.ssc.rest.controller.logging.model.MIDMessage;
 import mude.srl.ssc.rest.controller.logging.model.RequestTokenMessage;
 import mude.srl.ssc.service.dati.EnergyService;
 import mude.srl.ssc.service.log.LoggerService;
+import mude.srl.ssc.service.payload.RemoteService;
+import mude.srl.ssc.service.resource.ResourceService;
 
 /**
  *
@@ -47,6 +51,12 @@ public class ActivationController {
     
     @Autowired
     LoggerService loggerService;
+    
+    @Autowired
+    private RemoteService remoteService;
+    
+    @Autowired
+    private ResourceService resourceService;
     
     @RequestMapping(path = "/activation", produces = {MediaType.ALL_VALUE}, consumes = MediaType.ALL_VALUE)
     public void actiovationNode(HttpServletRequest request, HttpServletResponse resp) throws IOException, JsonProcessingException, InterruptedException {
@@ -105,16 +115,26 @@ public class ActivationController {
         //TO DO invio al server il payload di prenotazione;
 
         MessageActivationCommand res = new MessageActivationCommand();
-        res.setMID(readValue.getMID());
-        //res.setAction(mid % 2 == 0 ? 1 : 2);
+        res.setMID(readValue.getMID());        
         res.setAction(3);
-        res.setMessage(mid % 2 == 0 ? "VALID" : "NO_VALID");
+        res.setMessage("NO_VALID");
         res.setDestination(10);
         if (DEBUG) {
             Logger.getLogger(ActivationController.class.getName()).log(Level.INFO, res.toString());
         }
         mapper.writeValue(resp.getOutputStream(), res);
-        
+        String payload = readValue.getFifo().get(0).getValue().getToken();
+        try {
+        	
+			RequestCommandResourceReservation r = remoteService.validatePayload(payload.replaceAll("(\\r|\\n)", ""));
+			if(r!=null) {
+				ResponseCommand response = resourceService.gestionePrenotazioneRisorsa(r);
+			}
+			
+			
+		} catch (Exception e) {
+			loggerService.logException(Level.SEVERE, "Error on validatin payload: "+payload, e);
+		}
         
     }
     

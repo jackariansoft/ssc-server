@@ -1,13 +1,8 @@
 package mude.srl.ssc.rest.controller.resource;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.JsonObject;
-
-import org.eclipse.persistence.internal.descriptors.ObjectBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.gson.GsonBuilderCustomizer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mude.srl.ssc.config.endpoint.ServiceEndpoint;
 import mude.srl.ssc.entity.Resource;

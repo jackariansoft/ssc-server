@@ -56,6 +56,8 @@ public class Plc implements Serializable {
     private Long portaGestioneServizi;
     @Column(name = "uid",nullable = false)
     String uid;
+    @Column(name = "path",nullable = true)
+    String path;
     @OneToMany(mappedBy = "plc")
     private Collection<ExUserToNotifyFault> exUserToNotifyFaultCollection;
     @OneToMany(mappedBy = "plc")
@@ -171,5 +173,15 @@ public class Plc implements Serializable {
     public String toString() {
         return "mude.srl.ssc.entity.utils.Plc[ id=" + id + " ]";
     }
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+    
+    
     
 }

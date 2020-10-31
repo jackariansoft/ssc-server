@@ -1,6 +1,8 @@
 package mude.srl.ssc.service.resource;
 
 import mude.srl.ssc.entity.Resource;
+import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
+import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
 
 public interface ResourceService {
 	
@@ -16,6 +18,8 @@ public interface ResourceService {
 	public void disabilitaRisorsa(String tag) throws Exception;
 
 	public void disabilitaRisorsaByReservationId(String r) throws Exception;
+	
+	public ResponseCommand gestionePrenotazioneRisorsa(RequestCommandResourceReservation r);
 	
 	
 }

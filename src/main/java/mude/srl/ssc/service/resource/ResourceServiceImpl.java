@@ -1,19 +1,40 @@
 package mude.srl.ssc.service.resource;
 
+import java.util.logging.Level;
+
+import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import mude.srl.ssc.entity.Resource;
+import mude.srl.ssc.entity.ResourceReservation;
+import mude.srl.ssc.entity.utils.Response;
+import mude.srl.ssc.messaging.Message;
+import mude.srl.ssc.messaging.MessageInfoType;
 import mude.srl.ssc.rest.controller.command.handler.ActivationCommandHandler;
 import mude.srl.ssc.rest.controller.command.model.MessageActivationCommand;
+import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
 import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
 import mude.srl.ssc.service.dati.PlcService;
+import mude.srl.ssc.service.log.LoggerService;
+import mude.srl.ssc.service.scheduler.SchedulerManager;
 
 @Component
 public class ResourceServiceImpl implements ResourceService{
 
 	@Autowired
 	private PlcService plcService;
+	
+	@Autowired
+    private LoggerService loggerService;
+
+     @Autowired
+    private Scheduler scheduler;
+     
+     @Autowired
+     private SimpMessagingTemplate simpMessagingTemplate;
 
 	@Override
 	public void abilitaRisorsa(Resource r) throws Exception {
@@ -87,7 +108,8 @@ public class ResourceServiceImpl implements ResourceService{
 
 		if(r.getPlc()!=null) {
 			h.setUrl(r.getPlc().getIpAddress());
-			h.setPort(r.getPlc().getPortaGestioneServizi().toString());			
+			h.setPort(r.getPlc().getPortaGestioneServizi().toString());
+			h.setPath(r.getPlc().getPath());
 		}else {
 			throw new Exception("Info plc non presenti. Impossibile gestire la risorsa");
 		}
@@ -134,6 +156,43 @@ public class ResourceServiceImpl implements ResourceService{
 				throw new Exception(resp.getErrorMessage());
 			}
 		
+	}
+
+	@Override
+	public ResponseCommand gestionePrenotazioneRisorsa(RequestCommandResourceReservation request) {
+		ResponseCommand response = new ResponseCommand();
+        try {
+            
+                Resource resource = plcService.getReourceByPlcAndTag(request.getPlc_uid(), request.getResource_tag());
+                if(resource==null){
+                    response.setErrorMessage("Resource not found");
+                    response.setStatus(HttpStatus.BAD_REQUEST.value());
+                    
+                }else{
+                    Response<ResourceReservation> controllaPerAvvio = plcService.controllaPerAvvio(resource, request);
+                    
+                    if(!controllaPerAvvio.isFault()){
+                    	
+                        SchedulerManager.getInstance().avviaGestionePrenotazione(controllaPerAvvio.getResult(),scheduler);
+                        simpMessagingTemplate.convertAndSend("/aggiornamento", controllaPerAvvio.getResult());
+                        simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.INFO, "Ottimo!","La tua prenotazione e' stata schedulata.", request));
+                    }else{
+                        
+                    	simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.ERROR, "Errore inaspettato","Contattare il servizio clienti", request));
+                    	loggerService.logException(Level.WARNING, "Nessuna prenotazione creata:"+request,new Exception("nessuna prenotazione creata"));
+                        
+                    }
+                    
+                }
+            
+
+        } catch (Exception ex) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            loggerService.logException(Level.SEVERE, null, ex);
+            simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.ERROR, "Qrcode non valido","Il qrcode non e' stato validato. Possibile prenotazione scaduta", request));
+            
+        }
+        return response;
 	}
 
 }

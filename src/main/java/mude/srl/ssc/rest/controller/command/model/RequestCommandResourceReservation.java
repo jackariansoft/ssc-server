@@ -66,6 +66,11 @@ public class RequestCommandResourceReservation  extends RequestCommand{
     public void setEnd(Date end) {
         this.end = end;
     }
+
+	@Override
+	public String toString() {
+		return "RequestCommandResourceReservation [start=" + start + ", end=" + end + ", payload=" + payload + "]";
+	}
     
     
     

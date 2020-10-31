@@ -4,5 +4,5 @@ import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservat
 
 public interface RemoteService {
 
-	RequestCommandResourceReservation validatePayload(String payload);
+	RequestCommandResourceReservation validatePayload(String payload) throws Exception;
 }

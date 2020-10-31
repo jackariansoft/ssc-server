@@ -10,9 +10,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
 
+	public static final String AGGIORNAMENTO_WEBSOCKET_ENDPOINT="/aggiornamento";
+	public static final String INFO_WEBSOCKET_ENDPOINT="/info";
 	@Override
 	  public void configureMessageBroker(MessageBrokerRegistry config) {
-	    config.enableSimpleBroker("/aggiornamento","/info");
+	    config.enableSimpleBroker(AGGIORNAMENTO_WEBSOCKET_ENDPOINT,INFO_WEBSOCKET_ENDPOINT);
 	    config.setApplicationDestinationPrefixes("/prenotazioni");
 	  }
 
