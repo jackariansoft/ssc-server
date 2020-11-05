@@ -144,9 +144,12 @@ public class RemoteServiceImpl implements RemoteService {
 		 * Random interval
 		 */
 		Calendar c = Calendar.getInstance(Locale.ITALIAN);
+		c.set(Calendar.SECOND, 0);		
 		c.add(Calendar.MINUTE, interval);
+		
 		Date star_time = new Date(c.getTimeInMillis());
 		c.add(Calendar.MINUTE, interval * 3);
+		
 		Date endExclusive = c.getTime();
 		c.add(Calendar.MINUTE, interval * 4);
 
