@@ -11,13 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import mude.srl.ssc.entity.Configuration;
-import mude.srl.ssc.entity.Plc;
 import mude.srl.ssc.service.AbstractService;
 import mude.srl.ssc.service.log.LoggerService;
 
 
 @Component
-public class ServiceConfigurationImpl extends AbstractService<Configuration> implements ServiceConfiguration{
+public class ServiceConfigurationImpl extends AbstractService<Configuration> implements ConfigurationService{
 
 	
 	 @Autowired

@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import mude.srl.ssc.entity.Configuration;
 import mude.srl.ssc.entity.Plc;
 import mude.srl.ssc.entity.QrcodeTest;
 import mude.srl.ssc.entity.Resource;
@@ -43,6 +44,9 @@ public class RemoteServiceImpl implements RemoteService {
 
 	@Autowired
 	private ResourceService resourceService;
+	
+	@Autowired
+	private
 
 	@Autowired
 	private PlcService plcService;
@@ -92,6 +96,7 @@ public class RemoteServiceImpl implements RemoteService {
 				if(resource!=null) {
 					Plc plc  = resource.getPlc();
 					rcr = createFrom(rs, plc, resource, payload);
+					
 					if(!validateTimeInterval(rcr)) {
 						rcr = null;
 					}
