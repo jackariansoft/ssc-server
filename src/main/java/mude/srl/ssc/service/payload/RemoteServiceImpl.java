@@ -32,6 +32,7 @@ import mude.srl.ssc.messaging.Message;
 import mude.srl.ssc.messaging.MessageInfoType;
 import mude.srl.ssc.messaging.WebSocketConfig;
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
+import mude.srl.ssc.service.configuration.ConfigurationService;
 import mude.srl.ssc.service.dati.PlcService;
 import mude.srl.ssc.service.payload.model.Reservation;
 import mude.srl.ssc.service.resource.ResourceService;
@@ -42,11 +43,10 @@ public class RemoteServiceImpl implements RemoteService {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
-	@Autowired
-	private ResourceService resourceService;
+	
 	
 	@Autowired
-	private
+	private ConfigurationService configurationService;
 
 	@Autowired
 	private PlcService plcService;
@@ -67,19 +67,21 @@ public class RemoteServiceImpl implements RemoteService {
 	/**
 	 * Validazione payload TO DO inserimento codice per richiesta validazione
 	 * payload da server remoto
+	 * @throws Exception 
 	 * 
 	 */
 	@Override
-	public RequestCommandResourceReservation validatePayload(String payload) {
+	public RequestCommandResourceReservation validatePayload(String payload) throws Exception {
 
+		Configuration conf   = configurationService.getCurrentValidConfig();
 		// Response<QrcodeTest> resp = resourceService.getTestBy(payload);
 		RequestCommandResourceReservation rcr = null;
 		/**
 		 * Chimata al servizio remoto per validazione  token
 		 */
 		RestTemplate httpClient = new RestTemplateBuilder()
-				.uriTemplateHandler(new RootUriTemplateHandler("https://" + domain))
-				.defaultHeader("Authorization", "Token " + apiKey)
+				.uriTemplateHandler(new RootUriTemplateHandler("https://" + conf.getEndpoint()))
+				.defaultHeader("Authorization", "Token " + conf.getUrlApikey())
 				.errorHandler(new RemoteServiceResponseErrorHandler()).build();
 
 		httpClient.getMessageConverters().stream().filter(AbstractJackson2HttpMessageConverter.class::isInstance)
