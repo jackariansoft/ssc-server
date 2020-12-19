@@ -59,8 +59,7 @@ public class RemoteServiceImpl implements RemoteService {
 	private TreeMap<String, RequestCommandResourceReservation> mokData;
 	private ArrayList<String> payloadTest = new ArrayList<String>();
 	private ArrayList<String> resource = new ArrayList<String>();
-	public static final String domain  = "camajora-staging.donodoo.it";
-	public static final String apiKey  = "2a3851a9a3955fb7525564e3e4306b368c32b8131b572361009cba884e945ad7";
+	
 	/**
 	 * Validazione payload TO DO inserimento codice per richiesta validazione
 	 * payload da server remoto
