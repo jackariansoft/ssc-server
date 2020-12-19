@@ -93,6 +93,29 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 
         return resource;
     }
+    
+    @Override
+	public Resource getReourceByTag(String tag) throws Exception {
+    	 Resource resource = null;
+         EntityManager em = null;
+         try {
+             em = getEm();
+             TypedQuery<Resource> q = em.createQuery("SELECT r FROM Resource r WHERE  r.tag =:tag ", Resource.class);
+            
+             q.setParameter("tag", tag);
+             resource = q.getSingleResult();
+
+         } catch (NonUniqueResultException | NoResultException ex) {
+             loggerService.logException(Level.SEVERE, "getPlcByUID", ex);
+
+         } catch (Exception ex) {
+            loggerService.logException(Level.SEVERE, "getPlcByUID", ex);
+         } finally {
+
+         }
+
+         return resource;
+	}
 
     @Override
     public Response<ResourceReservation> controllaPerAvvio(Resource r, RequestCommandResourceReservation request) throws Exception {
@@ -426,6 +449,8 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 	public QrcodeTest getQrcodeTestById(String id) throws Exception {
 		return getEm().find(QrcodeTest.class, id);
 	}
+
+	
 
 	
 	

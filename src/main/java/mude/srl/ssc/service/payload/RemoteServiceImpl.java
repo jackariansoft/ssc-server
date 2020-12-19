@@ -24,12 +24,14 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-
+import mude.srl.ssc.entity.Plc;
 import mude.srl.ssc.entity.QrcodeTest;
+import mude.srl.ssc.entity.Resource;
 import mude.srl.ssc.messaging.Message;
 import mude.srl.ssc.messaging.MessageInfoType;
 import mude.srl.ssc.messaging.WebSocketConfig;
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
+import mude.srl.ssc.service.dati.PlcService;
 import mude.srl.ssc.service.payload.model.Reservation;
 import mude.srl.ssc.service.resource.ResourceService;
 
@@ -42,6 +44,9 @@ public class RemoteServiceImpl implements RemoteService {
 	@Autowired
 	private ResourceService resourceService;
 
+	@Autowired
+	private PlcService plcService;
+	
 	int interval_in_minutes = 10;
 	//private String domain = "https://camajora-staging.donodoo.it";
 
@@ -65,6 +70,10 @@ public class RemoteServiceImpl implements RemoteService {
 	public RequestCommandResourceReservation validatePayload(String payload) {
 
 		// Response<QrcodeTest> resp = resourceService.getTestBy(payload);
+		RequestCommandResourceReservation rcr = null;
+		/**
+		 * Chimata al servizio remoto per validazione  token
+		 */
 		RestTemplate httpClient = new RestTemplateBuilder()
 				.uriTemplateHandler(new RootUriTemplateHandler("https://" + domain))
 				.defaultHeader("Authorization", "Token " + apiKey)
@@ -78,13 +87,38 @@ public class RemoteServiceImpl implements RemoteService {
 		//httpClient.postForObject("", request, responseType, uriVariables);
 		Reservation rs = httpClient.postForObject("/api/v1/unlock",
 				new mude.srl.ssc.service.payload.model.UnlockRequest(payload), Reservation.class);
+		if(rs!=null) {
+			try {
+				Resource resource = plcService.getReourceByTag(rs.getResourceSku());
+				if(resource!=null) {
+					Plc plc  = resource.getPlc();
+					rcr = createFrom(rs, plc, resource, payload);
+					if(!validateTimeInterval(rcr)) {
+						rcr = null;
+					}
+				}
+				
+			} catch (Exception e) {
+				
+			}
+		}
 		
 		
-		RequestCommandResourceReservation r = null;
 
 		
 
-		return r;
+		return rcr;
+	}
+	protected RequestCommandResourceReservation createFrom(Reservation result,Plc plc,Resource r,String  payload) {
+		RequestCommandResourceReservation command = new RequestCommandResourceReservation();
+		command.setAction(1);
+		command.setEnd(result.getDateEnd());
+		command.setStart(result.getDateStart());
+		command.setPlc_uid(plc.getUid());
+		command.setResource_tag(result.getResourceSku());
+		command.setPayload(payload);
+
+		return command;
 	}
 
 	protected RequestCommandResourceReservation createFromTest(QrcodeTest result) {

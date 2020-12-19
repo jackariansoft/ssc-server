@@ -30,6 +30,7 @@ public interface PlcService {
      public Resource getReourceByPlcAndTag(Plc plc,String tag) throws Exception;
      
      public Resource getReourceByPlcAndTag(String plc_uid,String tag) throws Exception;
+     public Resource getReourceByTag(String tag) throws Exception;
      
      public Response<ResourceReservation> controllaPerAvvio(Resource r,RequestCommandResourceReservation request) throws Exception;
      
