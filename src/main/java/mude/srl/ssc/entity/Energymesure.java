@@ -8,6 +8,7 @@ package mude.srl.ssc.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,8 +20,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -28,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(catalog = "ssc", schema = "public")
-@XmlRootElement
+//@XmlRootElement
 public class Energymesure implements Serializable {
 
     private static final long serialVersionUID = 1L;

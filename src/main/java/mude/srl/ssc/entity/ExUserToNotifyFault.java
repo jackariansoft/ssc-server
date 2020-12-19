@@ -18,7 +18,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
+//import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "ex_user_to_notify_fault", catalog = "ssc", schema = "public")
-@XmlRootElement
+//@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ExUserToNotifyFault.findAll", query = "SELECT e FROM ExUserToNotifyFault e"),
     @NamedQuery(name = "ExUserToNotifyFault.findByEmail", query = "SELECT e FROM ExUserToNotifyFault e WHERE e.email = :email"),
