@@ -56,58 +56,59 @@ function populateUrlparams() {
     return urlParams;
 }
 
-function MyMap() {
-    this.keys = new Array();
-    this.data = new Object();
-    this.put = function (key, value) {
-
-        if (this.keys[key] === null || this.keys[key] === undefined) {
-            this.keys.push(key);
-            this.data[key] = value;
-        }
-
-    };
-    this.get = function (key) {
-        return this.data[key];
-    };
-    this.remove = function (key) {
-        this.keys.remove(key);
-        this.data[key] = null;
-    };
-    this.clear = function () {
+class MyMap {
+    constructor() {
         this.keys = new Array();
         this.data = new Object();
-    };
-    this.each = function (fn) {
-        if (typeof fn !== 'function') {
-            return;
-        }
-        var len = this.keys.length;
-        for (var i = 0; i < len; i++) {
-            var k = this.keys[i];
-            fn(k, this.data[k], i);
-        }
-    };
-    this.entrys = function () {
-        var len = this.keys.length;
-        var entrys = new Array(len);
-        for (var i = 0; i < len; i++) {
-            entrys[i] = {
-                key: this.keys[i],
-                value: this.data[i]
-            };
-        }
-        return entrys;
-    };
-    this.isEmpty = function () {
-        return this.keys.length === 0;
-    };
-    this.size = function () {
-        return this.keys.length;
-    };
+        this.put = function(key, value) {
 
-}
-;
+            if (this.keys[key] === null || this.keys[key] === undefined) {
+                this.keys.push(key);
+                this.data[key] = value;
+            }
+
+        };
+        this.get = function(key) {
+            return this.data[key];
+        };
+        this.remove = function(key) {
+            this.keys.remove(key);
+            this.data[key] = null;
+        };
+        this.clear = function() {
+            this.keys = new Array();
+            this.data = new Object();
+        };
+        this.each = function(fn) {
+            if (typeof fn !== 'function') {
+                return;
+            }
+            var len = this.keys.length;
+            for (var i = 0; i < len; i++) {
+                var k = this.keys[i];
+                fn(k, this.data[k], i);
+            }
+        };
+        this.entrys = function() {
+            var len = this.keys.length;
+            var entrys = new Array(len);
+            for (var i = 0; i < len; i++) {
+                entrys[i] = {
+                    key: this.keys[i],
+                    value: this.data[i]
+                };
+            }
+            return entrys;
+        };
+        this.isEmpty = function() {
+            return this.keys.length === 0;
+        };
+        this.size = function() {
+            return this.keys.length;
+        };
+
+    }
+};
 
 
 
@@ -189,15 +190,13 @@ function setFieldFormOrdini(urlParams) {
     $('#start').datepicker("setDate", urlParams.start);
     $('#end').datepicker("setDate", urlParams.end);
 
-    $("#status option").filter(function () {
-        return $(this).val() === urlParams.status;
+    $("#logistic-status option").filter(function () {
+        return $(this).val() === urlParams.logistic-status;
     }).prop('selected', true);
     $("#channel option").filter(function () {
         return $(this).val() === urlParams.channel;
     }).prop('selected', true);
-    $("#channelExcl option").filter(function () {
-        return $(this).val() === urlParams.channelExcl;
-    }).prop('selected', true);
+    
 }
 /**
  * 
@@ -209,14 +208,13 @@ function setQueryStringOrdini(page, pager) {
 
     var staticLink = getChunkStringUrlNotEnd("start");
     staticLink += getChunkStringUrl("end");
-    staticLink += getChunkStringUrl("channel");
-    staticLink += getChunkStringUrl("channelExcl");
-    staticLink += getChunkStringUrl("status");
+    staticLink += getChunkStringUrl("channel");   
+    staticLink += getChunkStringUrl("logistic-status");
     var options = pager.pagination('options');
     staticLink += '&page=' + (options.pageNumber === 0 ? 1 : options.pageNumber);
     staticLink += '&pageSize=' + options.pageSize;
 
-    window.history.pushState("object or string", "Title", "/dashboard/" + page + "?" + staticLink.trim());
+    window.history.pushState("object or string", "Title", "/ssc/" + page + "?" + staticLink.trim());
 
 }
 

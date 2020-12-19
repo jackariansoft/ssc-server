@@ -43,6 +43,7 @@ public class ServiceEndpoint {
     public static final String RESOURCE = ROOT_END_POINT+"/resource";
     public static final String RESOURCE_COMMAND =RESOURCE+"/command";
     public static final String RESOURCE_ATTIVA =RESOURCE+"/attiva-prenotazione";
+    public static final String RESOURCE_RESERVATIONS =RESOURCE+"/reservation";
     
 
 }

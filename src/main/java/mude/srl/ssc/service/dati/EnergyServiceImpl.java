@@ -23,13 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jack
  */
 @Repository
-public class EnergyServiceImpl extends AbstractService implements EnergyService {
+public class EnergyServiceImpl extends AbstractService<Energymesure> implements EnergyService {
 
     @Autowired
     PlcService plcService;
 
-//    @Resource(authenticationType = Resource.AuthenticationType.CONTAINER)
-//    private SessionContext sessionContext;
+
     @Transactional
     @Override
     public void saveEnergyConsuption(String[] consum) throws Exception {

@@ -15,7 +15,9 @@ public enum ResourceStatus {
     TERMINATA(Short.valueOf("2")),
     INTERROTTA(Short.valueOf("3")),
     SCADUTA(Short.valueOf("4")),
-    PAYLOAD_NON_VALIDO(Short.valueOf("5"));
+    PAYLOAD_NON_VALIDO(Short.valueOf("5")),
+    SOSPESA(Short.valueOf("6"));
+    
     private final Short status;
 
     private ResourceStatus(Short status) {

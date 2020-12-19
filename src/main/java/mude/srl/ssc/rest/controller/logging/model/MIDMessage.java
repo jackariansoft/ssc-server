@@ -17,10 +17,13 @@ public class MIDMessage {
 
     @JsonProperty("MID")
     private long MID;
+    
     @JsonProperty("ST")
     private long ST;
+    
     @JsonProperty("UID")
     private long UID;
+    
     @JsonProperty("MV")
     private String MV;
 

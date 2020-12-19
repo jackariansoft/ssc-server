@@ -29,7 +29,7 @@ public class LoggerSSC {
 
     
     
-    private static final Logger LOGGER = Logger.getLogger("LoggerSpedizioni");
+    private static final Logger LOGGER = Logger.getLogger("LoggerSmartStation");
 
     public Logger getLogger() {
         return LOGGER;
@@ -39,32 +39,26 @@ public class LoggerSSC {
     private static LoggerSSC instance;
    
 
-    public static final int NO_QUANTY_AVAILABLE = 0;
+   
     public static final int INSERTED = 1;
     public static final int DOCUMENT_ORDER_NOT_INSERTED = 2;
-    public static final int NO_CONNECTION = 3;
-    public static final int ERRORE_INSERIMENTO_ANAGRAFICA = 4;
-    public static final int ERRORE_INSERIMENTO_ORDINE = 5;
-    public static final int ERRORE_INSERIMENTO_RIGA_ORDINE = 6;
-    public static final int ERRORE_INSERIMENTO_RIGA_ORDINE_NO_CONNECTION = 9;
-    public static final int ERRORE_INSERIMENTO_RIGA_ORDINE_DOCUMENTO = 7;
-    public static final int ERRORE_INSERIMENTO_DOCUMENTO_FINALE = 8;
-    public static final int ERRORE_INSERIMENTO_ORDINE_MAGENTO = 21;
+    public static final int NO_CONNECTION = 3;   
+    public static final int ERRORE_INSERIMENTO_PRENOTAZIONE_RISORSA = 21;
     public static final int NO_ORDER_ROW = 9;
     public static final int GENERAL_ERROR = 10;
     public static final int NO_ADDRESS_ROW = 11;
     public static final int ERROR_BUILDING_ROW_ADDRESS = 12;
     public static final int ERROR_BLOCK_QTY_PENDIG_ORDER = 13;
     public static final int ERROR_BUILDING_ROW_ITEM_PENDING = 14;
-    public static final int PRODUCT_NOT_FOUND_EXCEPTION = 15;
+    public static final int RESOURCE_NOT_FOUND_EXCEPTION = 15;
     public static final int SQL_EXCEPTION = 16;
     public static final int ORDER_NUMEBER_EXCEPTION = 17;
     public static final int NULL_POINTER_EXCEPTION = 18;
-    public static final int ERROR_SBLOCK_QTY_PENDIG_ORDER = 19;
-    public static final int NO_RESULT_FOR_CURRENT_PRODUCT_LIST = 20;
+    public static final int ERROR_SBLOCK_QTY_PENDIG_RESERVATION = 19;
+    public static final int NO_RESULT_FOR_CURRENT_RESOURCE_LIST = 20;
     
-    public static final String SHIPPING_FOLDER = "/var/log/spedizioni";
-    public static final String SHIPPING_FOLDER_FTP = "/var/log/spedizioni/ftp";
+    public static final String FILE_FOLDER = "/var/log/spedizioni";
+    public static final String FILE_FOLDER_FTP = "/var/log/spedizioni/ftp";
 
     private  LoggerSSC(EmailSenderService emailSenderService) throws IOException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");

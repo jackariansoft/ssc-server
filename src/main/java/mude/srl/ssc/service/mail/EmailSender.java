@@ -135,7 +135,7 @@ public class EmailSender {
 
             }
             props.setProperty("mail.smtp.host", smtpServer);
-            props.setProperty("mail.debug", "true");
+            //props.setProperty("mail.debug", "true");
 
             Session session = Session.getInstance(props, new javax.mail.Authenticator() {
                 @Override

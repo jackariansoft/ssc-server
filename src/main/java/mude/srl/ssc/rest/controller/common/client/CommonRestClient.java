@@ -16,6 +16,7 @@ public class CommonRestClient {
     protected String url  ="192.168.2.187";
     protected String proto = "https";
     protected String port  = "10000";
+    protected String path  = null;
     private RestTemplate rest;
 
     public CommonRestClient() {
@@ -55,6 +56,19 @@ public class CommonRestClient {
     public void setPort(String port) {
         this.port = port;
     }
+
+
+
+	public String getPath() {
+		return path;
+	}
+
+
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+    
     
     
     

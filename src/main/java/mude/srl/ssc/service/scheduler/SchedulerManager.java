@@ -1,75 +1,98 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mude.srl.ssc.service.scheduler;
 
-import java.util.Date;
-import mude.srl.ssc.entity.ResourceReservation;
-import mude.srl.ssc.service.scheduler.jobs.GestionePrenotazioneRisorsaCabina;
 import static org.quartz.JobBuilder.newJob;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
-import org.quartz.Trigger;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-/**
- *
- * @author Jack
- */
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
+import org.quartz.CronExpression;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.Trigger;
+
+import mude.srl.ssc.entity.ResourceReservation;
+import mude.srl.ssc.service.scheduler.jobs.GestionePrenotazioneRisorsaCabina;
 public class SchedulerManager {
 
-    //private final StdSchedulerFactory sf;
-    //private final Scheduler scheduler;
-    public static final String RESERVATION_GROUP = "RESERVESION";
-    public static final String RESERVATION_ID_PROP = "RESERVESION_ID";
+	
+	public static final String RESERVATION_ID_PROP = "ID_RISORSA";
+	public static final String RESERVATION_ID_GROUP = "RESERVATION";
+	
+	public static final short ATTESA = 0;
+	public static final short AVVIATA = 1;
+	public static final short TERMINATA = 2;
+	public static final short INTERROTTA = 3;
+	public static final short SCADUTA = 4;
+	public static final short INVALID_PAYLOAD = 5;
+	public static final short SOSPESA = 6;
+	
+	private static SchedulerManager instance;
 
-    private static SchedulerManager instance = null;
+	public static SchedulerManager getInstance() {
+		if(instance==null) {
+			instance = new SchedulerManager();
+		}
+		return instance;
+	}
 
-    private SchedulerManager() throws SchedulerException {
-//        sf = new StdSchedulerFactory();
-//        scheduler = sf.getScheduler();
-//        scheduler.start();
-    }
-
-    public static synchronized SchedulerManager getInstance() throws SchedulerException {
-        if (instance == null) {
-            instance = new SchedulerManager();
-
-        }
-        return instance;
-    }
-
-    public void avviaGestionePrenotazione(ResourceReservation reservation,Scheduler scheduler) throws SchedulerException {
-
-         if(scheduler.isInStandbyMode()){
-            scheduler.start();
-        }
-        JobDataMap resMap  = new JobDataMap();
-        resMap.put(RESERVATION_ID_PROP, reservation);
-        JobDetail job = newJob(GestionePrenotazioneRisorsaCabina.class)
-                .withIdentity(reservation.getPayload(),RESERVATION_GROUP) // name "myJob", group "group1"                
-                .usingJobData(resMap)
-                .build();
-        
-        Trigger trigger = newTrigger()
-                .withIdentity(reservation.getPayload(), RESERVATION_GROUP)
-                .startAt(new Date(System.currentTimeMillis())) // if a start time is not given (if this line were omitted), "now" is implied
-                .withSchedule(simpleSchedule()
-                        
-                        //.withIntervalInMinutes(15)
-                        .withIntervalInSeconds(10)                        
-                        .withRepeatCount(1))
-                .endAt(reservation.getEndTime())// note that 10 repeats will give a total of 11 firings
-                .forJob(job) // identify job with handle to its JobDetail itself                   
-                .build();
-        scheduler.scheduleJob(job, trigger);
-       
-        
-    }
+	public CronExpression get(Date star,Date end) {
+		  
+	      return null;   
+	}
+	public void avviaGestionePrenotazione(ResourceReservation r, Scheduler scheduler) throws Exception {
+		
+		JobDataMap data  = new JobDataMap();
+		data.put(SchedulerManager.RESERVATION_ID_PROP, r);
+		
+		
+		 Calendar start  = Calendar.getInstance(Locale.ITALIAN);
+		 start.setTime(r.getStartTime());
+		 start.add(Calendar.MINUTE, 10);
+		 
+		 Calendar end  = Calendar.getInstance(Locale.ITALIAN);
+		 end.setTime(r.getEndTime());
+		 end.add(Calendar.MINUTE,1);
+		
+		
+		JobDetail reservetionJob = newJob(GestionePrenotazioneRisorsaCabina.class)
+				 .withIdentity(new JobKey(r.getId().toString(),RESERVATION_ID_GROUP))
+				 .setJobData(data).build();
+		
+		  Trigger triggerStart = newTrigger()
+			      .withIdentity(r.getStartTime().toString(), RESERVATION_ID_GROUP)
+			      .startAt(r.getStartTime())
+			      //.withSchedule(simpleSchedule()
+			      //.withRepeatCount(1))
+			      //.withSchedule(cronSchedule(get(r.getStartTime(),r.getEndTime())))
+			      //.endAt(Date.from(start.toInstant()))
+			      .build();
+		  Trigger triggerEnd= newTrigger()
+			      .withIdentity(r.getEndTime().toString(), RESERVATION_ID_GROUP)
+			      .startAt(r.getEndTime())
+			      //.withSchedule(simpleSchedule()
+			     // .withRepeatCount(1))
+			      //.withSchedule(cronSchedule(get(r.getStartTime(),r.getEndTime())))
+			      //.endAt(Date.from(end.toInstant()))
+			      .build();
+			  // Tell quartz to schedule the job using our trigger
+		      Set<Trigger> triggers  = new HashSet<Trigger>();
+		      triggers.add(triggerStart);
+		      triggers.add(triggerEnd);
+		      
+			  scheduler.scheduleJob(reservetionJob, triggers,false);
+			  
+	
+		
+	}
+	
+	
+	
+	
 
 }
