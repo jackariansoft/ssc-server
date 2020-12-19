@@ -76,8 +76,7 @@
                 <script src="<%= request.getContextPath()%>/js/datagrid-detailview.js?v=25"></script>                
                 <script src="<%= request.getContextPath()%>/js/datagrid-detailview-errors.js?v=26"></script>
                 <script src="<%= request.getContextPath()%>/js/ordini/my.window.js?v=23"></script>
-                <script src="<%= request.getContextPath()%>/js/ordini/ordini_utils.js?v=47"></script>
-                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxsGkqICeiQ0Dvg3B823mHOrvsyI2ZrrE&libraries=places&callback=initAutocomplete" async defer></script>
+                <script src="<%= request.getContextPath()%>/js/ordini/ordini_utils.js?v=47"></script>                
                 <script src="<%= request.getContextPath()%>/js/ordini/ordini.js?v=68"></script>
                 <script src="<%= request.getContextPath()%>/js/ordini/ordini_gestione_errori.js?v=24"></script>                                
                 <script src="<%= request.getContextPath()%>/js/datagrid-export.js"></script>

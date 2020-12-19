@@ -16,8 +16,22 @@ public class ResponseCommand {
     private Integer status;
     private String errorMessage;
     private String succeccMessage;
+    private Exception ex;
+    
+    
+    
 
-    public ResponseCommand() {
+    public Exception getEx() {
+		return ex;
+	}
+
+
+	public void setEx(Exception ex) {
+		this.ex = ex;
+	}
+
+
+	public ResponseCommand() {
         status = HttpStatus.OK.value();
     }
 

@@ -3,6 +3,7 @@ package mude.srl.ssc.service.scheduler;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -32,6 +33,8 @@ public class SchedulerManager {
 	public static final short INVALID_PAYLOAD = 5;
 	public static final short SOSPESA = 6;
 	
+	private SimpleDateFormat triggerDateFormat  = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+	
 	private static SchedulerManager instance;
 
 	public static SchedulerManager getInstance() {
@@ -50,14 +53,7 @@ public class SchedulerManager {
 		JobDataMap data  = new JobDataMap();
 		data.put(SchedulerManager.RESERVATION_ID_PROP, r);
 		
-		
-		 Calendar start  = Calendar.getInstance(Locale.ITALIAN);
-		 start.setTime(r.getStartTime());
-		 start.add(Calendar.MINUTE, 10);
-		 
-		 Calendar end  = Calendar.getInstance(Locale.ITALIAN);
-		 end.setTime(r.getEndTime());
-		 end.add(Calendar.MINUTE,1);
+
 		
 		
 		JobDetail reservetionJob = newJob(GestionePrenotazioneRisorsaCabina.class)
@@ -65,7 +61,7 @@ public class SchedulerManager {
 				 .setJobData(data).build();
 		
 		  Trigger triggerStart = newTrigger()
-			      .withIdentity(r.getStartTime().toString(), RESERVATION_ID_GROUP)
+			      .withIdentity(triggerDateFormat.format(r.getStartTime())+r.getId().toString(), RESERVATION_ID_GROUP)
 			      .startAt(r.getStartTime())
 			      //.withSchedule(simpleSchedule()
 			      //.withRepeatCount(1))
@@ -73,7 +69,7 @@ public class SchedulerManager {
 			      //.endAt(Date.from(start.toInstant()))
 			      .build();
 		  Trigger triggerEnd= newTrigger()
-			      .withIdentity(r.getEndTime().toString(), RESERVATION_ID_GROUP)
+			      .withIdentity(triggerDateFormat.format(r.getEndTime())+r.getId().toString(), RESERVATION_ID_GROUP)
 			      .startAt(r.getEndTime())
 			      //.withSchedule(simpleSchedule()
 			     // .withRepeatCount(1))

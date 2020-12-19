@@ -18,16 +18,16 @@ public class Prenotazione {
 
 	private String payload;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS",locale = "CEST")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS",locale = "CEST",timezone="Europe/Rome")
 	private Timestamp requestTime;
 	private Long resource;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "CEST")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "CEST",timezone="Europe/Rome")
 	private Timestamp starTime;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "CEST")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "CEST",timezone="Europe/Rome")
 	private Timestamp endTime;
 	private Short status;
 	private Integer totalMinutes;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "CEST")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss",locale = "CEST",timezone="Europe/Rome")
 	private Timestamp receivedInterruptAt;
 	private String interruptMotivation;
 	private Integer schedulerId;

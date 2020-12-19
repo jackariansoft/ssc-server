@@ -33,14 +33,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(catalog = "ssc", schema = "public")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Resource.findAll", query = "SELECT r FROM Resource r"),
-    @NamedQuery(name = "Resource.findById", query = "SELECT r FROM Resource r WHERE r.id = :id"),
-    @NamedQuery(name = "Resource.findByTag", query = "SELECT r FROM Resource r WHERE r.tag = :tag"),
-    @NamedQuery(name = "Resource.findByReference", query = "SELECT r FROM Resource r WHERE r.reference = :reference"),
-    @NamedQuery(name = "Resource.findByType", query = "SELECT r FROM Resource r WHERE r.type = :type"),
-    @NamedQuery(name = "Resource.findByManage", query = "SELECT r FROM Resource r WHERE r.manage = :manage"),
-    @NamedQuery(name = "Resource.findByBusId", query = "SELECT r FROM Resource r WHERE r.busId = :busId")})
 public class Resource implements Serializable {
 
     private static final long serialVersionUID = 1L;

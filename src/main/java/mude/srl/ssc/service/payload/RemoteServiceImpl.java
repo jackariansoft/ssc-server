@@ -15,15 +15,23 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.client.RootUriTemplateHandler;
+import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
+
+import mude.srl.ssc.entity.QrcodeTest;
 import mude.srl.ssc.messaging.Message;
 import mude.srl.ssc.messaging.MessageInfoType;
 import mude.srl.ssc.messaging.WebSocketConfig;
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
+import mude.srl.ssc.service.payload.model.Reservation;
+import mude.srl.ssc.service.resource.ResourceService;
 
 @Component
 public class RemoteServiceImpl implements RemoteService {
@@ -31,7 +39,11 @@ public class RemoteServiceImpl implements RemoteService {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
+	@Autowired
+	private ResourceService resourceService;
+
 	int interval_in_minutes = 10;
+	//private String domain = "https://camajora-staging.donodoo.it";
 
 	private static final String plc_uid = "12321277";
 	private static final String resource_tag1 = "CAB1";
@@ -42,7 +54,8 @@ public class RemoteServiceImpl implements RemoteService {
 	private TreeMap<String, RequestCommandResourceReservation> mokData;
 	private ArrayList<String> payloadTest = new ArrayList<String>();
 	private ArrayList<String> resource = new ArrayList<String>();
-
+	public static final String domain  = "camajora-staging.donodoo.it";
+	public static final String apiKey  = "2a3851a9a3955fb7525564e3e4306b368c32b8131b572361009cba884e945ad7";
 	/**
 	 * Validazione payload TO DO inserimento codice per richiesta validazione
 	 * payload da server remoto
@@ -50,14 +63,39 @@ public class RemoteServiceImpl implements RemoteService {
 	 */
 	@Override
 	public RequestCommandResourceReservation validatePayload(String payload) {
-		RequestCommandResourceReservation r = mokData.get(payload);
-		if (r != null) {
-			if (!validateTimeInterval(r)) {
-				r = null;
-			}
-		}else {
-			
-		}
+
+		// Response<QrcodeTest> resp = resourceService.getTestBy(payload);
+		RestTemplate httpClient = new RestTemplateBuilder()
+				.uriTemplateHandler(new RootUriTemplateHandler("https://" + domain))
+				.defaultHeader("Authorization", "Token " + apiKey)
+				.errorHandler(new RemoteServiceResponseErrorHandler()).build();
+
+		httpClient.getMessageConverters().stream().filter(AbstractJackson2HttpMessageConverter.class::isInstance)
+				.map(AbstractJackson2HttpMessageConverter.class::cast)
+				.map(AbstractJackson2HttpMessageConverter::getObjectMapper)
+				.forEach(mapper -> mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS));
+		
+		//httpClient.postForObject("", request, responseType, uriVariables);
+		Reservation rs = httpClient.postForObject("/api/v1/unlock",
+				new mude.srl.ssc.service.payload.model.UnlockRequest(payload), Reservation.class);
+		
+		
+		RequestCommandResourceReservation r = null;
+
+		
+
+		return r;
+	}
+
+	protected RequestCommandResourceReservation createFromTest(QrcodeTest result) {
+		RequestCommandResourceReservation r = new RequestCommandResourceReservation();
+		r.setAction(1);
+		r.setEnd(result.getEndTime());
+		r.setStart(result.getStartTime());
+		r.setPlc_uid(result.getPlcUid());
+		r.setResource_tag(result.getResourceTag());
+		r.setPayload(result.getId());
+
 		return r;
 	}
 
@@ -67,15 +105,16 @@ public class RemoteServiceImpl implements RemoteService {
 		Message m = null;
 		if (r.getStart().before(adesso)) {
 			check = false;
-			
-			m = new Message(MessageInfoType.ERROR, "Payload Non valido", "Intervallo prenotazione non valido",
-					r.getPlc_uid());
+
+			m = new Message(MessageInfoType.ERROR, "Payload Non valido",
+					"Intervallo prenotazione non valido. Ora di avvio passata<br>", r.getPlc_uid());
 			simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT, m);
-		}else if(r.getEnd().before(r.getStart())) {
+		} else if (r.getEnd().before(r.getStart())) {
 			check = false;
-			
-			m = new Message(MessageInfoType.ERROR, "Payload Non valido", "Intervallo prenotazione non valido",
-					r.getPlc_uid());
+
+			m = new Message(MessageInfoType.ERROR, "Payload Non valido", "Intervallo prenotazione non valido.<br>"
+					+ "La data fine prenotazione non puo' essere minore della data di inizio ", r.getPlc_uid());
+			simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT, m);
 		}
 
 		return check;
@@ -144,12 +183,12 @@ public class RemoteServiceImpl implements RemoteService {
 		 * Random interval
 		 */
 		Calendar c = Calendar.getInstance(Locale.ITALIAN);
-		c.set(Calendar.SECOND, 0);		
+		c.set(Calendar.SECOND, 0);
 		c.add(Calendar.MINUTE, interval);
-		
+
 		Date star_time = new Date(c.getTimeInMillis());
 		c.add(Calendar.MINUTE, interval * 3);
-		
+
 		Date endExclusive = c.getTime();
 		c.add(Calendar.MINUTE, interval * 4);
 

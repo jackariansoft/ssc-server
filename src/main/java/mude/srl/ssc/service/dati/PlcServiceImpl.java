@@ -20,6 +20,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import mude.srl.ssc.entity.Plc;
+import mude.srl.ssc.entity.QrcodeTest;
 import mude.srl.ssc.entity.Resource;
 import mude.srl.ssc.entity.ResourceReservation;
 import mude.srl.ssc.entity.beans.Prenotazione;
@@ -47,7 +48,7 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
     LoggerService loggerService;
     
     @Override
-    public Plc getPlcByUID(String uid) {
+    public Plc getPlcByUID(String uid) throws Exception {
         Plc resp = null;
         EntityManager em = null;
 
@@ -58,10 +59,11 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
             resp = q.getSingleResult();
 
         } catch (NonUniqueResultException | NoResultException ex) {
-           loggerService.logException(Level.SEVERE, "getPlcByUID", ex);
+           loggerService.logWarning(Level.WARNING, "getPlcByUID: Nessun plc trovato con inpu: "+uid);
 
         } catch (Exception ex) {
             loggerService.logException(Level.SEVERE, "getPlcByUID", ex);
+            throw ex;
         } finally {
 
         }
@@ -273,7 +275,7 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 		EntityManager em = null;
 		try {
             em = getEm();
-            TypedQuery<Plc> q = em.createQuery("SELECT p FROM Plc p WHERE plc.id = :id ", Plc.class);
+            TypedQuery<Plc> q = em.createQuery("SELECT plc FROM Plc plc WHERE plc.id = :id ", Plc.class);
             q.setParameter("id", id);
             
             plc = q.getSingleResult();
@@ -418,6 +420,11 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
         	
         }
 		return res;
+	}
+
+	@Override
+	public QrcodeTest getQrcodeTestById(String id) throws Exception {
+		return getEm().find(QrcodeTest.class, id);
 	}
 
 	
