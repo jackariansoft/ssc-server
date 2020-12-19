@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -11,20 +11,13 @@
 	</parent>
 	<groupId>mude.srl</groupId>
 	<artifactId>ssc</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>war</packaging>
-	
+
 	<description>SSC Server</description>
 
 	<properties>
 		<java.version>1.8</java.version>
-		 <payara.adminPort>4848</payara.adminPort>
-        <payara.username>admin</payara.username>
-        <payara.password></payara.password>
-        <payara.hostname>localhost</payara.hostname>
-        <payara.domainName>domain1</payara.domainName>
-        <payara.home>C:\Users\Jack\GlassFish_5</payara.home>
-        <payara.domainDir>${payara.home}/glassfish/domains</payara.domainDir>
 	</properties>
 
 	<dependencies>
@@ -107,19 +100,19 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-			<!-- <version>5.2.5.RELEASE</version> -->
+			<!--<version>5.2.5.RELEASE</version> -->
 			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<!-- <version>5.2.5.RELEASE</version> -->
+			<!--<version>5.2.5.RELEASE</version> -->
 			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
-			<!--<version>2.2.6.RELEASE</version> -->
+			<!-- <version>2.2.6.RELEASE</version> -->
 			<type>jar</type>
 		</dependency>
 		<dependency>
@@ -165,7 +158,6 @@
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
-			<!-- <version>2.2.2</version> -->
 		</dependency>
 		<dependency>
 			<groupId>javax</groupId>
@@ -173,46 +165,80 @@
 			<version>7.0</version>
 			<type>jar</type>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-core -->
 		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
-			<!--<version>${javax-jaxb.version}</version> -->
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp.jstl</groupId>
+			<artifactId>javax.servlet.jsp.jstl-api</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<!-- Websocket -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>webjars-locator-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>sockjs-client</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>stomp-websocket</artifactId>
+			<version>2.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>3.3.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>3.1.1-1</version>
+		</dependency>
+		<!-- Jackson core -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<!-- QRcode generation -->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>3.3.0</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.cargo</groupId>
-				<artifactId>cargo-maven2-plugin</artifactId>
-				<configuration>
-					<container>
-						<containerId>payara</containerId>
-						<type>installed</type>
-						<home>${payara.home}</home>
-					</container>
-					<configuration>
-						<type>existing</type>
-						<home>${payara.domainDir}</home>
-						<properties>
-							<cargo.glassfish.domain.name>${payara.domainName}</cargo.glassfish.domain.name>
-						</properties>
-					</configuration>
-				</configuration>
-				<!-- provides JSR88 client API to deploy on Payara -->
-				<dependencies>
-					<dependency>
-						<groupId>org.glassfish.main.deployment</groupId>
-						<artifactId>deployment-client</artifactId>
-						<version>5.0</version>
-					</dependency>
-				</dependencies>
-			</plugin>		
 		</plugins>
 	</build>
 </project>
