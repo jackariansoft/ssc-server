@@ -1,5 +1,6 @@
 package mude.srl.ssc.service.resource;
 
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 import org.quartz.Scheduler;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
+import mude.srl.ssc.entity.QrcodeTest;
 import mude.srl.ssc.entity.Resource;
 import mude.srl.ssc.entity.ResourceReservation;
 import mude.srl.ssc.entity.utils.Response;
@@ -24,6 +26,8 @@ import mude.srl.ssc.service.scheduler.SchedulerManager;
 @Component
 public class ResourceServiceImpl implements ResourceService{
 
+	 private final ReentrantLock lock = new ReentrantLock();
+	
 	@Autowired
 	private PlcService plcService;
 	
@@ -53,7 +57,7 @@ public class ResourceServiceImpl implements ResourceService{
 		cmd.setDestination(r.getBusId());
 
 		ResponseCommand resp = new ResponseCommand();
-		h.handle(cmd, resp);
+		h.handle(cmd, resp,lock);
 		if(resp.getStatus()!=200) {
 			throw new Exception("Comando abilitazione risorsa fallito");
 		}
@@ -91,7 +95,7 @@ public class ResourceServiceImpl implements ResourceService{
 		cmd.setDestination(r.getBusId());
 
 		ResponseCommand resp = new ResponseCommand();
-		h.handle(cmd, resp);
+		h.handle(cmd, resp,lock);
 
 	}
 
@@ -119,7 +123,7 @@ public class ResourceServiceImpl implements ResourceService{
 		cmd.setDestination(r.getBusId());
 
 		ResponseCommand resp = new ResponseCommand();
-		h.handle(cmd, resp);
+		h.handle(cmd, resp,lock);
 
 
 
@@ -151,13 +155,20 @@ public class ResourceServiceImpl implements ResourceService{
 
 			ResponseCommand resp = new ResponseCommand();
 			resp.setStatus(200);
-			h.handle(cmd, resp);
+			h.handle(cmd, resp,lock);
 			if(resp.getStatus()!=200) {
-				throw new Exception(resp.getErrorMessage());
+				
+				if(resp.getEx()==null) {
+					throw new Exception(resp.getErrorMessage());
+				}
+				
+				else throw resp.getEx();
 			}
 		
 	}
-
+	/**
+	 * 
+	 */
 	@Override
 	public ResponseCommand gestionePrenotazioneRisorsa(RequestCommandResourceReservation request) {
 		ResponseCommand response = new ResponseCommand();
@@ -193,6 +204,21 @@ public class ResourceServiceImpl implements ResourceService{
             
         }
         return response;
+	}
+	/**
+	 * 
+	 */
+	//@Override
+	public Response<QrcodeTest> getTestBy(String id) {
+		Response<QrcodeTest> response = new Response<QrcodeTest>();
+		try {
+			  response.setResult(plcService.getQrcodeTestById(id));
+		} catch (Exception e) {
+			 response.setFault(true);
+			 response.setException(e);
+	         loggerService.logException(Level.SEVERE, null, e);
+		}
+		return response;
 	}
 
 }

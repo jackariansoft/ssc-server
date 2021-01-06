@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.locks.ReentrantLock;
 
 import mude.srl.ssc.rest.controller.command.interfaces.Command;
 import mude.srl.ssc.rest.controller.command.interfaces.CommandMessageHandler;
@@ -26,16 +27,21 @@ import mude.srl.ssc.service.log.LoggerSSC;
  */
 public class ActivationCommandHandler extends CommonRestClient implements CommandMessageHandler {
 
+   
+    
 	@Override
-	public void handle(Command command, ResponseCommand responce) throws Exception {
+	public  void  handle(Command command, ResponseCommand response) throws Exception {
 
+		
 		if (command.getType().equals(CommandMessageType.ACTIVATION_TYPE.getType())) {
 
 			MessageActivationCommand c = (MessageActivationCommand) command;
 
-
+			Socket socket  = null;
 			try {
-				Socket socket = new Socket(url, Integer.valueOf(port));
+							
+				
+				socket = new Socket(url, Integer.valueOf(port));
 				socket.setTcpNoDelay(true);
 				OutputStream output = socket.getOutputStream();
 				PrintWriter writer = new PrintWriter(output, true);
@@ -56,23 +62,38 @@ public class ActivationCommandHandler extends CommonRestClient implements Comman
 					
 				}
 				if(resp==null||!resp.trim().equals(cmd)) {
-					responce.setErrorMessage("No message from plc");
-					responce.setStatus(500);
-					responce.setSucceccMessage(null);
+					response.setErrorMessage("No message from plc");
+					response.setStatus(500);
+					response.setSucceccMessage(null);
 					
 				}
 				
 				socket.close();
 			}catch (Exception e) {				
-				responce.setErrorMessage(e.getMessage());
-				responce.setStatus(500);
-				responce.setSucceccMessage(null);
+				response.setErrorMessage(e.getMessage());
+				response.setStatus(500);
+				response.setSucceccMessage(null);
+				response.setEx(e);
 				
 			}finally {
-
+				
+				if(socket!=null&&!socket.isClosed()) {
+					socket.close();
+				}
 			} 
 		}
 
+	}
+
+	@Override
+	public void handle(Command command, ResponseCommand response, ReentrantLock lock) throws Exception {
+		try {
+			lock.lock();
+			this.handle(command, response);
+		}finally {
+			lock.unlock();
+		}
+		
 	}
 
 }

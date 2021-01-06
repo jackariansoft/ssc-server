@@ -15,15 +15,27 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.client.RootUriTemplateHandler;
+import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
+import mude.srl.ssc.entity.Configuration;
+import mude.srl.ssc.entity.Plc;
+import mude.srl.ssc.entity.QrcodeTest;
+import mude.srl.ssc.entity.Resource;
 import mude.srl.ssc.messaging.Message;
 import mude.srl.ssc.messaging.MessageInfoType;
 import mude.srl.ssc.messaging.WebSocketConfig;
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
+import mude.srl.ssc.service.configuration.ConfigurationService;
+import mude.srl.ssc.service.dati.PlcService;
+import mude.srl.ssc.service.payload.model.Reservation;
+import mude.srl.ssc.service.resource.ResourceService;
 
 @Component
 public class RemoteServiceImpl implements RemoteService {
@@ -31,7 +43,14 @@ public class RemoteServiceImpl implements RemoteService {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
+	@Autowired
+	private ConfigurationService configurationService;
+
+	@Autowired
+	private PlcService plcService;
+
 	int interval_in_minutes = 10;
+	// private String domain = "https://camajora-staging.donodoo.it";
 
 	private static final String plc_uid = "12321277";
 	private static final String resource_tag1 = "CAB1";
@@ -47,17 +66,75 @@ public class RemoteServiceImpl implements RemoteService {
 	 * Validazione payload TO DO inserimento codice per richiesta validazione
 	 * payload da server remoto
 	 * 
+	 * @throws Exception
+	 * 
 	 */
 	@Override
-	public RequestCommandResourceReservation validatePayload(String payload) {
-		RequestCommandResourceReservation r = mokData.get(payload);
-		if (r != null) {
-			if (!validateTimeInterval(r)) {
-				r = null;
-			}
-		}else {
+	public RequestCommandResourceReservation validatePayload(String payload) throws Exception {
+
+		Configuration conf = configurationService.getCurrentValidConfig();
+		// Response<QrcodeTest> resp = resourceService.getTestBy(payload);
+		RequestCommandResourceReservation rcr = null;
+		/**
+		 * 
+		 * Chimata al servizio remoto per validazione token
+		 * 
+		 */
+		RestTemplate httpClient = new RestTemplateBuilder()
+				.uriTemplateHandler(new RootUriTemplateHandler("https://" + conf.getUrlServizioPrenotazione()))
+				.defaultHeader("Authorization", "Token " + conf.getUrlApikey())
+				.errorHandler(new RemoteServiceResponseErrorHandler()).build();
+		/**
+		 * 
+		 * Configurazione particolare della gestione degli stream
+		 * 
+		 */
+		httpClient.getMessageConverters().stream().filter(AbstractJackson2HttpMessageConverter.class::isInstance)
+				.map(AbstractJackson2HttpMessageConverter.class::cast)
+				.map(AbstractJackson2HttpMessageConverter::getObjectMapper)
+				.forEach(mapper -> mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS));
+
+		// httpClient.postForObject("", request, responseType, uriVariables);
+		Reservation rs = httpClient.postForObject(conf.getEndpoint(),
+				new mude.srl.ssc.service.payload.model.UnlockRequest(payload), Reservation.class);
+		if (rs != null) {
 			
+				Resource resource = plcService.getReourceByTag(rs.getResourceSku());
+				if (resource != null) {
+					Plc plc = resource.getPlc();
+					rcr = createFrom(rs, plc, resource, payload);
+
+					if (!validateTimeInterval(rcr)) {
+						rcr = null;
+					}
+				}
+
 		}
+
+		return rcr;
+	}
+
+	protected RequestCommandResourceReservation createFrom(Reservation result, Plc plc, Resource r, String payload) {
+		RequestCommandResourceReservation command = new RequestCommandResourceReservation();
+		command.setAction(1);
+		command.setEnd(result.getDateEnd());
+		command.setStart(result.getDateStart());
+		command.setPlc_uid(plc.getUid());
+		command.setResource_tag(result.getResourceSku());
+		command.setPayload(payload);
+
+		return command;
+	}
+
+	protected RequestCommandResourceReservation createFromTest(QrcodeTest result) {
+		RequestCommandResourceReservation r = new RequestCommandResourceReservation();
+		r.setAction(1);
+		r.setEnd(result.getEndTime());
+		r.setStart(result.getStartTime());
+		r.setPlc_uid(result.getPlcUid());
+		r.setResource_tag(result.getResourceTag());
+		r.setPayload(result.getId());
+
 		return r;
 	}
 
@@ -67,15 +144,16 @@ public class RemoteServiceImpl implements RemoteService {
 		Message m = null;
 		if (r.getStart().before(adesso)) {
 			check = false;
-			
-			m = new Message(MessageInfoType.ERROR, "Payload Non valido", "Intervallo prenotazione non valido",
-					r.getPlc_uid());
+
+			m = new Message(MessageInfoType.ERROR, "Payload Non valido",
+					"Intervallo prenotazione non valido. Ora di avvio passata<br>", r.getPlc_uid());
 			simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT, m);
-		}else if(r.getEnd().before(r.getStart())) {
+		} else if (r.getEnd().before(r.getStart())) {
 			check = false;
-			
-			m = new Message(MessageInfoType.ERROR, "Payload Non valido", "Intervallo prenotazione non valido",
-					r.getPlc_uid());
+
+			m = new Message(MessageInfoType.ERROR, "Payload Non valido", "Intervallo prenotazione non valido.<br>"
+					+ "La data fine prenotazione non puo' essere minore della data di inizio ", r.getPlc_uid());
+			simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT, m);
 		}
 
 		return check;
@@ -144,12 +222,12 @@ public class RemoteServiceImpl implements RemoteService {
 		 * Random interval
 		 */
 		Calendar c = Calendar.getInstance(Locale.ITALIAN);
-		c.set(Calendar.SECOND, 0);		
+		c.set(Calendar.SECOND, 0);
 		c.add(Calendar.MINUTE, interval);
-		
+
 		Date star_time = new Date(c.getTimeInMillis());
 		c.add(Calendar.MINUTE, interval * 3);
-		
+
 		Date endExclusive = c.getTime();
 		c.add(Calendar.MINUTE, interval * 4);
 

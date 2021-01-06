@@ -32,11 +32,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(catalog = "ssc", schema = "public")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Plc.findAll", query = "SELECT p FROM Plc p"),
-    @NamedQuery(name = "Plc.findById", query = "SELECT p FROM Plc p WHERE p.id = :id"),
-    @NamedQuery(name = "Plc.findByIpAddress", query = "SELECT p FROM Plc p WHERE p.ipAddress = :ipAddress"),
-    @NamedQuery(name = "Plc.findByPortaGestioneServizi", query = "SELECT p FROM Plc p WHERE p.portaGestioneServizi = :portaGestioneServizi")})
 public class Plc implements Serializable {
 
     private static final long serialVersionUID = 1L;

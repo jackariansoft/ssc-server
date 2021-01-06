@@ -8,6 +8,7 @@ package mude.srl.ssc.service.dati;
 import java.util.List;
 
 import mude.srl.ssc.entity.Plc;
+import mude.srl.ssc.entity.QrcodeTest;
 import mude.srl.ssc.entity.Resource;
 import mude.srl.ssc.entity.ResourceReservation;
 import mude.srl.ssc.entity.beans.Prenotazione;
@@ -29,6 +30,7 @@ public interface PlcService {
      public Resource getReourceByPlcAndTag(Plc plc,String tag) throws Exception;
      
      public Resource getReourceByPlcAndTag(String plc_uid,String tag) throws Exception;
+     public Resource getReourceByTag(String tag) throws Exception;
      
      public Response<ResourceReservation> controllaPerAvvio(Resource r,RequestCommandResourceReservation request) throws Exception;
      
@@ -36,9 +38,9 @@ public interface PlcService {
      
      public Response<ResourceReservation> aggiornaStatoPrenotazione(Long id,Short status) throws Exception;
 
-	 public Resource getReourceById(Long id);
+	 public Resource getReourceById(Long id) throws Exception;
 	 
-	 public Resource getResourceByReservetionId(Long id);
+	 public Resource getResourceByReservetionId(Long id) throws Exception;
 	 
 	 public List<ResourceReservation> getReservation(Request req) throws Exception;
 	 
@@ -46,4 +48,8 @@ public interface PlcService {
 	 
 	 
 	 public List<Resource> getResource(Request req) throws Exception;
+	 
+	 public QrcodeTest getQrcodeTestById(String id) throws Exception;
+	 
+	 
 }

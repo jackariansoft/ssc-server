@@ -21,5 +21,7 @@ public interface ResourceService {
 	
 	public ResponseCommand gestionePrenotazioneRisorsa(RequestCommandResourceReservation r);
 	
+	//public Response<QrcodeTest> getTestBy(String id);
+	
 	
 }

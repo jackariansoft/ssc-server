@@ -5,6 +5,8 @@
  */
 package mude.srl.ssc.rest.controller.command.interfaces;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
 
 /**
@@ -14,5 +16,6 @@ import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
 public interface CommandMessageHandler {
     
     public void handle(Command command,ResponseCommand responce) throws Exception;
+    public void handle(Command command,ResponseCommand responce,ReentrantLock lock) throws Exception;
     
 }

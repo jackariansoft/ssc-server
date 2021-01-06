@@ -76,8 +76,18 @@ public class GestionePrenotazioneRisorsaCabina implements Job,InterruptableJob {
 						
 					}catch (Exception e) {
 						if(last_status.equals(SchedulerManager.ATTESA)) {
-
+							
+							/**
+							 * 
+							 * TODO
+							 * Inserire controlli in abase allo stato precedente
+							 * Minimo controllo: invio email operatore
+							 * 
+							 */
+							
 						}
+						
+						loggerService.logException(Level.SEVERE,"Errore inaspettato",e);
 					}
 					
 
