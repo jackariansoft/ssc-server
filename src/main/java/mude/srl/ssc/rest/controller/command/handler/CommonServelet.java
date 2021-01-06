@@ -49,17 +49,15 @@ public class CommonServelet extends HttpServlet {
 	 * 
 	 */
 	
-<<<<<<< HEAD
+
     protected Users user;
-=======
-	protected Users user;
->>>>>>> branch 'master' of https://github.com/jackarian/ssc-server.git
+
     protected SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     protected SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
    
     private DataSource dataSource;
     
-    private WebApplicationContext springContext;
+    
   
     private WebApplicationContext springContext;
   
