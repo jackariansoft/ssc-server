@@ -43,16 +43,14 @@ public class RemoteServiceImpl implements RemoteService {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
-	
-	
 	@Autowired
 	private ConfigurationService configurationService;
 
 	@Autowired
 	private PlcService plcService;
-	
+
 	int interval_in_minutes = 10;
-	//private String domain = "https://camajora-staging.donodoo.it";
+	// private String domain = "https://camajora-staging.donodoo.it";
 
 	private static final String plc_uid = "12321277";
 	private static final String resource_tag1 = "CAB1";
@@ -63,59 +61,60 @@ public class RemoteServiceImpl implements RemoteService {
 	private TreeMap<String, RequestCommandResourceReservation> mokData;
 	private ArrayList<String> payloadTest = new ArrayList<String>();
 	private ArrayList<String> resource = new ArrayList<String>();
-	
+
 	/**
 	 * Validazione payload TO DO inserimento codice per richiesta validazione
 	 * payload da server remoto
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 * 
 	 */
 	@Override
 	public RequestCommandResourceReservation validatePayload(String payload) throws Exception {
 
-		Configuration conf   = configurationService.getCurrentValidConfig();
+		Configuration conf = configurationService.getCurrentValidConfig();
 		// Response<QrcodeTest> resp = resourceService.getTestBy(payload);
 		RequestCommandResourceReservation rcr = null;
 		/**
-		 * Chimata al servizio remoto per validazione  token
+		 * 
+		 * Chimata al servizio remoto per validazione token
+		 * 
 		 */
 		RestTemplate httpClient = new RestTemplateBuilder()
-				.uriTemplateHandler(new RootUriTemplateHandler("https://" + conf.getEndpoint()))
+				.uriTemplateHandler(new RootUriTemplateHandler("https://" + conf.getUrlServizioPrenotazione()))
 				.defaultHeader("Authorization", "Token " + conf.getUrlApikey())
 				.errorHandler(new RemoteServiceResponseErrorHandler()).build();
-
+		/**
+		 * 
+		 * Configurazione particolare della gestione degli stream
+		 * 
+		 */
 		httpClient.getMessageConverters().stream().filter(AbstractJackson2HttpMessageConverter.class::isInstance)
 				.map(AbstractJackson2HttpMessageConverter.class::cast)
 				.map(AbstractJackson2HttpMessageConverter::getObjectMapper)
 				.forEach(mapper -> mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS));
-		
-		//httpClient.postForObject("", request, responseType, uriVariables);
-		Reservation rs = httpClient.postForObject("/api/v1/unlock",
+
+		// httpClient.postForObject("", request, responseType, uriVariables);
+		Reservation rs = httpClient.postForObject(conf.getEndpoint(),
 				new mude.srl.ssc.service.payload.model.UnlockRequest(payload), Reservation.class);
-		if(rs!=null) {
-			try {
+		if (rs != null) {
+			
 				Resource resource = plcService.getReourceByTag(rs.getResourceSku());
-				if(resource!=null) {
-					Plc plc  = resource.getPlc();
+				if (resource != null) {
+					Plc plc = resource.getPlc();
 					rcr = createFrom(rs, plc, resource, payload);
-					
-					if(!validateTimeInterval(rcr)) {
+
+					if (!validateTimeInterval(rcr)) {
 						rcr = null;
 					}
 				}
-				
-			} catch (Exception e) {
-				
-			}
-		}
-		
-		
 
-		
+		}
 
 		return rcr;
 	}
-	protected RequestCommandResourceReservation createFrom(Reservation result,Plc plc,Resource r,String  payload) {
+
+	protected RequestCommandResourceReservation createFrom(Reservation result, Plc plc, Resource r, String payload) {
 		RequestCommandResourceReservation command = new RequestCommandResourceReservation();
 		command.setAction(1);
 		command.setEnd(result.getDateEnd());
