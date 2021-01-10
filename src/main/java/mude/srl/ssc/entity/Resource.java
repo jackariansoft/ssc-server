@@ -20,16 +20,22 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  *
  * @author Jack
  */
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Table(catalog = "ssc", schema = "public")
 @XmlRootElement
@@ -45,6 +51,7 @@ public class Resource implements Serializable {
     @NotNull
     @Size(min = 1, max = 20)
     @Column(nullable = false, length = 20)
+    @JsonProperty(value = "text")
     private String tag;
     @Size(max = 20)
     @Column(length = 20)
@@ -61,8 +68,7 @@ public class Resource implements Serializable {
     @Column(name = "bus_id")
     private Short busId;
     @JoinColumn(name = "plc", referencedColumnName = "id")
-    @ManyToOne
-    @JsonIgnore
+    @ManyToOne    
     private Plc plc;
     @JsonIgnore
     @JoinColumn(name = "ssc", referencedColumnName = "id")
@@ -72,7 +78,31 @@ public class Resource implements Serializable {
     @OneToMany(mappedBy = "resource",cascade = {CascadeType.ALL })
     private Collection<ResourceReservation> reservation;
     
-    public Resource() {
+    @Transient
+    private String  iconCls = "icon-cabina";
+    
+    
+    @Transient
+    private String  nodeType = "resource";
+
+    
+    public String getNodeType() {
+		return nodeType;
+	}
+
+	public void setNodeType(String nodeType) {
+		this.nodeType = nodeType;
+	}
+    
+    public String getIconCls() {
+		return iconCls;
+	}
+
+	public void setIconCls(String iconCls) {
+		this.iconCls = iconCls;
+	}
+
+	public Resource() {
     }
 
     public Resource(Long id) {

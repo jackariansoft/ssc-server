@@ -66,7 +66,7 @@ public class CommandController {
 	}
 
 	/**
-	 * Gestione comendi attivazione/disattivazione cabina
+	 * Gestione comandi attivazione/disattivazione cabina
 	 * 
 	 * @param request
 	 * @return
@@ -78,27 +78,39 @@ public class CommandController {
 			Plc plc = plcService.getPlcByUID(request.getPlc_uid());
 			if (plc == null) {
 				plc = plcService.getPlcById(Long.valueOf(request.getPlc_uid()));
-				
+
 				if (plc == null) {
 					response.setErrorMessage("Plc not found");
 					response.setStatus(403);
 				}
-			} 
-			
-			if(plc!=null)  {
+			}
+
+			if (plc != null) {
 				Resource resource = plcService.getReourceByPlcAndTag(plc, request.getResource_tag());
+
 				if (resource == null) {
 					response.setErrorMessage("Resource not found");
-					response.setStatus(403);
+					response.setStatus(HttpStatus.BAD_REQUEST.value());
 				} else {
-					ActivationCommandHandler handler = new ActivationCommandHandler();
-					handler.setPort(plc.getPortaGestioneServizi().toString());
-					handler.setUrl(plc.getIpAddress());
-					MessageActivationCommand command = new MessageActivationCommand();
-					command.setAction(request.getAction());
-					command.setDestination(resource.getBusId());
-					command.setMessage("COM");
-					handler.handle(command, response);
+					/*
+					 * Controllo se ci sono prenotazione attive per quella risorsa in modo da
+					 * evitare azioni manuali e controllare puntualmente quale sia la situazione reale.
+					 * 
+					 */
+					Response<Long> check = plcService.controllaPrenotazioniAttive(resource);
+					if (check.getResult().compareTo(0L) == 1) {
+						response.setErrorMessage("Trovatte prenotazione attive. Impossibile effettuare operazione richiesta");
+						response.setStatus(HttpStatus.BAD_REQUEST.value());
+					} else {
+						ActivationCommandHandler handler = new ActivationCommandHandler();
+						handler.setPort(plc.getPortaGestioneServizi().toString());
+						handler.setUrl(plc.getIpAddress());
+						MessageActivationCommand command = new MessageActivationCommand();
+						command.setAction(request.getAction());
+						command.setDestination(resource.getBusId());
+						command.setMessage("COM");
+						handler.handle(command, response);
+					}
 				}
 			}
 

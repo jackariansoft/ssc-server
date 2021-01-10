@@ -1,3 +1,10 @@
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
 .panel {
   overflow: hidden;
   text-align: left;
@@ -113,6 +120,7 @@
 }
 .panel-header {
   background-color: #fafafa;
+  color: #404040;
 }
 .panel-body {
   background-color: #ffffff;
@@ -130,6 +138,7 @@
   border: 1px solid #dfdfdf;
   overflow: hidden;
   background: #fafafa;
+  color: #404040;
 }
 .panel-footer-noborder {
   border-width: 1px 0 0 0;

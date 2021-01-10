@@ -74,7 +74,6 @@
 
 
             </div>
-
             <div class="section-out">
                 <section class="login-section">
                     <div class="login">

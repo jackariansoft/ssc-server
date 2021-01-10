@@ -42,9 +42,9 @@ import mude.srl.ssc.service.resource.ResourceService;
 @Controller
 public class ActivationController {
 
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
     private final StringUtils su = StringUtils.getInstance();
-    private final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ITALIAN);
+    
     
     @Autowired
     EnergyService energyService;

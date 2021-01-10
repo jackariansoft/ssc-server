@@ -34,6 +34,8 @@ public interface PlcService {
      
      public Response<ResourceReservation> controllaPerAvvio(Resource r,RequestCommandResourceReservation request) throws Exception;
      
+     public Response<Long> controllaPrenotazioniAttive(Resource r) throws Exception;
+     
      public Response<ResourceReservation> aggiornaStatoPrenotazione(ResourceReservation r,Short status) throws Exception;
      
      public Response<ResourceReservation> aggiornaStatoPrenotazione(Long id,Short status) throws Exception;
@@ -50,6 +52,8 @@ public interface PlcService {
 	 public List<Resource> getResource(Request req) throws Exception;
 	 
 	 public QrcodeTest getQrcodeTestById(String id) throws Exception;
+	 
+	 public List<Plc> getPlcList(Request req) throws Exception;
 	 
 	 
 }

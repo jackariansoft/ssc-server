@@ -9,6 +9,9 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
                     <a class="nav-link" href="<%= request.getContextPath()%>/public/home.jsp">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="<%= request.getContextPath()%>/public/plc/plc.jsp">PLC Config</a>
                 </li>                                             
                 <li class="nav-item">
                     <a class="nav-link" href="<%= request.getContextPath()%>/logout">Logout</a>

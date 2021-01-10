@@ -38,9 +38,20 @@ public class ServiceEndpoint {
     public static final String INSTALLAZIONE_UPDATE  = INSTALLAZIONE+"/{id}";//PUT
     
     /**
-     * Risorsa
+     * Gestione Risorsa
      */
     public static final String RESOURCE = ROOT_END_POINT+"/resource";
+    public static final String UPDATE_RESOURCE = ROOT_END_POINT+"/resource/{id}";//POST
+    /**
+     * Aggiornamento PLC e Risorse collegate
+     */
+    public static final String LIST_PLC = ROOT_END_POINT+"/plc";//GET
+    public static final String ADD_PLC = ROOT_END_POINT+"/plc";//POST
+    public static final String UPDATE_PLC = ROOT_END_POINT+"/plc/{id}";//POST
+    public static final String ADD_RESOURCE_TO_PLC = ROOT_END_POINT+"/plc/{id}/resource";//POST
+    /**
+     * Funzionalita'
+     */
     public static final String RESOURCE_COMMAND =RESOURCE+"/command";
     public static final String RESOURCE_ATTIVA =RESOURCE+"/attiva-prenotazione";
     public static final String RESOURCE_RESERVATIONS =RESOURCE+"/reservation";

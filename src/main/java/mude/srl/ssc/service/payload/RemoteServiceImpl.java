@@ -114,6 +114,14 @@ public class RemoteServiceImpl implements RemoteService {
 		return rcr;
 	}
 
+	/**
+	 * Creazione richiesta di attivazione risorsa.
+	 * @param result
+	 * @param plc
+	 * @param r
+	 * @param payload
+	 * @return
+	 */
 	protected RequestCommandResourceReservation createFrom(Reservation result, Plc plc, Resource r, String payload) {
 		RequestCommandResourceReservation command = new RequestCommandResourceReservation();
 		command.setAction(1);
@@ -126,6 +134,11 @@ public class RemoteServiceImpl implements RemoteService {
 		return command;
 	}
 
+	/**
+	 * Metodo utilizzato con dati generati automaticamente
+	 * @param result
+	 * @return
+	 */
 	protected RequestCommandResourceReservation createFromTest(QrcodeTest result) {
 		RequestCommandResourceReservation r = new RequestCommandResourceReservation();
 		r.setAction(1);
@@ -138,6 +151,12 @@ public class RemoteServiceImpl implements RemoteService {
 		return r;
 	}
 
+	/**
+	 * Validazione intervallo temporale della prenotazione.
+	 * TO DO aggiungere gestione della data di inizio prenotazione in base ad una politica variabile.
+	 * @param r
+	 * @return
+	 */
 	private boolean validateTimeInterval(RequestCommandResourceReservation r) {
 		boolean check = true;
 		Date adesso = Date.from(LocalDateTime.now().toInstant(ZoneOffset.of("+01:00")));

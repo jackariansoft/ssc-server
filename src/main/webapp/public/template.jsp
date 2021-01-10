@@ -1,6 +1,8 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page import="mude.srl.ssc.entity.Users"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+
 <html>
     <%@include file="header.jsp" %>
 <body>
@@ -24,7 +26,7 @@
         <c:otherwise>
             <%
                 //request.setAttribute("error", "User Not Defined");
-                RequestDispatcher disp = request.getRequestDispatcher("login.jsp");
+                RequestDispatcher disp = request.getRequestDispatcher("public/login.jsp");
                 disp.forward(request, response);
 
             %>

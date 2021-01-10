@@ -25,6 +25,8 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  *
  * @author Jack
@@ -68,10 +70,13 @@ public class Ssc implements Serializable {
 //    @ManyToOne(optional = false)
     //private Email emailConfig;
     @OneToMany(mappedBy = "ssc")
+    @JsonIgnore
     private Collection<Resource> resourceCollection;
     @OneToMany(mappedBy = "ssc")
+    @JsonIgnore
     private Collection<Plc> plcCollection;
     @OneToMany(mappedBy = "ssc")
+    @JsonIgnore
     private Collection<Energymesure> energymesureCollection;
 
     public Ssc() {

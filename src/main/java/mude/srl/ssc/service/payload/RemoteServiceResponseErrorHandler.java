@@ -27,7 +27,8 @@ public final class RemoteServiceResponseErrorHandler extends DefaultResponseErro
       case CLIENT_ERROR:
         if( statusCode == HttpStatus.NOT_FOUND )
           throw new ResourceNotFoundException();
-        else if( statusCode == HttpStatus.FORBIDDEN ) // TODO: see issue https://chargify.zendesk.com/hc/en-us/requests/69553
+        else if( statusCode == HttpStatus.FORBIDDEN ) 
+        	
           throw new OdooException( readInputStream( response.getBody() ) );
         else
           throw objectMapper.readValue( response.getBody(), ReservationError.class ).exception();

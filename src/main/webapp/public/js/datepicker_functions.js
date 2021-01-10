@@ -61,7 +61,7 @@ $("#start").datepicker({
     }
 }).datepicker("setDate", thirtyDaysAgo);
 
-$("#end_fatture").datepicker({
+$("#time_end").datepicker({
     beforeShow: function (dateText, inst) {
         $("#daterange-fatture").val('custom');
        
@@ -71,13 +71,13 @@ $("#end_fatture").datepicker({
     showButtonPanel: true,
     numberOfMonths: 3,
     maxDate: 0,
-    dateFormat: "dd-mm-yy",
+    dateFormat: "yy-mm-dd",
     onClose: function (selectedDate) {
-        $("#start_fatture").datepicker("option", "maxDate", selectedDate);
+        $("#time_start").datepicker("option", "maxDate", selectedDate);
     }
 }).datepicker("setDate", today);
 //            currentDate.setDate(currentDate.getDate() - 30);
-$("#start_fatture").datepicker({
+$("#time_start").datepicker({
     beforeShow: function (dateText, inst) {
         $("#daterange-fatture").val('custom');
       
@@ -89,9 +89,9 @@ $("#start_fatture").datepicker({
     numberOfMonths: 3,
     minDate: new Date(2015, 1 - 1, 1),
     maxDate: -1,
-    dateFormat: "dd-mm-yy",
+    dateFormat: "yy-mm-dd",
     onClose: function (selectedDate) {
-        $("#end_fatture").datepicker("option", "minDate", selectedDate);
+        $("#time_end").datepicker("option", "minDate", selectedDate);
     }
 }).datepicker("setDate", thirtyDaysAgo);
 
