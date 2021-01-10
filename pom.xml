@@ -237,7 +237,6 @@
 			<version>3.3.0</version>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -246,4 +245,41 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+	<profile>
+            <id>standalone-mode</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                            <filename>${artifactId}.${packaging}</filename>
+                            <port>${wildfly.mgtPort}</port>
+                        </configuration>
+                        <executions>
+                            <!-- Deploy the application on install -->
+                            <execution>
+                                <id>deploy</id>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                            </execution>
+ 
+                            <execution>
+                                <id>undeploy</id>
+                                <goals>
+                                    <goal>undeploy</goal>
+                                </goals>
+                                <configuration>
+                                    <ignoreMissingDeployment>true</ignoreMissingDeployment>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+</profiles>
 </project>
