@@ -242,54 +242,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.wildfly.plugins</groupId>
-				<artifactId>wildfly-maven-plugin</artifactId>
-				<version>1.2.1.Final</version>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
+			</plugin>			
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>standalone-mode</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.wildfly.plugins</groupId>
-						<artifactId>wildfly-maven-plugin</artifactId>
-						<configuration>
-							<skip>true</skip>
-							<filename>${project.artifactId}.${project.packaging}</filename>
-							<port>${wildfly.mgtPort}</port>
-							<hostname>${wildfly.hostname}</hostname>
-						</configuration>
-						<executions>
-							<!-- Deploy the application on install -->
-							<execution>
-								<id>deploy</id>
-								<goals>
-									<goal>deploy</goal>
-								</goals>
-							</execution>
-
-							<execution>
-								<id>undeploy</id>
-								<goals>
-									<goal>undeploy</goal>
-								</goals>
-								<configuration>
-									<ignoreMissingDeployment>true</ignoreMissingDeployment>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
