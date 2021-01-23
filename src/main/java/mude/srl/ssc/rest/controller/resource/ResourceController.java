@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +22,7 @@ import mude.srl.ssc.entity.utils.Response;
 import mude.srl.ssc.service.dati.PlcService;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:8000","http://127.0.0.1:8000"})
 public class ResourceController {
 
 	@Autowired

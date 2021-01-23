@@ -12,8 +12,9 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+
 import mude.srl.ssc.service.log.LoggerSSC;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 
 /**
@@ -30,7 +31,8 @@ public class SevereMessageHandler extends Handler {
     private final String applicationTitle;
     private static final String NEW_LINE = "<br/>";
     private String pattern;
-    //private final EmailSenderService emailService;
+    private static final int MAX_STACK_TRACE_DEEP = 150;
+    
   
   
     private EmailSenderService emailSenderService;
@@ -56,14 +58,19 @@ public class SevereMessageHandler extends Handler {
     }
 
     private String getCustomStackTrace(Throwable e) {
-        final StringBuilder result = new StringBuilder("StackTraceInfo: ");
+        
+    	final StringBuilder result = new StringBuilder("StackTraceInfo: ");
         result.append(e.toString());
         result.append(NEW_LINE);
-
+        int start_trace  = 0;
         //add each element of the stack trace
         for (StackTraceElement element : e.getStackTrace()) {
             result.append(element);
             result.append(NEW_LINE);
+            start_trace++;
+            if(start_trace>=MAX_STACK_TRACE_DEEP) {
+            	break;
+            }
         }
         return result.toString();
     }

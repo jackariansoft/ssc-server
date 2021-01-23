@@ -110,6 +110,10 @@ public class CommandController {
 						command.setDestination(resource.getBusId());
 						command.setMessage("COM");
 						handler.handle(command, response);
+						
+						if(response.isFault()) {
+							loggerService.logException(Level.SEVERE,"Endpoint:"+ServiceEndpoint.RESOURCE_COMMAND, response.getEx());
+						}
 					}
 				}
 			}

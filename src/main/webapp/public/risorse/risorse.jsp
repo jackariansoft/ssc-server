@@ -57,7 +57,7 @@
                     <div data-options="name:'updateAll'">Aggiorna tutte</div>
                     <div data-options="name:'reset'">Reset</div>
                 </div>
-                <div id="modInd" ></div>
+                <div id=modPrenotazione ></div>
                 <div id="modErrors"></div>
                 <div id="upload"></div>
                 <%@include  file="../script_loader.jsp" %>

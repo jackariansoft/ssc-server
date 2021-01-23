@@ -27,12 +27,21 @@ public class LoggerServiceImpl implements LoggerService{
 
     @Override
     public void logInfo(Level levl, String message, Object object) {
+    	if(object!=null)
         LoggerSSC.getInstance(emailSenderService).getLogger().log(levl, message, object);
+    	else
+    	LoggerSSC.getInstance(emailSenderService).getLogger().log(levl, message);
     }
 
     @Override
     public void logWarning(Level level, String message) {
        LoggerSSC.getInstance(emailSenderService).getLogger().log(level, message);
     }
+
+	@Override
+	public void logInfo(Level levl, String message) {
+		LoggerSSC.getInstance(emailSenderService).getLogger().log(levl, message);
+		
+	}
     
 }

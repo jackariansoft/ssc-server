@@ -28,7 +28,7 @@ function setHeight() {
 
 function buildTable(page, pageSize) {
 
-	var url = "/ssc/api/resource/reservation";
+	var url = base_url+"/resource/reservation";
 
 	var requestData = {
 		start: getParameterByName('start'),
@@ -188,7 +188,7 @@ function deseleziona() {
 	Avvio processo di creazione prenotazione risorsa
  */
 function creaPrenotazione() {
-	$('#modInd').window('open');
+	$('#modPrenotazione').window('open');
 
 }
 function clearForm() {
@@ -233,7 +233,7 @@ function aggiungiPrenotazione(plc, resource, start_p, end_p) {
 				switch (status) {
 					case 200:
 
-						$.messager.alert('Sistema', 'Risorsa  ' + resource + ' abilitata', 'info');
+						$.messager.alert('Sistema', 'Risorsa  ' + resource + ' prenotazione effettuata', 'info');
 
 						break;
 
@@ -444,7 +444,11 @@ $(document).ready(function() {
 			{
 				field: 'receivedInterruptAt', title: "Forza Avvio", align: 'center',
 				formatter: function(value, row, index) {
+					if(row.status===0){
 					return "<button  onclick = forzaAvvioRisorsa(\"" + row.tag + "\",\"" + row.plcRef + "\")  class=\"easyui-linkbutton\" data-options=\"iconCls:'icon-reload'\" style=\"width:80px'\" value=\"Forza Avvio\">Avvia</button>";
+					}else{
+					 return "";
+					}
 				}
 			}
 		]]
@@ -522,17 +526,32 @@ $(document).ready(function() {
 		}
 	});
 
-
+ 
 	if (Object.keys(url_params).length > 0) {
 		setFieldFormOrdini(url_params);
 		buildTable(url_params.page, url_params.pageSize);
 	} else {
 		$('#serach-order').trigger('click');
 	}
+	/**
+		Impostazione finestra prenotazione manuale risorsa
+	 */ 
+	$('#modPrenotazione').window({
+		href:'risorse/gestione_prenotazione.jsp',
+		width:850,
+    	height:400,
+	    title:'Prenotazione Risorsa',
+    	modal:true,
+		closed:true,
+		onOpen: function () {
+			clearForm();
+        }
+	});
 	
-	connectToService();
+	
 	
     
+	
 	
 	$( "#ff" ).on( "submit", function( event ) {
   		event.preventDefault();
@@ -584,7 +603,8 @@ $(document).ready(function() {
                     var d1 = new Date(now.getFullYear(), now.getMonth(), now.getDate());                    
                     return date>=d1;
                 }
-            });
+      });
+	  connectToService();
 }
 );
 

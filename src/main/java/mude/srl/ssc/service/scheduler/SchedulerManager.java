@@ -18,7 +18,7 @@ import org.quartz.Scheduler;
 import org.quartz.Trigger;
 
 import mude.srl.ssc.entity.ResourceReservation;
-import mude.srl.ssc.service.scheduler.jobs.GestionePrenotazioneRisorsaCabina;
+import mude.srl.ssc.service.scheduler.jobs.GestionePrenotazioneRisorsaAvvio;
 public class SchedulerManager {
 
 	
@@ -56,7 +56,7 @@ public class SchedulerManager {
 
 		
 		
-		JobDetail reservetionJob = newJob(GestionePrenotazioneRisorsaCabina.class)
+		JobDetail reservetionJob = newJob(GestionePrenotazioneRisorsaAvvio.class)
 				 .withIdentity(new JobKey(r.getId().toString(),RESERVATION_ID_GROUP))
 				 .setJobData(data).build();
 		

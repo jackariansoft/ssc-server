@@ -17,17 +17,34 @@ public class ResponseCommand {
     private String errorMessage;
     private String succeccMessage;
     private Exception ex;
+    private boolean fault=false;
+    
+    
+    
     
     
     
 
-    public Exception getEx() {
+    public boolean isFault() {
+		return fault;
+	}
+
+
+	public void setFault(boolean fault) {
+		this.fault = fault;
+	}
+
+
+	public Exception getEx() {
 		return ex;
 	}
 
 
 	public void setEx(Exception ex) {
 		this.ex = ex;
+		if(ex!=null) {
+			fault=true;
+		}
 	}
 
 

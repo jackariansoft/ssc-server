@@ -6,9 +6,17 @@
 package mude.srl.ssc.service.scheduler.jobs;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
+import org.quartz.InterruptableJob;
+import org.quartz.Job;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.UnableToInterruptJobException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import mude.srl.ssc.entity.ResourceReservation;
 import mude.srl.ssc.service.dati.PlcService;
@@ -16,22 +24,12 @@ import mude.srl.ssc.service.log.LoggerService;
 import mude.srl.ssc.service.resource.ResourceService;
 import mude.srl.ssc.service.scheduler.SchedulerManager;
 
-import org.quartz.InterruptableJob;
-import org.quartz.Job;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
-import org.quartz.UnableToInterruptJobException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 /**
  *
  * @author Jack
  */
 @Component
-public class GestionePrenotazioneRisorsaCabina implements Job,InterruptableJob {
+public class GestionePrenotazioneRisorsaChiusura implements Job,InterruptableJob {
 
 	@Autowired
 	private PlcService plcService;
@@ -47,16 +45,18 @@ public class GestionePrenotazioneRisorsaCabina implements Job,InterruptableJob {
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
 
-		//JobKey key = jec.getJobDetail().getKey();
+		
 
-		JobDataMap dataMap = jec.getMergedJobDataMap();  // Note the difference from the previous example
+		JobDataMap dataMap = jec.getMergedJobDataMap();  
+		
 		Object get = dataMap.get(SchedulerManager.RESERVATION_ID_PROP);
 		
 		if(get instanceof ResourceReservation){
 			
 			ResourceReservation r  = (ResourceReservation) get;
 
-			System.out.println("Reservetion check: "+r.getPayload()+" Start: "+time_format.format(r.getStartTime())+" End: "+time_format.format(r.getEndTime()));
+			loggerService.logInfo(Level.INFO,
+					"Reservetion check: "+r.getPayload()+" Start: "+time_format.format(r.getStartTime())+" End: "+time_format.format(r.getEndTime())					);
 
 
 			long adesso = System.currentTimeMillis();
@@ -67,26 +67,15 @@ public class GestionePrenotazioneRisorsaCabina implements Job,InterruptableJob {
 			try {
 				switch (r.getStatus()) {
 
-				case SchedulerManager.ATTESA: {
+				case SchedulerManager.AVVIATA: {
 					
 					try {
 						
-						resourceService.abilitaRisorsa(r.getResource());
-						r.setStatus(SchedulerManager.AVVIATA);
+						resourceService.disabilitaRisorsa(r.getResource());
+						r.setStatus(SchedulerManager.TERMINATA);
 						
 					}catch (Exception e) {
-						if(last_status.equals(SchedulerManager.ATTESA)) {
-							
-							/**
-							 * 
-							 * TODO
-							 * Inserire controlli in abase allo stato precedente
-							 * Minimo controllo: invio email operatore
-							 * 
-							 */
-							
-						}
-						
+												
 						loggerService.logException(Level.SEVERE,"Errore inaspettato",e);
 					}
 					

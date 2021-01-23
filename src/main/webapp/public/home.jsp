@@ -47,7 +47,7 @@
 				label="Abilita Selezione"> <a href="javascript:void(0)"
 				class="easyui-linkbutton" onclick="exportToExcel()">Export Excel</a>			
 		</div>
-		<div id="modInd"></div>
+		<div id="modPrenotazione"></div>
 		<div id="modErrors"></div>
 		<div id="dd1"></div>
 		<div id="dd2"></div>
