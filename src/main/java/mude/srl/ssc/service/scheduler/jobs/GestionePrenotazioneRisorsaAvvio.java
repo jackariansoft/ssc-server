@@ -75,17 +75,15 @@ public class GestionePrenotazioneRisorsaAvvio implements Job,InterruptableJob {
 						r.setStatus(SchedulerManager.AVVIATA);
 						
 					}catch (Exception e) {
-												
-						loggerService.logException(Level.SEVERE,"Errore inaspettato",e);
+						
+						r.setStatus(SchedulerManager.SOSPESA);				
+						loggerService.logException(Level.SEVERE,"Attivazione Risorsa: Errore Inaspettato",e);
 					}
 					
 
 					break;
 					}
 				}
-
-
-
 				plcService.aggiornaStatoPrenotazione(r, r.getStatus());
 
 			} catch (Exception e) {

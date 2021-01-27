@@ -16,6 +16,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
 	  public void configureMessageBroker(MessageBrokerRegistry config) {
 	    config.enableSimpleBroker(AGGIORNAMENTO_WEBSOCKET_ENDPOINT,INFO_WEBSOCKET_ENDPOINT);
 	    config.setApplicationDestinationPrefixes("/prenotazioni");
+	    
 	  }
 
 	  @Override

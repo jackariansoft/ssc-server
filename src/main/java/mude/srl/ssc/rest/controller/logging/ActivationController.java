@@ -129,6 +129,7 @@ public class ActivationController {
 			RequestCommandResourceReservation r = remoteService.validatePayload(payload.replaceAll("(\\r|\\n)", ""));
 			if(r!=null) {
 				ResponseCommand response = resourceService.gestionePrenotazioneRisorsa(r);
+								
 				
 			}
 			

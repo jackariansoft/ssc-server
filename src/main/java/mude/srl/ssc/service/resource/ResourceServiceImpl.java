@@ -24,44 +24,46 @@ import mude.srl.ssc.service.log.LoggerService;
 import mude.srl.ssc.service.scheduler.SchedulerManager;
 
 @Component
-public class ResourceServiceImpl implements ResourceService{
+public class ResourceServiceImpl implements ResourceService {
 
-	 private final ReentrantLock lock = new ReentrantLock();
-	
+	private final ReentrantLock lock = new ReentrantLock();
+
 	@Autowired
 	private PlcService plcService;
+
+	@Autowired
+	private LoggerService loggerService;
+
+	@Autowired
+	private Scheduler scheduler;
 	
 	@Autowired
-    private LoggerService loggerService;
+	private ResourcePolicyService resourceService;
 
-     @Autowired
-    private Scheduler scheduler;
-     
-     @Autowired
-     private SimpMessagingTemplate simpMessagingTemplate;
+	@Autowired
+	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@Override
 	public void abilitaRisorsa(Resource r) throws Exception {
 
-		if(r==null)
+		if (r == null)
 			throw new Exception("Info risorsa  non puo' essere null");
-		ActivationCommandHandler h  = new ActivationCommandHandler();
+		ActivationCommandHandler h = new ActivationCommandHandler();
 
-		if(r.getPlc()!=null) {
+		if (r.getPlc() != null) {
 			h.setUrl(r.getPlc().getIpAddress());
-			h.setPort(r.getPlc().getPortaGestioneServizi().toString());			
+			h.setPort(r.getPlc().getPortaGestioneServizi().toString());
 		}
 
-		MessageActivationCommand cmd  = new MessageActivationCommand();
+		MessageActivationCommand cmd = new MessageActivationCommand();
 		cmd.setAction(ENABLE_ACTION);
 		cmd.setDestination(r.getBusId());
 
 		ResponseCommand resp = new ResponseCommand();
-		h.handle(cmd, resp,lock);
-		if(resp.getStatus()!=200) {
-			throw new Exception("Comando abilitazione risorsa fallito");
+		h.handle(cmd, resp, lock);
+		if (resp.getStatus() != 200) {
+			throw new Exception("Comando abilitazione risorsa fallito",resp.getEx());
 		}
-
 
 	}
 
@@ -79,53 +81,49 @@ public class ResourceServiceImpl implements ResourceService{
 
 	@Override
 	public void disabilitaRisorsa(Resource r) throws Exception {
-		
-		if(r==null)
+
+		if (r == null)
 			throw new Exception("Info risorsa  non puo' essere null");
 
-		ActivationCommandHandler h  = new ActivationCommandHandler();
+		ActivationCommandHandler h = new ActivationCommandHandler();
 
-		if(r.getPlc()!=null) {
+		if (r.getPlc() != null) {
 			h.setUrl(r.getPlc().getIpAddress());
-			h.setPort(r.getPlc().getPortaGestioneServizi().toString());			
+			h.setPort(r.getPlc().getPortaGestioneServizi().toString());
 		}
 
-		MessageActivationCommand cmd  = new MessageActivationCommand();
+		MessageActivationCommand cmd = new MessageActivationCommand();
 		cmd.setAction(DISABLE_ACTION);
 		cmd.setDestination(r.getBusId());
 
 		ResponseCommand resp = new ResponseCommand();
-		h.handle(cmd, resp,lock);
+		h.handle(cmd, resp, lock);
 
 	}
 
 	@Override
 	public void disabilitaRisorsa(Long id) throws Exception {
-		if(id==null)
+		if (id == null)
 			throw new Exception("Id risorsa non puo' essere null");
-		
-		ActivationCommandHandler h  = new ActivationCommandHandler();
-		
-		Resource r = plcService.getReourceById(id);
-		
-		
 
-		if(r.getPlc()!=null) {
+		ActivationCommandHandler h = new ActivationCommandHandler();
+
+		Resource r = plcService.getReourceById(id);
+
+		if (r.getPlc() != null) {
 			h.setUrl(r.getPlc().getIpAddress());
 			h.setPort(r.getPlc().getPortaGestioneServizi().toString());
 			h.setPath(r.getPlc().getPath());
-		}else {
+		} else {
 			throw new Exception("Info plc non presenti. Impossibile gestire la risorsa");
 		}
 
-		MessageActivationCommand cmd  = new MessageActivationCommand();
+		MessageActivationCommand cmd = new MessageActivationCommand();
 		cmd.setAction(DISABLE_ACTION);
 		cmd.setDestination(r.getBusId());
 
 		ResponseCommand resp = new ResponseCommand();
-		h.handle(cmd, resp,lock);
-
-
+		h.handle(cmd, resp, lock);
 
 	}
 
@@ -137,86 +135,99 @@ public class ResourceServiceImpl implements ResourceService{
 
 	@Override
 	public void disabilitaRisorsaByReservationId(String r) throws Exception {
-		  
-		   ActivationCommandHandler h  = new ActivationCommandHandler();
-		   Long id_reservetion = Long.valueOf(r);
-		   Resource res =  plcService.getResourceByReservetionId(id_reservetion);
-		   
-		   if(res.getPlc()!=null) {
-				h.setUrl(res.getPlc().getIpAddress());
-				h.setPort(res.getPlc().getPortaGestioneServizi().toString());			
-			}else {
-				throw new Exception("Info plc non presenti. Impossibile gestire la risorsa");
+
+		ActivationCommandHandler h = new ActivationCommandHandler();
+		Long id_reservetion = Long.valueOf(r);
+		Resource res = plcService.getResourceByReservetionId(id_reservetion);
+
+		if (res.getPlc() != null) {
+			h.setUrl(res.getPlc().getIpAddress());
+			h.setPort(res.getPlc().getPortaGestioneServizi().toString());
+		} else {
+			throw new Exception("Info plc non presenti. Impossibile gestire la risorsa");
+		}
+
+		MessageActivationCommand cmd = new MessageActivationCommand();
+		cmd.setAction(DISABLE_ACTION);
+		cmd.setDestination(res.getBusId());
+
+		ResponseCommand resp = new ResponseCommand();
+		resp.setStatus(200);
+		h.handle(cmd, resp, lock);
+		if (resp.getStatus() != 200) {
+
+			if (resp.getEx() == null) {
+				throw new Exception(resp.getErrorMessage());
 			}
 
-			MessageActivationCommand cmd  = new MessageActivationCommand();
-			cmd.setAction(DISABLE_ACTION);
-			cmd.setDestination(res.getBusId());
+			else
+				throw resp.getEx();
+		}
 
-			ResponseCommand resp = new ResponseCommand();
-			resp.setStatus(200);
-			h.handle(cmd, resp,lock);
-			if(resp.getStatus()!=200) {
-				
-				if(resp.getEx()==null) {
-					throw new Exception(resp.getErrorMessage());
-				}
-				
-				else throw resp.getEx();
-			}
-		
 	}
+
 	/**
 	 * 
 	 */
 	@Override
 	public ResponseCommand gestionePrenotazioneRisorsa(RequestCommandResourceReservation request) {
 		ResponseCommand response = new ResponseCommand();
-        try {
-            
-                Resource resource = plcService.getReourceByPlcAndTag(request.getPlc_uid(), request.getResource_tag());
-                if(resource==null){
-                    response.setErrorMessage("Resource not found");
-                    response.setStatus(HttpStatus.BAD_REQUEST.value());
-                    
-                }else{
-                    Response<ResourceReservation> controllaPerAvvio = plcService.controllaPerAvvio(resource, request);
-                    
-                    if(!controllaPerAvvio.isFault()){
-                    	
-                        SchedulerManager.getInstance().avviaGestionePrenotazione(controllaPerAvvio.getResult(),scheduler);
-                        simpMessagingTemplate.convertAndSend("/aggiornamento", controllaPerAvvio.getResult());
-                        simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.INFO, "Ottimo!","La tua prenotazione e' stata schedulata.", request));
-                    }else{
-                        
-                    	simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.ERROR, "Errore inaspettato","Contattare il servizio clienti", request));
-                    	loggerService.logException(Level.WARNING, "Nessuna prenotazione creata:"+request,new Exception("nessuna prenotazione creata"));
-                        
-                    }
-                    
-                }
-            
+		try {
 
-        } catch (Exception ex) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            loggerService.logException(Level.SEVERE, null, ex);
-            simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.ERROR, "Qrcode non valido","Il qrcode non e' stato validato. Possibile prenotazione scaduta", request));
-            
-        }
-        return response;
+			Resource resource = plcService.getReourceByPlcAndTag(request.getPlc_uid(), request.getResource_tag());
+			if (resource == null) {
+				response.setErrorMessage("Resource not found");
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+
+			} else {
+				resourceService.checkPolicy(resource, request);
+				
+				Response<ResourceReservation> controllaPerAvvio = plcService.controllaPerAvvio(resource, request);
+				
+				if (!controllaPerAvvio.isFault()) {
+					
+					SchedulerManager.getInstance().avviaGestionePrenotazione(controllaPerAvvio.getResult(), scheduler);
+					simpMessagingTemplate.convertAndSend("/aggiornamento", controllaPerAvvio.getResult());
+					simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.INFO,
+							"Ottimo!", "La tua prenotazione e' stata schedulata.", request));
+				} else {
+
+					simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.ERROR,
+							"Errore inaspettato", "Contattare il servizio clienti", request));
+					loggerService.logException(Level.WARNING, "Nessuna prenotazione creata:" + request,
+							new Exception("nessuna prenotazione creata"));
+					
+					response.setStatus(HttpStatus.BAD_REQUEST.value());
+					response.setFault(true);
+					response.setErrorMessage("Intervallo prenotazione gia' utilizzato per questa risorsa: "+resource.getTag());
+					response.setEx(new Exception("Intervallo prenotazione gia' utilizzato per questa risorsa: "+resource.getTag()));
+
+				}
+
+			}
+
+		} catch (Exception ex) {
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			loggerService.logException(Level.SEVERE, null, ex);
+			simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.ERROR,
+					"Qrcode non valido", "Il qrcode non e' stato validato. Possibile prenotazione scaduta", request));
+
+		}
+		return response;
 	}
+
 	/**
 	 * 
 	 */
-	//@Override
+	// @Override
 	public Response<QrcodeTest> getTestBy(String id) {
 		Response<QrcodeTest> response = new Response<QrcodeTest>();
 		try {
-			  response.setResult(plcService.getQrcodeTestById(id));
+			response.setResult(plcService.getQrcodeTestById(id));
 		} catch (Exception e) {
-			 response.setFault(true);
-			 response.setException(e);
-	         loggerService.logException(Level.SEVERE, null, e);
+			response.setFault(true);
+			response.setException(e);
+			loggerService.logException(Level.SEVERE, null, e);
 		}
 		return response;
 	}

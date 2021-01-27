@@ -191,7 +191,7 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 	public Response<Long> controllaPrenotazioniAttive(Resource r) throws Exception {
 		Response<Long> resp = new Response<Long>();
 
-		ResourceReservation reservation = null;
+		
 		EntityManager em = null;
 		EntityTransaction tx = null;
 

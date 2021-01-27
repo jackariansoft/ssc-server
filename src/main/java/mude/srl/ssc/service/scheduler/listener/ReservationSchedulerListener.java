@@ -10,7 +10,6 @@ import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import mude.srl.ssc.entity.ResourceReservation;
 import mude.srl.ssc.service.dati.PlcService;
 import mude.srl.ssc.service.log.LoggerService;
 import mude.srl.ssc.service.resource.ResourceService;
@@ -86,7 +85,7 @@ public class ReservationSchedulerListener implements SchedulerListener {
 			loggerService.logInfo(Level.INFO, "Finalizzazione Prenotazione:{0}", id);				
 			   
 		} catch (Exception e) {
-			loggerService.logException(Level.SEVERE,"ERORRE DISABILITAZIONE RISORSA", e);
+			loggerService.logException(Level.SEVERE,"ERRORE DISABILITAZIONE RISORSA", e);
 		}
 		
 		
@@ -118,7 +117,8 @@ public class ReservationSchedulerListener implements SchedulerListener {
 
 	@Override
 	public void schedulerError(String msg, SchedulerException cause) {
-		// TODO Auto-generated method stub
+		
+		loggerService.logException(Level.SEVERE,"ERORRE SCHEDULER GESTIONE RISORSE: "+msg, cause);
 		
 	}
 

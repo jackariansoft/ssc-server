@@ -22,65 +22,65 @@ import mude.srl.ssc.entity.utils.Response;
 import mude.srl.ssc.service.dati.PlcService;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:8000","http://127.0.0.1:8000"})
+@CrossOrigin(origins = { "http://localhost:8000", "http://127.0.0.1:8000"})
 public class ResourceController {
 
 	@Autowired
-    private PlcService plcService;
-	
-	@RequestMapping(path = ServiceEndpoint.RESOURCE,method =RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<ResourceWithPlc>> resourceList(){
-		try {
-		List<Resource> res = plcService.getResource(null);
+	private PlcService plcService;
+
+	@RequestMapping(path = ServiceEndpoint.RESOURCE, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<ResourceWithPlc>> resourceList() {
 		List<ResourceWithPlc> _res = new ArrayList<>();
-		if(res!=null&&!res.isEmpty()) {
-			for(Resource r :res) {
-				_res.add(new ResourceWithPlc(r));
+		try {
+			List<Resource> res = plcService.getResource(null);
+
+			if (res != null && !res.isEmpty()) {
+				for (Resource r : res) {
+					_res.add(new ResourceWithPlc(r));
+				}
+
 			}
-			
-		}
-		return  ResponseEntity.ok(_res);
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			return new ResponseEntity<List<ResourceWithPlc>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		return ResponseEntity.ok(_res);
 	}
+
 	@ResponseBody
-	@RequestMapping(path = ServiceEndpoint.RESOURCE_RESERVATIONS,method =RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<Prenotazione>> resourceReservationsList(){
+	@RequestMapping(path = ServiceEndpoint.RESOURCE_RESERVATIONS, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response<List<Prenotazione>> resourceReservationsList() {
 		Response<List<Prenotazione>> resp = new Response<List<Prenotazione>>();
 		try {
-	
-		
-		List<Prenotazione> res = plcService.getReservationBeans(null);
-		resp.setResult(res);
-		resp.setTotalResult(Long.valueOf(res.size()));
-		
-		}catch (Exception e) {
+
+			List<Prenotazione> res = plcService.getReservationBeans(null);
+			resp.setResult(res);
+			resp.setTotalResult(Long.valueOf(res.size()));
+
+		} catch (Exception e) {
 			resp.setFault(true);
 			resp.setErrorMessage(e.getMessage());
 			resp.setException(e);
 		}
 		return resp;
 	}
-	
+
 	@ResponseBody
-	@RequestMapping(path = ServiceEndpoint.LIST_PLC,method =RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response<List<Plc>> plcList(){
+	@RequestMapping(path = ServiceEndpoint.LIST_PLC, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Response<List<Plc>> plcList() {
 		Response<List<Plc>> resp = new Response<List<Plc>>();
 		try {
-	
-		
-		List<Plc> res = plcService.getPlcList(null);
-		resp.setResult(res);
-		resp.setTotalResult(Long.valueOf(res.size()));
-		
-		}catch (Exception e) {
+
+			List<Plc> res = plcService.getPlcList(null);
+			resp.setResult(res);
+			resp.setTotalResult(Long.valueOf(res.size()));
+
+		} catch (Exception e) {
 			resp.setFault(true);
 			resp.setErrorMessage(e.getMessage());
 			resp.setException(e);
 		}
 		return resp;
 	}
-	
-	
+
 }

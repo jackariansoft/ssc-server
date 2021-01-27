@@ -7,6 +7,8 @@ package mude.srl.ssc.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,6 +22,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -67,6 +71,15 @@ public class Resource implements Serializable {
     private boolean manage;
     @Column(name = "bus_id")
     private Short busId;
+    
+    @Column(name = "start_time_limit")
+    @Temporal(TemporalType.TIME)
+    private Date startTimeLimit;
+    
+    @Column(name = "end_time_limit")
+    @Temporal(TemporalType.TIME)
+    private Date endTimeLimit;
+    
     @JoinColumn(name = "plc", referencedColumnName = "id")
     @ManyToOne    
     private Plc plc;
@@ -179,8 +192,26 @@ public class Resource implements Serializable {
     public void setSsc(Ssc ssc) {
         this.ssc = ssc;
     }
+    
+    
 
-    @Override
+    public Date getStartTimeLimit() {
+		return startTimeLimit;
+	}
+
+	public void setStartTimeLimit(Date startTimeLimit) {
+		this.startTimeLimit = startTimeLimit;
+	}
+
+	public Date getEndTimeLimit() {
+		return endTimeLimit;
+	}
+
+	public void setEndTimeLimit(Date endTimeLimit) {
+		this.endTimeLimit = endTimeLimit;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);

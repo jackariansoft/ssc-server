@@ -29,6 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,6 +57,7 @@ public class CommandController {
 	 * @param request
 	 * @return
 	 */
+	@CrossOrigin(origins = { "http://localhost:8000", "http://127.0.0.1:8000"})
 	@RequestMapping(value = ServiceEndpoint.RESOURCE_ATTIVA, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseCommand> gestionePrenotazioneRisorsa(
 			@RequestBody RequestCommandResourceReservation request) {
@@ -99,7 +101,7 @@ public class CommandController {
 					 */
 					Response<Long> check = plcService.controllaPrenotazioniAttive(resource);
 					if (check.getResult().compareTo(0L) == 1) {
-						response.setErrorMessage("Trovatte prenotazione attive. Impossibile effettuare operazione richiesta");
+						response.setErrorMessage("Trovate prenotazione attive. Impossibile effettuare operazione richiesta");
 						response.setStatus(HttpStatus.BAD_REQUEST.value());
 					} else {
 						ActivationCommandHandler handler = new ActivationCommandHandler();

@@ -34,6 +34,7 @@ import mude.srl.ssc.messaging.WebSocketConfig;
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
 import mude.srl.ssc.service.configuration.ConfigurationService;
 import mude.srl.ssc.service.dati.PlcService;
+import mude.srl.ssc.service.log.LoggerService;
 import mude.srl.ssc.service.payload.model.Reservation;
 import mude.srl.ssc.service.resource.ResourceService;
 
@@ -48,6 +49,9 @@ public class RemoteServiceImpl implements RemoteService {
 
 	@Autowired
 	private PlcService plcService;
+	
+	@Autowired 
+	private LoggerService loggerService;
 
 	int interval_in_minutes = 10;
 	// private String domain = "https://camajora-staging.donodoo.it";
@@ -83,7 +87,7 @@ public class RemoteServiceImpl implements RemoteService {
 		RestTemplate httpClient = new RestTemplateBuilder()
 				.uriTemplateHandler(new RootUriTemplateHandler("https://" + conf.getUrlServizioPrenotazione()))
 				.defaultHeader("Authorization", "Token " + conf.getUrlApikey())
-				.errorHandler(new RemoteServiceResponseErrorHandler()).build();
+				.errorHandler(new RemoteServiceResponseErrorHandler(loggerService)).build();
 		/**
 		 * 
 		 * Configurazione particolare della gestione degli stream
@@ -161,13 +165,14 @@ public class RemoteServiceImpl implements RemoteService {
 		boolean check = true;
 		Date adesso = Date.from(LocalDateTime.now().toInstant(ZoneOffset.of("+01:00")));
 		Message m = null;
-		if (r.getStart().before(adesso)) {
+		
+		if(r.getEnd().before(adesso)) {
 			check = false;
-
-			m = new Message(MessageInfoType.ERROR, "Payload Non valido",
-					"Intervallo prenotazione non valido. Ora di avvio passata<br>", r.getPlc_uid());
+			m = new Message(MessageInfoType.ERROR, "Prenotazione scaduta.", "Intervallo prenotazione non valido.<br>"
+					+ "La data fine prenotazione e' passata. ", r.getPlc_uid());
 			simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT, m);
-		} else if (r.getEnd().before(r.getStart())) {
+		}
+	    if (r.getEnd().before(r.getStart())) {
 			check = false;
 
 			m = new Message(MessageInfoType.ERROR, "Payload Non valido", "Intervallo prenotazione non valido.<br>"

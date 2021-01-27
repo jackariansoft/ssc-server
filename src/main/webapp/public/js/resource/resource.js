@@ -538,7 +538,7 @@ $(document).ready(function() {
 	 */ 
 	$('#modPrenotazione').window({
 		href:'risorse/gestione_prenotazione.jsp',
-		width:850,
+		width:500,
     	height:400,
 	    title:'Prenotazione Risorsa',
     	modal:true,
