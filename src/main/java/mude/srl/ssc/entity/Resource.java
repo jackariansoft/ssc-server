@@ -91,6 +91,11 @@ public class Resource implements Serializable {
     @OneToMany(mappedBy = "resource",cascade = {CascadeType.ALL })
     private Collection<ResourceReservation> reservation;
     
+    @JoinColumn(name = "policy", referencedColumnName = "id")
+    @ManyToOne    
+    private ResourcePolicy policy;
+    
+    
     @Transient
     private String  iconCls = "icon-cabina";
     
