@@ -73,6 +73,7 @@ public class CommandController {
 	 * @param request
 	 * @return
 	 */
+	@CrossOrigin(origins = { "http://localhost:8000", "http://127.0.0.1:8000"})
 	@RequestMapping(value = ServiceEndpoint.RESOURCE_COMMAND, method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseCommand> gestioneAttivazioneRisorse(@RequestBody RequestCommand request) {
 		ResponseCommand response = new ResponseCommand();

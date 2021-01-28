@@ -54,31 +54,41 @@ public class Ssc implements Serializable {
     @Size(min = 1, max = 20)
     @Column(name = "mapped_by", nullable = false, length = 20)
     private String mappedBy;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2147483647)
     @Column(nullable = false, length = 2147483647)
     private String location;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(nullable = false, length = 50)
     private String name;
+    
 //    @JoinColumn(name = "email_config", referencedColumnName = "ref", nullable = false)
     @Column(name = "email_config", nullable = false)
     Short emailConfig;
+    
 //    @ManyToOne(optional = false)
     //private Email emailConfig;
     @OneToMany(mappedBy = "ssc")
     @JsonIgnore
     private Collection<Resource> resourceCollection;
+    
     @OneToMany(mappedBy = "ssc")
     @JsonIgnore
     private Collection<Plc> plcCollection;
+    
     @OneToMany(mappedBy = "ssc")
     @JsonIgnore
     private Collection<Energymesure> energymesureCollection;
-
+    
+    @JoinColumn(name = "location_id", referencedColumnName = "id")
+	@ManyToOne
+	private Location position;
+    
     public Ssc() {
     }
 

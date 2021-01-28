@@ -129,10 +129,11 @@ public class EclipseLinkJpaConfiguration {
 
     private Map<String, ?> initJpaProperties() {
         final Map<String, Object> ret = new HashMap<>();
-        // Add any JpaProperty you are interested in and is supported by your Database and JPA implementation
+        
         ret.put("eclipselink.jdbc.batch-writing", "JDBC");
         ret.put("eclipselink.jdbc.batch-writing.size", "500");
         ret.put("eclipselink.persistence-context.flush-mode", "commit");
+        ret.put("eclipselink.cache.shared.default","false");
         ret.put("eclipselink.weaving", "false");
 
         return ret;

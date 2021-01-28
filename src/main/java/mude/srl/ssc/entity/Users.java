@@ -5,11 +5,11 @@
  */
 package mude.srl.ssc.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,8 +18,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -28,11 +26,13 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -85,6 +85,11 @@ public class Users implements Serializable,UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "users")
     @JsonIgnore
     private Collection<UserLog> userLogCollection;
+    
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "lastupdateBy")
+    private Collection<Location> locationCollection;
+    
     @Transient
     private UserLog lastLog;
 
@@ -262,5 +267,16 @@ public class Users implements Serializable,UserDetails {
     public void setLogin(String login) {
         this.login = login;
     }
+
+    @XmlTransient
+	public Collection<Location> getLocationCollection() {
+		return locationCollection;
+	}
+
+	public void setLocationCollection(Collection<Location> locationCollection) {
+		this.locationCollection = locationCollection;
+	}
+    
+    
     
 }
