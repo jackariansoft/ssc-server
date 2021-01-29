@@ -14,15 +14,19 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.client.RootUriTemplateHandler;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
+
 
 import mude.srl.ssc.entity.Configuration;
 import mude.srl.ssc.entity.Plc;
@@ -35,10 +39,11 @@ import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservat
 import mude.srl.ssc.service.configuration.ConfigurationService;
 import mude.srl.ssc.service.dati.PlcService;
 import mude.srl.ssc.service.log.LoggerService;
+import mude.srl.ssc.service.payload.exception.CrossLocationReservetionRequestException;
 import mude.srl.ssc.service.payload.model.Reservation;
-import mude.srl.ssc.service.resource.ResourceService;
 
 @Component
+@PropertySource(value = "file:/opt/config/location.properties", ignoreResourceNotFound = true)
 public class RemoteServiceImpl implements RemoteService {
 
 	@Autowired
@@ -52,6 +57,11 @@ public class RemoteServiceImpl implements RemoteService {
 	
 	@Autowired 
 	private LoggerService loggerService;
+	
+	
+	
+	@Value("${location.id}")
+	private String location;
 
 	int interval_in_minutes = 10;
 	// private String domain = "https://camajora-staging.donodoo.it";
@@ -101,8 +111,12 @@ public class RemoteServiceImpl implements RemoteService {
 		// httpClient.postForObject("", request, responseType, uriVariables);
 		Reservation rs = httpClient.postForObject(conf.getEndpoint(),
 				new mude.srl.ssc.service.payload.model.UnlockRequest(payload), Reservation.class);
+		
 		if (rs != null) {
 			
+			if(rs.getLocation().compareTo(Long.valueOf(location))!=0) {
+				throw new CrossLocationReservetionRequestException(rs.toString());
+			}
 				Resource resource = plcService.getReourceByTag(rs.getResourceSku());
 				if (resource != null) {
 					Plc plc = resource.getPlc();

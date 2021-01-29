@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author jackarian
  */
 @Entity
-@Table(name = "networklocation", catalog = "ssc", schema = "public")
+@Table(name = "networklocation", schema = "public")
 @XmlRootElement
 public class Location implements Serializable {
 

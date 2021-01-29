@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mude.srl.ssc.rest.controller.logging.messages;
+package mude.srl.ssc.rest.controller.accessi.messages;
 
 /**
  *

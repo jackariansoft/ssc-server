@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mude.srl.ssc.rest.controller.logging;
+package mude.srl.ssc.rest.controller.accessi;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -25,11 +25,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mude.srl.ssc.config.utils.protocol.StringUtils;
+import mude.srl.ssc.rest.controller.accessi.model.MIDMessage;
+import mude.srl.ssc.rest.controller.accessi.model.RequestTokenMessage;
 import mude.srl.ssc.rest.controller.command.model.MessageActivationCommand;
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
 import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
-import mude.srl.ssc.rest.controller.logging.model.MIDMessage;
-import mude.srl.ssc.rest.controller.logging.model.RequestTokenMessage;
 import mude.srl.ssc.service.dati.EnergyService;
 import mude.srl.ssc.service.log.LoggerService;
 import mude.srl.ssc.service.payload.RemoteService;
