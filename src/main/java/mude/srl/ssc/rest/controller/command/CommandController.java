@@ -35,7 +35,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- *
+ * Gestione automazione prenotazione risorse. La tipologia attuamente gestita in quest versione e' 
+ * quella delle cabine.
+ *  
  * @author Jack
  */
 @Controller
@@ -53,6 +55,11 @@ public class CommandController {
 //     @Autowired
 //     private SimpMessagingTemplate simpMessagingTemplate;
 	/**
+	 * Questo metodo servizio non fa altro che inviare le informazione pervenute 
+	 * alla classe servizio che si occupa di validare le informazione per avviare 
+	 * l'attivazione della risorsa identificata attraverso le informazione contenute 
+	 * nel payload di input.
+	 * 
 	 * 
 	 * @param request
 	 * @return
@@ -69,6 +76,11 @@ public class CommandController {
 
 	/**
 	 * Gestione comandi attivazione/disattivazione cabina
+	 * Questo servizio serve ad inviare comandi di accensione e spegnimento di una risora che sia valida nel contesto
+	 * della locazione gestita. 
+	 * In teoria con questo strumento si posso gestire tutte le risorse che solo collegate alla rete.
+	 * Da usare con molta cautela. Solo che sa bene cosa sta facendo dovrebbe utilizzarle.
+	 * 
 	 * 
 	 * @param request
 	 * @return

@@ -222,6 +222,16 @@ public class Resource implements Serializable {
 	public void setEndTimeLimit(Date endTimeLimit) {
 		this.endTimeLimit = endTimeLimit;
 	}
+	
+	
+
+	public ResourcePolicy getPolicy() {
+		return policy;
+	}
+
+	public void setPolicy(ResourcePolicy policy) {
+		this.policy = policy;
+	}
 
 	@Override
     public int hashCode() {

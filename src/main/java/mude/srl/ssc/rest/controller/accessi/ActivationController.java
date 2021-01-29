@@ -58,8 +58,10 @@ public class ActivationController {
     @Autowired
     private ResourceService resourceService;
     
+    
+    
     @RequestMapping(path = "/activation", produces = {MediaType.ALL_VALUE}, consumes = MediaType.ALL_VALUE)
-    public void actiovationNode(HttpServletRequest request, HttpServletResponse resp) throws IOException, JsonProcessingException, InterruptedException {
+    public void actiovationNode(HttpServletRequest request, HttpServletResponse resp) throws Exception {
         //To do register message
         String  test = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         test = su.clearString(test);
@@ -100,22 +102,28 @@ public class ActivationController {
      * @param test
      * @param request
      * @param resp
-     * @throws JsonProcessingException
-     * @throws IOException
-     * @throws InterruptedException
+     * @throws Exception 
      */
-    public void buildResponse(String test, HttpServletRequest request, HttpServletResponse resp) throws JsonProcessingException, IOException, InterruptedException {
+    public void buildResponse(String test, HttpServletRequest request, HttpServletResponse resp) throws Exception {
 
         //ActivationCommmandHandler h = new ActivationCommmandHandler();
 
         ObjectMapper mapper = new ObjectMapper();
 
         RequestTokenMessage readValue = mapper.readValue(test, RequestTokenMessage.class);
-        long mid = readValue.getMID();
-        //TO DO invio al server il payload di prenotazione;
-
+        Long mid = readValue.getMID();
+        /**
+         * 
+         * Questo valore serve in tutti i casi si voglia inviare un messaggio a video.
+         * Esso rapprenta il riferimento alla provenienza della richiesta,
+         * indentificativo del plc che riceve la richiesta.
+         *  
+         * 
+         */
+        Long uid = readValue.getUID();
+        
         MessageActivationCommand res = new MessageActivationCommand();
-        res.setMID(readValue.getMID());        
+        res.setMID(mid);        
         res.setAction(3);
         res.setMessage("NO_VALID");
         res.setDestination(10);
@@ -123,19 +131,27 @@ public class ActivationController {
             Logger.getLogger(ActivationController.class.getName()).log(Level.INFO, res.toString());
         }
         mapper.writeValue(resp.getOutputStream(), res);
+        /**
+         * Estrazione del payload
+         * 
+         */
         String payload = readValue.getFifo().get(0).getValue().getToken();
+        
         try {
         	
-			RequestCommandResourceReservation r = remoteService.validatePayload(payload.replaceAll("(\\r|\\n)", ""));
+			RequestCommandResourceReservation r = remoteService.validatePayload(payload.replaceAll("(\\r|\\n)", ""),uid.toString());
+			
 			if(r!=null) {
-				ResponseCommand response = resourceService.gestionePrenotazioneRisorsa(r);
-								
-				
+				resourceService.gestionePrenotazioneRisorsa(r);											
 			}
 			
 			
 		} catch (Exception e) {
-			loggerService.logException(Level.SEVERE, "Error on validatin payload: "+payload, e);
+			
+			loggerService.logException(Level.SEVERE, "Error on validation payload: "+payload, e);
+			throw e;
+			
+			
 		}
         
     }

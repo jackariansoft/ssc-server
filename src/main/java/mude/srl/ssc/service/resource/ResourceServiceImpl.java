@@ -187,13 +187,18 @@ public class ResourceServiceImpl implements ResourceService {
 				if (!controllaPerAvvio.isFault()) {
 					
 					SchedulerManager.getInstance().avviaGestionePrenotazione(controllaPerAvvio.getResult(), scheduler);
+					
 					simpMessagingTemplate.convertAndSend("/aggiornamento", controllaPerAvvio.getResult());
+					
 					simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.INFO,
 							"Ottimo!", "La tua prenotazione e' stata schedulata.", request));
 				} else {
 
+					
+					
 					simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.ERROR,
 							"Errore inaspettato", "Contattare il servizio clienti", request));
+					
 					loggerService.logException(Level.WARNING, "Nessuna prenotazione creata:" + request,
 							new Exception("nessuna prenotazione creata"));
 					

@@ -1,5 +1,7 @@
 package mude.srl.ssc.messaging;
 
+import java.awt.TrayIcon.MessageType;
+
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
 
 public class Message {
@@ -50,9 +52,29 @@ public class Message {
 	public void setPlc_source(String plc_source) {
 		this.plc_source = plc_source;
 	}
-	
+	/**
+	 * 
+	 * @param type tipo messaggio <strong>MessageInfoType</strong>
+	 * @param title titolo da visualizzare
+	 * @param body  corpo del messaggio
+	 * @param r     command da cui si estrae il target
+	 * @return
+	 */
 	public static Message buildFromRequest(MessageInfoType type, String title, String body,RequestCommandResourceReservation r) {
 		Message m   = new Message(type,title,body,r.getPlc_uid());
+		return m;
+	}
+	/**
+	 * 
+	 * @param type tipo messaggio
+	 * @param title titolo da visualizzare
+	 * @param body corpo del messaggio
+	 * @param target chi deve ricevere questo messaggio sul canale
+	 * @return
+	 */
+	public static Message buildFromRequest(MessageInfoType type, String title, String body, String target) {
+		
+		Message m   = new Message(type,title,body,target);
 		return m;
 	}
 

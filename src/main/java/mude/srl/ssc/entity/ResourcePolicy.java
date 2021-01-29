@@ -49,18 +49,19 @@ public class ResourcePolicy  implements Serializable{
     @Column(name = "weekend_available",nullable = false,updatable = true)
 	Boolean weekendAvailable;
 	
-	//hour_limited
 	@Basic(optional = false)
     @NotNull
     @Column(name = "hour_limited",nullable = false,updatable = true)
 	Boolean hourLimited;
-	//day_of_week
+	
+
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 150)
     @Column(name = "day_of_week",nullable = false, length = 150)    
     private String dayOfWeek;
-	//hour_of_day
+	
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 150)
