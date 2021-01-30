@@ -28,9 +28,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
-public class UserServiceImpl extends AbstractService implements UserService, UserDetailsService {
+@Repository
+public class UserServiceImpl extends AbstractService<Users> implements UserService, UserDetailsService {
 
 
     @Autowired
@@ -79,7 +80,7 @@ public class UserServiceImpl extends AbstractService implements UserService, Use
 
     @Override
     public Response<Users> getLogin(String login, String password) {
-        Response<Users> resp = new Response();
+        Response<Users> resp = new Response<>();
         try {
             Query q = getEm().createQuery("SELECT u FROM Users u WHERE u.login = :name AND u.password=:password AND u.active=TRUE");
             q.setParameter("name", login);

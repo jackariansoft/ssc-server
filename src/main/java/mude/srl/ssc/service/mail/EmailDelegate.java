@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
  * @author Jack
  */
 @Repository
-public class EmailDelegate extends AbstractService implements EmailService {
+public class EmailDelegate extends AbstractService<Email> implements EmailService {
 
     public EmailDelegate() {
         System.out.println("Attivazione servizio recupero configurazione email");

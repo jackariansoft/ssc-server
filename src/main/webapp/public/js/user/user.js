@@ -9,7 +9,7 @@ function setConnected(connected) {
 }
 
 function connectToService() {
-    var socket = new SockJS('http://localhost:8080/ssc/prenostazione-risorse');
+    var socket = new SockJS('/ssc/prenostazione-risorse');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         setConnected(true);
