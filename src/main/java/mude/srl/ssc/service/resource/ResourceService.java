@@ -19,7 +19,7 @@ public interface ResourceService {
 
 	public void disabilitaRisorsaByReservationId(String r) throws Exception;
 	
-	public ResponseCommand gestionePrenotazioneRisorsa(RequestCommandResourceReservation r);
+	public ResponseCommand gestionePrenotazioneRisorsa(RequestCommandResourceReservation r) throws Exception;
 	
 	//public Response<QrcodeTest> getTestBy(String id);
 	

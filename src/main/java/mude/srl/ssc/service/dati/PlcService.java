@@ -40,6 +40,9 @@ public interface PlcService {
      public Response<ResourceReservation> aggiornaStatoPrenotazione(ResourceReservation r,Short status) throws Exception;
      
      public Response<ResourceReservation> aggiornaStatoPrenotazione(Long id,Short status) throws Exception;
+     
+     public Response<ResourceReservation> cercaPerIdPrenotazione(Long id) throws Exception;
+     
 
 	 public Resource getReourceById(Long id) throws Exception;
 	 

@@ -63,6 +63,6 @@
 	<script
 		src="<%= request.getContextPath()%>/public/js/datagrid-detailview-errors.js?v=26"></script>
 	<script
-		src="<%= request.getContextPath()%>/public/js/user/user.js?v=23"></script>
+		src="<%= request.getContextPath()%>/public/js/user/user.js?v=25"></script>
 </body>
 </html>

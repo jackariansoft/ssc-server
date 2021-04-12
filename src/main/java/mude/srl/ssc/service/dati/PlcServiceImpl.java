@@ -108,10 +108,10 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 			resource = q.getSingleResult();
 
 		} catch (NonUniqueResultException | NoResultException ex) {
-			loggerService.logException(Level.SEVERE, "getPlcByUID", ex);
+			loggerService.logException(Level.SEVERE, "getReourceByTag", ex);
 
 		} catch (Exception ex) {
-			loggerService.logException(Level.SEVERE, "getPlcByUID", ex);
+			loggerService.logException(Level.SEVERE, "getReourceByTag", ex);
 		} finally {
 
 		}
@@ -444,7 +444,7 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 				+ "	lastupdate,\r\n" + "	schedule_id,\r\n" + "	r.reference,\r\n" + "	r.tag,\r\n"
 				+ "	p2.id as plc_ref,\r\n" + "	p2.ip_address \r\n" + "from\r\n" + "	resource_reservation rr\r\n"
 				+ "join resource r on\r\n" + "	rr.resource = r.id\r\n" + "join plc p2 on\r\n" + "	r.plc = p2.id\r\n"
-				+ "	order by start_time desc";
+				+ "	order by request_time desc";
 		try {
 
 			Query q = getEm().createNativeQuery(sql_init, "PrenotazioniXML");
@@ -487,6 +487,15 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 			throw e;
 		}
 		return res;
+	}
+
+	@Override
+	public Response<ResourceReservation> cercaPerIdPrenotazione(Long id) throws Exception {
+		      
+		Response<ResourceReservation> resp  = new Response<ResourceReservation>();
+		ResourceReservation r = getEm().find(ResourceReservation.class, id);
+	    resp.setResult(r);
+		return resp;
 	}
 
 }

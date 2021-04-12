@@ -11,6 +11,7 @@ function setConnected(connected) {
 function connectToService() {
     var socket = new SockJS('/ssc/prenostazione-risorse');
     stompClient = Stomp.over(socket);
+    stompClient.reconnect_delay = 5000;
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);

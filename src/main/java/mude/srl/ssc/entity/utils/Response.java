@@ -5,6 +5,8 @@
  */
 package mude.srl.ssc.entity.utils;
 
+import org.springframework.http.HttpStatus;
+
 /**
  *
  * @author upload
@@ -56,10 +58,23 @@ public class Response<T> {
     private String user_agent;
     private String date;
     private Long totalResult;
+    private int status;
+    
+    
+    
     
     
 
-    public Long getTotalResult() {
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public Long getTotalResult() {
 		return totalResult;
 	}
 
@@ -126,6 +141,7 @@ public class Response<T> {
     public Response() {
         fault = false;
         errorMessage = null;
+        status = HttpStatus.OK.value();
     }
 
     public T getResult() {

@@ -64,6 +64,7 @@ public class GestionePrenotazioneRisorsaChiusura implements Job,InterruptableJob
 			long minutes = TimeUnit.MILLISECONDS.toMinutes(adesso-start);
 			r.setTotalMinutes((int)minutes);
 			Short last_status  = r.getStatus();
+			
 			try {
 				switch (r.getStatus()) {
 

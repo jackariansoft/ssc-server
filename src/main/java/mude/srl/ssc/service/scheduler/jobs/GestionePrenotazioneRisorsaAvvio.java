@@ -29,7 +29,7 @@ import mude.srl.ssc.service.scheduler.SchedulerManager;
  * @author Jack
  */
 @Component
-public class GestionePrenotazioneRisorsaAvvio implements Job,InterruptableJob {
+public class GestionePrenotazioneRisorsaAvvio implements Job, InterruptableJob {
 
 	@Autowired
 	private PlcService plcService;
@@ -40,59 +40,55 @@ public class GestionePrenotazioneRisorsaAvvio implements Job,InterruptableJob {
 	@Autowired
 	private LoggerService loggerService;
 
-	private final SimpleDateFormat time_format  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private final SimpleDateFormat time_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
 
-		
+		JobDataMap dataMap = jec.getMergedJobDataMap();
 
-		JobDataMap dataMap = jec.getMergedJobDataMap();  
-		
 		Object get = dataMap.get(SchedulerManager.RESERVATION_ID_PROP);
-		
-		if(get instanceof ResourceReservation){
-			
-			ResourceReservation r  = (ResourceReservation) get;
 
-			loggerService.logInfo(Level.INFO,
-					"Reservetion check: "+r.getPayload()+" Start: "+time_format.format(r.getStartTime())+" End: "+time_format.format(r.getEndTime())					);
+		if (get instanceof ResourceReservation) {
 
+			ResourceReservation r = (ResourceReservation) get;
+
+			loggerService.logInfo(Level.INFO, "Reservetion check: " + r.getPayload() + " Start: "
+					+ time_format.format(r.getStartTime()) + " End: " + time_format.format(r.getEndTime()));
 
 			long adesso = System.currentTimeMillis();
-			long start  = r.getStartTime().getTime();
-			long minutes = TimeUnit.MILLISECONDS.toMinutes(adesso-start);
-			r.setTotalMinutes((int)minutes);
-			Short last_status  = r.getStatus();
+			long start = r.getStartTime().getTime();
+			long minutes = TimeUnit.MILLISECONDS.toMinutes(adesso - start);
+
+			r.setTotalMinutes((int) minutes);
+			Short last_status = r.getStatus();
 			try {
 				switch (r.getStatus()) {
 
-				case SchedulerManager.ATTESA: {
-					
-					try {
-						
-						resourceService.abilitaRisorsa(r.getResource());
-						r.setStatus(SchedulerManager.AVVIATA);
-						
-					}catch (Exception e) {
-						
-						r.setStatus(SchedulerManager.SOSPESA);				
-						loggerService.logException(Level.SEVERE,"Attivazione Risorsa: Errore Inaspettato",e);
-					}
-					
-
-					break;
+					case SchedulerManager.ATTESA: {
+	
+						try {
+	
+							resourceService.abilitaRisorsa(r.getResource());
+							r.setStatus(SchedulerManager.AVVIATA);
+	
+						} catch (Exception e) {
+	
+							r.setStatus(SchedulerManager.SOSPESA);
+							loggerService.logException(Level.SEVERE, "Attivazione Risorsa: Errore Inaspettato", e);
+						}
+	
+						break;
 					}
 				}
 				plcService.aggiornaStatoPrenotazione(r, r.getStatus());
 
 			} catch (Exception e) {
 
-				
 				throw new JobExecutionException(e);
 			}
 
-			loggerService.logInfo(Level.INFO,"Elapsed minutes:{0}",r.getTotalMinutes());
+			loggerService.logInfo(Level.INFO, "Elapsed minutes:{0}", r.getTotalMinutes());
 
 		}
 	}
@@ -104,8 +100,6 @@ public class GestionePrenotazioneRisorsaAvvio implements Job,InterruptableJob {
 	@Override
 	public void interrupt() throws UnableToInterruptJobException {
 
-
 	}
-
 
 }

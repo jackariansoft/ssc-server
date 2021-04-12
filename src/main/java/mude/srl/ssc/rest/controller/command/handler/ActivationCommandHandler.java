@@ -66,14 +66,22 @@ public class ActivationCommandHandler extends CommonRestClient implements Comman
 					response.setStatus(500);
 					response.setSucceccMessage(null);
 					
-				}
+				}				
 				
 				socket.close();
-			}catch (Exception e) {				
+				
+				
+			}catch (Exception e) {			
+				/**
+				 * TODO
+				 * Aggiungere informazione di connessione.
+				 * 
+				 */
 				response.setErrorMessage(e.getMessage());
 				response.setStatus(500);
 				response.setSucceccMessage(null);
 				response.setEx(e);
+				
 				
 			}finally {
 				

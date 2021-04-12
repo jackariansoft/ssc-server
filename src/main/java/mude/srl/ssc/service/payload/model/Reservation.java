@@ -40,6 +40,29 @@ public class Reservation implements Serializable {
 
 	@JsonProperty("resource_sku")
 	private String resourceSku;
+	
+	private String email;
+	
+	@JsonProperty("user_id")
+	private Long userId;
+	
+	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	public Date getDateEnd() {
 		return dateEnd;

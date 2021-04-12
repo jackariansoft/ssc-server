@@ -12,9 +12,11 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import mude.srl.ssc.rest.controller.command.utils.ReservationaDatDeserilizer;
+import mude.srl.ssc.service.payload.model.Reservation;
 
 
 
@@ -39,8 +41,21 @@ public class RequestCommandResourceReservation  extends RequestCommand{
 	@NotNull
 	@NotEmpty	
     private String payload;
+	
+	@JsonIgnore
+	private Reservation reservation;
+	
+	
 
-    public String getPayload() {
+    public Reservation getReservation() {
+		return reservation;
+	}
+
+	public void setReservation(Reservation reservation) {
+		this.reservation = reservation;
+	}
+
+	public String getPayload() {
         return payload;
     }
 

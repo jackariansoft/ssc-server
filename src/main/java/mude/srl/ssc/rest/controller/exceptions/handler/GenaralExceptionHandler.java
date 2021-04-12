@@ -12,6 +12,7 @@ import mude.srl.ssc.messaging.Message;
 import mude.srl.ssc.messaging.MessageInfoType;
 import mude.srl.ssc.messaging.WebSocketConfig;
 import mude.srl.ssc.service.payload.exception.CrossLocationReservetionRequestException;
+import mude.srl.ssc.service.payload.exception.HourOutOfLimitException;
 import mude.srl.ssc.service.payload.model.Reservation;
 
 @ControllerAdvice
@@ -34,6 +35,22 @@ public class GenaralExceptionHandler {
 	    		simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT,
 	    				Message.buildFromRequest(MessageInfoType.ERROR, "Attenzione","Questa prenotazione non puo' essere evasa."
 	    						+ "La prenotazione si riferisce ad una risorsa installata in localita' diversa.",target));
+	    	    
+	    	}
+	    	
+	               
+	    }
+	    
+	    @ResponseStatus(HttpStatus.BAD_REQUEST)  // 409
+	    @ExceptionHandler(HourOutOfLimitException.class)
+	    public void gestisciErroreLimitePrenotazione(HourOutOfLimitException exception) {
+	    	
+	    	String target = exception.getTarget();
+	    	Reservation r = exception.getReservation();
+	    	if(target!=null&&r!=null) {
+	    		simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT,
+	    				Message.buildFromRequest(MessageInfoType.ERROR, "Attenzione","Questa prenotazione non puo' essere evasa."
+	    						+ "La risorsa non puo' essere attivata nell'intervallo :"+r.getDateStart()+" "+r.getDateEnd(),target));
 	    	    
 	    	}
 	    	

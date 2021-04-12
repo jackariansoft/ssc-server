@@ -80,8 +80,8 @@ public class ReservationSchedulerListener implements SchedulerListener {
 		
 		try {
 			Long id = Long.parseLong(jobKey.getName());
-			resourceService.disabilitaRisorsaByReservationId(jobKey.getName());
-			plcService.aggiornaStatoPrenotazione(id,SchedulerManager.TERMINATA);
+//			resourceService.disabilitaRisorsaByReservationId(jobKey.getName());
+//			plcService.aggiornaStatoPrenotazione(id,SchedulerManager.TERMINATA);
 			loggerService.logInfo(Level.INFO, "Finalizzazione Prenotazione:{0}", id);				
 			   
 		} catch (Exception e) {

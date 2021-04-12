@@ -63,11 +63,12 @@ public class CommandController {
 	 * 
 	 * @param request
 	 * @return
+	 * @throws Exception 
 	 */
 	@CrossOrigin(origins = { "http://localhost:8000", "http://127.0.0.1:8000"})
 	@RequestMapping(value = ServiceEndpoint.RESOURCE_ATTIVA, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseCommand> gestionePrenotazioneRisorsa(
-			@RequestBody RequestCommandResourceReservation request) {
+			@RequestBody RequestCommandResourceReservation request) throws Exception {
 
 		ResponseCommand response = resourceService.gestionePrenotazioneRisorsa(request);
 		return ResponseEntity.ok(response);

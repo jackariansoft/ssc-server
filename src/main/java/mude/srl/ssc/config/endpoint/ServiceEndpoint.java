@@ -55,6 +55,14 @@ public class ServiceEndpoint {
     public static final String RESOURCE_COMMAND =RESOURCE+"/command";
     public static final String RESOURCE_ATTIVA =RESOURCE+"/attiva-prenotazione";
     public static final String RESOURCE_RESERVATIONS =RESOURCE+"/reservation";
+    /**
+     * Gestione dei task collegati alla prenotazioni
+     * 
+     */
+    public static final String SCHEDULER = RESOURCE+"/scheduler";
+    public static final String RESOURCE_JOB_SUSPEND = SCHEDULER+"/suspend_job";
+    public static final String RESOURCE_JOB_TERM = SCHEDULER+"/terminate_job";
+    public static final String RESOURCE_JOB_RESUME = SCHEDULER+"/resume_job";
     
-
+    
 }

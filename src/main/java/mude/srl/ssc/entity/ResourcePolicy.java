@@ -7,6 +7,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,7 +52,7 @@ public class ResourcePolicy  implements Serializable{
 	
 	@Basic(optional = false)
     @NotNull
-    @Column(name = "hour_limited",nullable = false,updatable = true)
+    @Column(name = "daily_hour_limited",nullable = false,updatable = true)
 	Boolean hourLimited;
 	
 
@@ -70,7 +71,7 @@ public class ResourcePolicy  implements Serializable{
 	
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "policy",cascade = {CascadeType.ALL })
+	@OneToMany(mappedBy = "policy",cascade = {CascadeType.ALL },fetch = FetchType.LAZY)
     private Collection<Resource> reservation;
 
 

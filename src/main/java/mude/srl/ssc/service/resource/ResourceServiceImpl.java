@@ -15,12 +15,15 @@ import mude.srl.ssc.entity.ResourceReservation;
 import mude.srl.ssc.entity.utils.Response;
 import mude.srl.ssc.messaging.Message;
 import mude.srl.ssc.messaging.MessageInfoType;
+import mude.srl.ssc.messaging.WebSocketConfig;
 import mude.srl.ssc.rest.controller.command.handler.ActivationCommandHandler;
 import mude.srl.ssc.rest.controller.command.model.MessageActivationCommand;
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
 import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
 import mude.srl.ssc.service.dati.PlcService;
 import mude.srl.ssc.service.log.LoggerService;
+import mude.srl.ssc.service.payload.exception.HourOutOfLimitException;
+import mude.srl.ssc.service.payload.model.Reservation;
 import mude.srl.ssc.service.scheduler.SchedulerManager;
 
 @Component
@@ -168,9 +171,12 @@ public class ResourceServiceImpl implements ResourceService {
 
 	/**
 	 * 
+	 * TODO Impostare messaggi utente in db per tipologia
+	 * TODO Inserire gestore di eccezioni puntuale.Verificare tutte le eccezioni create ad hoc per ogni singolo evento.
+	 * 
 	 */
 	@Override
-	public ResponseCommand gestionePrenotazioneRisorsa(RequestCommandResourceReservation request) {
+	public ResponseCommand gestionePrenotazioneRisorsa(RequestCommandResourceReservation request) throws Exception{
 		ResponseCommand response = new ResponseCommand();
 		try {
 
@@ -188,15 +194,15 @@ public class ResourceServiceImpl implements ResourceService {
 					
 					SchedulerManager.getInstance().avviaGestionePrenotazione(controllaPerAvvio.getResult(), scheduler);
 					
-					simpMessagingTemplate.convertAndSend("/aggiornamento", controllaPerAvvio.getResult());
+					simpMessagingTemplate.convertAndSend(WebSocketConfig.AGGIORNAMENTO_WEBSOCKET_ENDPOINT, controllaPerAvvio.getResult());
 					
-					simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.INFO,
+					simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT, Message.buildFromRequest(MessageInfoType.INFO,
 							"Ottimo!", "La tua prenotazione e' stata schedulata.", request));
 				} else {
 
 					
 					
-					simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.ERROR,
+					simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT, Message.buildFromRequest(MessageInfoType.ERROR,
 							"Errore inaspettato", "Contattare il servizio clienti", request));
 					
 					loggerService.logException(Level.WARNING, "Nessuna prenotazione creata:" + request,
@@ -212,10 +218,13 @@ public class ResourceServiceImpl implements ResourceService {
 			}
 
 		} catch (Exception ex) {
+			
+				
+			
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			loggerService.logException(Level.SEVERE, null, ex);
-			simpMessagingTemplate.convertAndSend("/info", Message.buildFromRequest(MessageInfoType.ERROR,
-					"Qrcode non valido", "Il qrcode non e' stato validato. Possibile prenotazione scaduta", request));
+			loggerService.logException(Level.SEVERE,"Eccezione nella gestione della prenotrazione.", ex);
+			throw ex;
+			
 
 		}
 		return response;

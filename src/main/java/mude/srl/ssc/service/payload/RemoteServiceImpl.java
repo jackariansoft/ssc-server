@@ -39,6 +39,8 @@ import mude.srl.ssc.service.dati.PlcService;
 import mude.srl.ssc.service.log.LoggerService;
 import mude.srl.ssc.service.payload.exception.CrossLocationReservetionRequestException;
 import mude.srl.ssc.service.payload.model.Reservation;
+import mude.srl.ssc.service.payload.model.ReservationResponse;
+import mude.srl.ssc.service.payload.model.UnlockRequest;
 
 @Component
 @PropertySource(value = "file:/opt/config/location.properties", ignoreResourceNotFound = true)
@@ -105,31 +107,36 @@ public class RemoteServiceImpl implements RemoteService {
 				.forEach(mapper -> mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS));
 
 		// httpClient.postForObject("", request, responseType, uriVariables);
-		Reservation rs = httpClient.postForObject(conf.getEndpoint(),
-				new mude.srl.ssc.service.payload.model.UnlockRequest(payload), Reservation.class);
+		ReservationResponse reservationResponse = httpClient.postForObject(conf.getEndpoint(),new UnlockRequest(payload), ReservationResponse.class);
 
-		if (rs != null) {
-
-			if (rs.getLocation().compareTo(Long.valueOf(location)) != 0) {
+		if (reservationResponse != null&& reservationResponse.getResults()!=null&&!reservationResponse.getResults().isEmpty()) {
+			 Reservation reservation = reservationResponse.getResults().get(0);
+			if (reservation.getLocation().compareTo(Long.valueOf(location)) != 0) {
 
 				CrossLocationReservetionRequestException e = new CrossLocationReservetionRequestException(
-						rs.toString());
-				e.setReservation(rs);
+						reservation.toString());
+				e.setReservation(reservation);
 				e.setTarget(target);
 
 				throw e;
 
 			}
 
-			Resource resource = plcService.getReourceByTag(rs.getResourceSku());
+			Resource resource = plcService.getReourceByTag(reservation.getResourceSku());
 
 			if (resource != null) {
+				
 				Plc plc = resource.getPlc();
-				rcr = createFrom(rs, plc, resource, payload);
+				rcr = createFrom(reservation, plc, resource, payload);
 
 				if (!validateTimeInterval(rcr)) {
 					rcr = null;
 				}
+			}else {
+				/**
+				 * TODO
+				 * 
+				 */
 			}
 
 		}
@@ -154,7 +161,7 @@ public class RemoteServiceImpl implements RemoteService {
 		command.setPlc_uid(plc.getUid());
 		command.setResource_tag(result.getResourceSku());
 		command.setPayload(payload);
-
+		command.setReservation(result);
 		return command;
 	}
 
