@@ -143,7 +143,8 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 			TypedQuery<Long> q = em.createQuery("SELECT COUNT(r) " + "FROM ResourceReservation r  "
 					+ "WHERE r.resource = :resource AND  r.status IN (:status1,:status2,:status3) "
 					+ "AND ( ( r.startTime BETWEEN :start AND :end ) " + "OR (r.endTime BETWEEN :start AND :end) "
-					+ "OR (r.startTime = :start AND r.endTime = :end)) ", Long.class);
+					+ "OR (r.startTime = :start AND r.endTime = :end) OR (:start BETWEEN r.startTime AND  r.endTime ) "
+					+ "OR (:end BETWEEN r.startTime AND  r.endTime )) ", Long.class);
 
 			q.setParameter("resource", r);
 			q.setParameter("status1", ResourceStatus.AVVIATA.getStatus());

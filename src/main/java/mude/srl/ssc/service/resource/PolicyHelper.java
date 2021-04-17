@@ -200,10 +200,10 @@ public class PolicyHelper implements ResourcePolicyService {
 	 */
 	protected int confrontaOraPerLimiteInferiore(Calendar pivot, Calendar data_confronto) {
 
-		int ora_ = pivot.get(Calendar.HOUR);
+		int ora_ = pivot.get(Calendar.HOUR_OF_DAY);
 		int minuti_ = pivot.get(Calendar.MINUTE);
 
-		int ora = data_confronto.get(Calendar.HOUR);
+		int ora = data_confronto.get(Calendar.HOUR_OF_DAY);
 		int minuti = data_confronto.get(Calendar.MINUTE);
 
 		if (ora_ > ora) {
