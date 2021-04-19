@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>mude.srl</groupId>
 	<artifactId>ssc</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.3</version>
 	<packaging>war</packaging>
 
 	<description>SSC Server</description>
