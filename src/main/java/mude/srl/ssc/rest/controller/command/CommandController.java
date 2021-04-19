@@ -114,10 +114,10 @@ public class CommandController {
 					 * 
 					 */
 					Response<Long> check = plcService.controllaPrenotazioniAttive(resource);
-					if (check.getResult().compareTo(0L) == 1) {
-						response.setErrorMessage("Trovate prenotazione attive. Impossibile effettuare operazione richiesta");
-						response.setStatus(HttpStatus.BAD_REQUEST.value());
-					} else {
+					//if (check.getResult().compareTo(0L) == 1) {
+					//	response.setErrorMessage("Trovate prenotazione attive. Impossibile effettuare operazione richiesta");
+					//	response.setStatus(HttpStatus.BAD_REQUEST.value());
+					//} else {
 						ActivationCommandHandler handler = new ActivationCommandHandler();
 						handler.setPort(plc.getPortaGestioneServizi().toString());
 						handler.setUrl(plc.getIpAddress());
@@ -130,7 +130,7 @@ public class CommandController {
 						if(response.isFault()) {
 							loggerService.logException(Level.SEVERE,"Endpoint:"+ServiceEndpoint.RESOURCE_COMMAND, response.getEx());
 						}
-					}
+					//}
 				}
 			}
 
