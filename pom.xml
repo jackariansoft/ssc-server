@@ -243,7 +243,6 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/javax.comm/comm -->
 		<!-- https://mvnrepository.com/artifact/javax.comm/comm -->
-
 		<dependency>
 			<groupId>comm</groupId>
 			<artifactId>comm</artifactId>
