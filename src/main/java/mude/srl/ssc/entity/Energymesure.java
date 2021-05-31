@@ -87,6 +87,10 @@ public class Energymesure implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dins;
     
+    @Column(name = "resource", nullable = true)
+    private Long resource;
+    
+    
     public Energymesure() {
     }
 

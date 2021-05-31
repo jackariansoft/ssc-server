@@ -48,7 +48,7 @@ public class Plc implements Serializable {
 	private Short id;
 	@Basic(optional = false)
 	@NotNull
-	@Size(min = 1, max = 15)
+	 
 	@Column(name = "ip_address", nullable = false, length = 15)
 	private String ipAddress;
 	@Basic(optional = false)

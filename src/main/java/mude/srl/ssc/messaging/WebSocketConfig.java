@@ -10,7 +10,13 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+	/**
+	 * Messaggi inviati al backend
+	 */
 	public static final String AGGIORNAMENTO_WEBSOCKET_ENDPOINT = "/aggiornamento";
+	/**
+	 * Messaggi inviati all'utente
+	 */
 	public static final String INFO_WEBSOCKET_ENDPOINT = "/info";
 
 	@Override

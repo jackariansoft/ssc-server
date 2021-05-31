@@ -49,19 +49,19 @@ public class Ssc implements Serializable {
 	private Short id;
 	@Basic(optional = false)
 	@NotNull
-	@Size(min = 1, max = 20)
+	 
 	@Column(name = "mapped_by", nullable = false, length = 20)
 	private String mappedBy;
 
 	@Basic(optional = false)
 	@NotNull
-	@Size(min = 1, max = 2147483647)
+	 
 	@Column(nullable = false, length = 2147483647)
 	private String location;
 
 	@Basic(optional = false)
 	@NotNull
-	@Size(min = 1, max = 50)
+	 
 	@Column(nullable = false, length = 50)
 	private String name;
 

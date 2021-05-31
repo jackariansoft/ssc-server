@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
@@ -28,11 +29,12 @@ import mude.srl.ssc.entity.beans.Prenotazione;
 import mude.srl.ssc.entity.utils.Request;
 import mude.srl.ssc.entity.utils.ResourceStatus;
 import mude.srl.ssc.entity.utils.Response;
-import mude.srl.ssc.exceptions.ReservationIntervalException;
+
 import mude.srl.ssc.service.log.LoggerSSC;
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
 import mude.srl.ssc.service.AbstractService;
 import mude.srl.ssc.service.log.LoggerService;
+import mude.srl.ssc.service.payload.exception.ReservationIntervalException;
 import mude.srl.ssc.service.scheduler.trigger.listener.ReservetionTriggerListener;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,7 +147,7 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 					+ "AND ( ( r.startTime BETWEEN :start AND :end ) " + "OR (r.endTime BETWEEN :start AND :end) "
 					+ "OR (r.startTime = :start AND r.endTime = :end) OR (:start BETWEEN r.startTime AND  r.endTime ) "
 					+ "OR (:end BETWEEN r.startTime AND  r.endTime )) ", Long.class);
-
+			//q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 			q.setParameter("resource", r);
 			q.setParameter("status1", ResourceStatus.AVVIATA.getStatus());
 			q.setParameter("status2", ResourceStatus.ATTESA.getStatus());
@@ -168,9 +170,14 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 				em.persist(reservation);
 
 			} else {
+				/**
+				 * TODO decidere come gestire prenotazione in overlap
+				 */
 				resp.setErrorDescription("Intervallo prenotazione non valido");
 				resp.setFault(true);
-				resp.setException(new ReservationIntervalException("Intervallo prenotazione : "));
+				resp.setErrorMessage(Response.RESERVATION_INTERVAL_OVERLAP_MESSAGE);
+				resp.setErrorType(Response.RESERVATION_INTERVAL_OVERLAP);				
+				resp.setException(new ReservationIntervalException("Intervallo prenotazione : "+request));
 			}
 			tx.commit();
 
@@ -484,7 +491,7 @@ public class PlcServiceImpl extends AbstractService<Plc> implements PlcService {
 			}
 
 		} catch (Exception e) {
-			loggerService.logException(Level.SEVERE, "getPlcById", e);
+			loggerService.logException(Level.SEVERE, "getPlcList", e);
 			throw e;
 		}
 		return res;

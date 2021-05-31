@@ -31,25 +31,25 @@ public class Email implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected EmailPK emailPK;
-    @Size(max = 150)
+     
     @Column(length = 150)
     private String imap;
-    @Size(max = 150)
+     
     @Column(length = 150)
     private String pop;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
     private boolean valido;
-    @Size(max = 10)
+     
     @Column(length = 10)
     private String smtpport;
     private Boolean sslenabled;
     private Boolean ttlenabled;
-    @Size(max = 10)
+     
     @Column(length = 10)
     private String imapport;
-    @Size(max = 10)
+     
     @Column(length = 10)
     private String popport;
     @Column(name = "is_default")

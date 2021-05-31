@@ -39,7 +39,7 @@ public class ResourcePolicy  implements Serializable{
 	
 	@Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 150)
+     
     @Column(name = "policy_description",nullable = false, length = 150)
     @JsonProperty(value = "text")
     private String description;
@@ -58,14 +58,14 @@ public class ResourcePolicy  implements Serializable{
 
 	@Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 150)
+     
     @Column(name = "day_of_week",nullable = false, length = 150)    
     private String dayOfWeek;
 	
 	
 	@Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 150)
+     
     @Column(name = "hour_of_day",nullable = false, length = 150)   
     private String  hourOfDay;
 	

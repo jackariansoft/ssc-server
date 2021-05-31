@@ -22,8 +22,6 @@ import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservat
 import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
 import mude.srl.ssc.service.dati.PlcService;
 import mude.srl.ssc.service.log.LoggerService;
-import mude.srl.ssc.service.payload.exception.HourOutOfLimitException;
-import mude.srl.ssc.service.payload.model.Reservation;
 import mude.srl.ssc.service.scheduler.SchedulerManager;
 
 @Component
@@ -63,7 +61,7 @@ public class ResourceServiceImpl implements ResourceService {
 		cmd.setDestination(r.getBusId());
 
 		ResponseCommand resp = new ResponseCommand();
-		h.handle(cmd, resp, lock);
+		h.handle(cmd, resp);
 		if (resp.getStatus() != 200) {
 			throw new Exception("Comando abilitazione risorsa fallito",resp.getEx());
 		}
@@ -100,7 +98,10 @@ public class ResourceServiceImpl implements ResourceService {
 		cmd.setDestination(r.getBusId());
 
 		ResponseCommand resp = new ResponseCommand();
-		h.handle(cmd, resp, lock);
+		h.handle(cmd, resp);
+		if (resp.getStatus() != 200) {
+			throw new Exception("Comando abilitazione risorsa fallito",resp.getEx());
+		}
 
 	}
 
@@ -126,8 +127,10 @@ public class ResourceServiceImpl implements ResourceService {
 		cmd.setDestination(r.getBusId());
 
 		ResponseCommand resp = new ResponseCommand();
-		h.handle(cmd, resp, lock);
-
+		h.handle(cmd, resp);
+		if (resp.getStatus() != 200) {
+			throw new Exception("Comando disabilita risorsa fallito",resp.getEx());
+		}
 	}
 
 	@Override
@@ -141,11 +144,14 @@ public class ResourceServiceImpl implements ResourceService {
 
 		ActivationCommandHandler h = new ActivationCommandHandler();
 		Long id_reservetion = Long.valueOf(r);
+		
 		Resource res = plcService.getResourceByReservetionId(id_reservetion);
 
 		if (res.getPlc() != null) {
+			
 			h.setUrl(res.getPlc().getIpAddress());
 			h.setPort(res.getPlc().getPortaGestioneServizi().toString());
+			
 		} else {
 			throw new Exception("Info plc non presenti. Impossibile gestire la risorsa");
 		}
@@ -156,7 +162,7 @@ public class ResourceServiceImpl implements ResourceService {
 
 		ResponseCommand resp = new ResponseCommand();
 		resp.setStatus(200);
-		h.handle(cmd, resp, lock);
+		h.handle(cmd, resp);
 		if (resp.getStatus() != 200) {
 
 			if (resp.getEx() == null) {
@@ -177,7 +183,9 @@ public class ResourceServiceImpl implements ResourceService {
 	 */
 	@Override
 	public ResponseCommand gestionePrenotazioneRisorsa(RequestCommandResourceReservation request) throws Exception{
+		
 		ResponseCommand response = new ResponseCommand();
+		
 		try {
 
 			Resource resource = plcService.getReourceByPlcAndTag(request.getPlc_uid(), request.getResource_tag());
@@ -186,23 +194,21 @@ public class ResourceServiceImpl implements ResourceService {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 
 			} else {
+				
 				resourceService.checkPolicy(resource, request);
 				
 				Response<ResourceReservation> controllaPerAvvio = plcService.controllaPerAvvio(resource, request);
 				
 				if (!controllaPerAvvio.isFault()) {
+				
+					gestisciSchedulazionePrenotazione(controllaPerAvvio.getResult(),request);
 					
-					SchedulerManager.getInstance().avviaGestionePrenotazione(controllaPerAvvio.getResult(), scheduler);
-					
-					simpMessagingTemplate.convertAndSend(WebSocketConfig.AGGIORNAMENTO_WEBSOCKET_ENDPOINT, controllaPerAvvio.getResult());
-					
-					simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT, Message.buildFromRequest(MessageInfoType.INFO,
-							"Ottimo!", "La tua prenotazione e' stata schedulata.", request));
 				} else {
 
 					
 					
-					simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT, Message.buildFromRequest(MessageInfoType.ERROR,
+					simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT, 
+							Message.buildFromRequest(MessageInfoType.ERROR,
 							"Errore inaspettato", "Contattare il servizio clienti", request));
 					
 					loggerService.logException(Level.WARNING, "Nessuna prenotazione creata:" + request,
@@ -222,12 +228,29 @@ public class ResourceServiceImpl implements ResourceService {
 				
 			
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.setFault(true);
+			response.setErrorMessage(ex.getMessage());
+			response.setEx(ex);
+			
 			loggerService.logException(Level.SEVERE,"Eccezione nella gestione della prenotrazione.", ex);
 			throw ex;
 			
 
 		}
 		return response;
+	}
+
+	private void gestisciSchedulazionePrenotazione(ResourceReservation r, RequestCommandResourceReservation request) throws Exception {
+		
+		SchedulerManager.getInstance().avviaGestionePrenotazione(r, scheduler);
+		
+		simpMessagingTemplate.convertAndSend(WebSocketConfig.AGGIORNAMENTO_WEBSOCKET_ENDPOINT,r);
+		
+		simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT, 
+				Message.buildFromRequest(MessageInfoType.INFO,
+						"Ottimo!", "La tua prenotazione e' stata schedulata.",
+						request));
+		
 	}
 
 	/**

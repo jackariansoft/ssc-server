@@ -40,9 +40,11 @@ public class EnergyServiceImpl extends AbstractService<Energymesure> implements 
         EntityManager em1 =null;
         EntityTransaction tx = null;
         if (consum != null && consum.length == 3) {
-            //Estrazione valori
-            String plc = consum[0];
-            String grad = consum[1];
+            /**
+             * Estrazione valori
+             */
+            String plc   = consum[0];
+            String grad  = consum[1];
             String value = consum[2];
 
             Integer volue_to_update = Integer.valueOf(grad);
@@ -92,16 +94,16 @@ public class EnergyServiceImpl extends AbstractService<Energymesure> implements 
     }
 
     /**
-     * 0: :Voltage:%04f$r$n'), REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 1:
-     * :Current:%04f$r$n', REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 2:
-     * :ActivePwr:%04f$r$n',REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 3:
-     * :ApparentPwr:%04f$r$n',REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 4:
-     * :ReactivePwr:%04f$r$n',REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 5:
-     * :PwrFactor:%04f$r$n',REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 6:
-     * :Frequency:%04f$r$n',REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 7:
-     * :IActiveEn:%04f$r$n',REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 8:
-     * :EActiveEn:%04f$r$n',REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 9:
-     * :TActiveEn:%04f$r$n',REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer));
+     * 0 :Voltage:%04f$r$n,     REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 
+     * 1 :Current:%04f$r$n,     REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 
+     * 2 :ActivePwr:%04f$r$n,   REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 
+     * 3 :ApparentPwr:%04f$r$n, REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 
+     * 4 :ReactivePwr:%04f$r$n, REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 
+     * 5 :PwrFactor:%04f$r$n,   REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 
+     * 6 :Frequency:%04f$r$n,   REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 
+     * 7 :IActiveEn:%04f$r$n,   REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 
+     * 8 :EActiveEn:%04f$r$n,   REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer)); 
+     * 9 :TActiveEn:%04f$r$n,   REAL_TYPE,ADR(MdbCfg[MIDx].@Buffer));
      *
      * @param mesure
      * @param grandezza grandezza fisica da salvare
@@ -118,7 +120,6 @@ public class EnergyServiceImpl extends AbstractService<Energymesure> implements 
             case 2:
                 mesure.setActivePower(value);
                 break;
-
             case 3:
                 mesure.setApparentPower(value);
                 break;
