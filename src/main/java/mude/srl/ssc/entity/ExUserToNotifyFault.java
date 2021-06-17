@@ -41,7 +41,7 @@ public class ExUserToNotifyFault implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 150)
+     
     @Column(nullable = false, length = 150)
     private String email;
     @Basic(optional = false)
@@ -52,7 +52,7 @@ public class ExUserToNotifyFault implements Serializable {
     @Column(name = "all_channel")
     private Boolean allChannel;
     // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
-    @Size(max = 30)
+     
     @Column(length = 30)
     private String phone;
     @JoinColumn(name = "plc", referencedColumnName = "id")

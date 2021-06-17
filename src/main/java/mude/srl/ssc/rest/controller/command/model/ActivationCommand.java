@@ -20,7 +20,11 @@ import mude.srl.ssc.rest.controller.command.interfaces.Command;
 @JsonPropertyOrder({"Command"})
 public class ActivationCommand  implements Command,Serializable{
 
-    private final String type = CommandMessageType.ACTIVATION_TYPE.getType();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3694125478168906660L;
+	private final String type = CommandMessageType.ACTIVATION_TYPE.getType();
     private final ArrayList<String> command;
 
     public ActivationCommand() {

@@ -29,6 +29,8 @@ public class Response<T> {
     public static final int FILE_SHIPPING_CREATION_ERROR = 12;
     public static final int WEBSERICES_ERROR = 13;
     
+    public static final int RESERVATION_INTERVAL_OVERLAP =14;
+    
     public static final int EAN_LIMIT_UPDATEBLE = 5000;
     public static final String ERRROR_MG_BRAND_LOCKED_ACKING = "BRAND_LOCKED_ACKING";
     public static final String ERROR_MG_SESSION_EXPIRED = "SESSION_EXPIRED";
@@ -41,6 +43,8 @@ public class Response<T> {
     public static final String ERROR_MSG_BATCH_IN_PROGRESS="BATCH_IN_PROGRESS";
       
     public static final String ERROR_MSG_WEBSERICES_ERROR ="WEBSERICES_ERROR";
+    
+    public static final String RESERVATION_INTERVAL_OVERLAP_MESSAGE ="RESERVATION_INTERVAL_OVERLAP_MESSAGE";
     
     
     

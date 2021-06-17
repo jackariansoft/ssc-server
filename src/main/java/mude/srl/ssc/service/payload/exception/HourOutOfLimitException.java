@@ -9,32 +9,34 @@ public class HourOutOfLimitException extends Exception{
 	 */
 	private static final long serialVersionUID = 8528474900815750814L;
 
-	static final String MESSAGE = "Hour out of limit Exception";
+	public static final String MESSAGE = "Hour out of limit Exception";
+	
+	
 	
 	public HourOutOfLimitException() {
 		super(MESSAGE);
-		// TODO Auto-generated constructor stub
+	
 	}
 
 	public HourOutOfLimitException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public HourOutOfLimitException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public HourOutOfLimitException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public HourOutOfLimitException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	/**

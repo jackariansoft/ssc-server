@@ -21,17 +21,17 @@ public class EmailPK implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 150)
+     
     @Column(nullable = false, length = 150)
     private String login;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 150)
+     
     @Column(nullable = false, length = 150)
     private String password;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 150)
+     
     @Column(nullable = false, length = 150)
     private String smtp;
     @Basic(optional = false)

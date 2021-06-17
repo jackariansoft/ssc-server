@@ -45,10 +45,10 @@ public class Groups implements Serializable {
     private Integer groupId;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 20)
+     
     @Column(name = "group_name", nullable = false, length = 20)
     private String groupName;
-    @Size(max = 200)
+     
     @Column(name = "group_desc", length = 200)
     private String groupDesc;
     @JoinTable(name = "user_groups", joinColumns = {

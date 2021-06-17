@@ -11,8 +11,10 @@ import org.springframework.stereotype.Component;
 
 import mude.srl.ssc.entity.Resource;
 import mude.srl.ssc.entity.ResourcePolicy;
+
 import mude.srl.ssc.rest.controller.command.model.RequestCommandResourceReservation;
 import mude.srl.ssc.service.payload.exception.HourOutOfLimitException;
+import mude.srl.ssc.service.payload.exception.ReservationIntervalException;
 import mude.srl.ssc.service.payload.exception.ReservetionPolicyException;
 
 @Component
@@ -125,8 +127,19 @@ public class PolicyHelper implements ResourcePolicyService {
 					ex.setTarget(request.getPlc_uid());
 					throw ex;
 				}
+				if(isStartBeforeEnd(request)) {
+					ReservationIntervalException ex  = new ReservationIntervalException();
+					ex.setReservation(request.getReservation());
+					ex.setTarget(request.getPlc_uid());
+					throw ex;
+				}
 				
 		     }
+	}
+
+	private boolean isStartBeforeEnd(RequestCommandResourceReservation request) {
+		
+		return request.getStart().after(request.getEnd());
 	}
 
 	/**
@@ -301,6 +314,11 @@ public class PolicyHelper implements ResourcePolicyService {
 
 	}
 
+	/**
+	 * 
+	 * @param timeToCheck
+	 * @return
+	 */
 	protected boolean isBeforeNow(Date timeToCheck) {
 
 		Calendar c = Calendar.getInstance(Locale.ITALIAN);

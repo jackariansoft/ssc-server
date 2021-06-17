@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UserLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Size(max = 250)
+     
     @Column(name = "user_comment", length = 250)
     private String userComment;
     @Basic(optional = false)
@@ -53,12 +53,12 @@ public class UserLog implements Serializable {
     private Date connectionEnd;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 20)
+     
     @Column(name = "connection_from", nullable = false, length = 20)
     private String connectionFrom;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 300)
+     
     @Column(name = "user_agent", nullable = false, length = 300)
     private String userAgent;
     @Id

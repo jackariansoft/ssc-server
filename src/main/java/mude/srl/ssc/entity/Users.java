@@ -43,25 +43,25 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
     @UniqueConstraint(columnNames = {"login"})})
 public class Users implements Serializable,UserDetails {
 
-    @Size(max = 10)
+     
     @Column(name = "username")
     private String username;
-    @Size(max = 20)
+     
     @Column(name = "first_name")
     private String firstName;
-    @Size(max = 20)
+     
     @Column(name = "middle_name")
     private String middleName;
-    @Size(max = 20)
+     
     @Column(name = "last_name")
     private String lastName;
     @Basic(optional = false)
     @NotNull
     @JsonIgnore
-    @Size(min = 1, max = 32)
+     
     @Column(name = "password")
     private String password;
-    @Size(max = 150)
+     
     @Column(name = "login")
     private String login;
     @Column(name = "access_type")

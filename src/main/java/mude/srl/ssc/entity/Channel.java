@@ -35,17 +35,17 @@ public class Channel implements Serializable {
     @Basic(optional = false)
     @Column(nullable = false)
     private Integer id;
-    @Size(max = 250)
+     
     @Column(length = 250)
     private String descrizione;
     private Boolean attivo;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 10)
+     
     @Column(nullable = false, length = 10)
     private String code;
     private Integer exid;
-    @Size(max = 5)
+     
     @Column(length = 5)
     private String codrep;
     @Column(name = "abilita_fatture")
@@ -143,5 +143,6 @@ public class Channel implements Serializable {
     public String toString() {
         return "mude.srl.ssc.entity.utils.Channel[ id=" + id + " ]";
     }
+    
     
 }

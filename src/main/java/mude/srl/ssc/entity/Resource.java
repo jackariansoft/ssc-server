@@ -60,16 +60,16 @@ public class Resource implements Serializable {
     private Long id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 20)
+     
     @Column(nullable = false, length = 20)
     @JsonProperty(value = "text")
     private String tag;
-    @Size(max = 20)
+     
     @Column(length = 20)
     private String reference;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 20)
+     
     @Column(nullable = false, length = 20)
     private String type;
     @Basic(optional = false)

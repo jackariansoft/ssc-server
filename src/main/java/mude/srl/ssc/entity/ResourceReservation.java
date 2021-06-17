@@ -67,7 +67,7 @@ public class ResourceReservation implements Serializable {
     @Basic(optional = false)
     @Column(name = "id", nullable = false)
     private Long id;
-    @Size(max = 50)
+     
     @Column(name = "payload", length = 50)
     private String payload;
     @Basic(optional = false)
@@ -94,7 +94,7 @@ public class ResourceReservation implements Serializable {
     @Column(name = "receved_interrupt_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date recevedInterruptAt;
-    @Size(max = 100)
+     
     @Column(name = "interrupt_motivation", length = 100)
     private String interruptMotivation;
     @JoinColumn(name = "resource", referencedColumnName = "id", nullable = false)
