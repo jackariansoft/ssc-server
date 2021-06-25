@@ -43,5 +43,11 @@ public class LoggerServiceImpl implements LoggerService{
 		LoggerSSC.getInstance(emailSenderService).getLogger().log(levl, message);
 		
 	}
+
+	@Override
+	public void flushMessage() {
+		LoggerSSC.getInstance(emailSenderService).flushEmailMessage();
+		
+	}
     
 }

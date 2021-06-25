@@ -113,7 +113,7 @@ public class CommandController {
 					 * evitare azioni manuali e controllare puntualmente quale sia la situazione reale.
 					 * 
 					 */
-					Response<Long> check = plcService.controllaPrenotazioniAttive(resource);
+					//Response<Long> check = plcService.controllaPrenotazioniAttive(resource);
 					//if (check.getResult().compareTo(0L) == 1) {
 					//	response.setErrorMessage("Trovate prenotazione attive. Impossibile effettuare operazione richiesta");
 					//	response.setStatus(HttpStatus.BAD_REQUEST.value());

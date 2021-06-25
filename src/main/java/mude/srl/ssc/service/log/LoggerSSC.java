@@ -94,6 +94,11 @@ public class LoggerSSC {
             }
         }
     }
+    public void flushEmailMessage() {
+    	if(smh!=null) {
+    		smh.flush();
+    	}
+    }
    
 
 }

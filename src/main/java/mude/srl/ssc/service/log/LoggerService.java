@@ -20,4 +20,6 @@ public interface LoggerService {
     public void logInfo(Level INFO, String message);
 
     public void logWarning(Level level, String message);
+    
+    public void flushMessage();
 }

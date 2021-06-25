@@ -13,6 +13,7 @@ import mude.srl.ssc.messaging.MessageInfoType;
 import mude.srl.ssc.messaging.WebSocketConfig;
 import mude.srl.ssc.service.payload.exception.CrossLocationReservetionRequestException;
 import mude.srl.ssc.service.payload.exception.HourOutOfLimitException;
+import mude.srl.ssc.service.payload.exception.OdooException;
 import mude.srl.ssc.service.payload.exception.ReservationIntervalException;
 import mude.srl.ssc.service.payload.model.Reservation;
 
@@ -72,5 +73,20 @@ public class GenaralExceptionHandler {
 	    	
 	               
 	    }
-
+	    @ResponseStatus(HttpStatus.BAD_REQUEST)  // 409
+	    @ExceptionHandler(OdooException.class)
+	    public void gestisciErroreApiKey(OdooException exception) {
+	    	
+	    	String target = exception.getTarget();
+	    	
+	    	if(target!=null) {
+	    		simpMessagingTemplate.convertAndSend(WebSocketConfig.INFO_WEBSOCKET_ENDPOINT,
+	    				Message.buildFromRequest(MessageInfoType.ERROR, "Attenzione",
+	    						"Questa prenotazione non puo' essere evasa."
+	    						+ "Servizio Prenotazione Sospeso. Contattare l'amministratore",target));
+	    	    
+	    	}
+	    	
+	               
+	    }
 }

@@ -33,6 +33,7 @@ import mude.srl.ssc.rest.controller.command.model.ResponseCommand;
 import mude.srl.ssc.service.dati.EnergyService;
 import mude.srl.ssc.service.log.LoggerService;
 import mude.srl.ssc.service.payload.RemoteService;
+import mude.srl.ssc.service.payload.exception.OdooException;
 import mude.srl.ssc.service.resource.ResourceService;
 
 /**
@@ -147,7 +148,9 @@ public class ActivationController {
 			
 			
 		} catch (Exception e) {
-			
+			if(e instanceof OdooException) {
+				((OdooException)e).setTarget(uid.toString());
+			}
 			loggerService.logException(Level.SEVERE, "Error on validation payload: "+payload, e);
 			throw e;
 			

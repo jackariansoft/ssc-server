@@ -16,6 +16,7 @@ import org.springframework.web.client.UnknownHttpStatusCodeException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Scanner;
 import java.util.logging.Level;
 
 public final class RemoteServiceResponseErrorHandler extends DefaultResponseErrorHandler {
@@ -41,6 +42,7 @@ public final class RemoteServiceResponseErrorHandler extends DefaultResponseErro
 			} else if (statusCode == HttpStatus.FORBIDDEN) {
 				OdooException ex = new OdooException(readInputStream(response.getBody()));
 				loggerService.logException(Level.SEVERE, "Response: " + readInputStream(response.getBody()), ex);
+		
 				throw ex;
 			} else {
 				OdooException ex  = objectMapper.readValue(response.getBody(), ReservationError.class).exception();
@@ -57,6 +59,14 @@ public final class RemoteServiceResponseErrorHandler extends DefaultResponseErro
 	}
 
 	private String readInputStream(final InputStream stream) {
-		return new java.util.Scanner(stream).useDelimiter("\\A").next();
+		 StringBuilder sb  = new StringBuilder();
+		 
+		 Scanner scanner = new java.util.Scanner(stream).useDelimiter("\\A");
+		 while(scanner.hasNext()) {
+			 sb.append(scanner.next());
+		 }
+		 scanner.close();
+		 
+		 return sb.toString();
 	}
 }
